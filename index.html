@@ -327,6 +327,16 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 .coach p{font-size:12.5px;line-height:1.5;color:var(--text);padding-right:12px}
 .coach p b{color:var(--gold);font-weight:700}
 @media (prefers-reduced-motion:reduce){.coach.show{animation:none}}
+
+/* Legal disclaimers + destructive (delete account) action */
+.foot .legal{font-size:11px;line-height:1.55;color:var(--muted2);max-width:680px;margin:8px auto 0;padding:0 8px}
+.foot .legal a{color:var(--muted);text-decoration:underline}
+.disc{font-size:11px;line-height:1.5;color:var(--muted2);padding:0 24px 18px;position:relative;z-index:1}
+.del-acct{width:100%;background:none;border:1px solid rgba(255,77,141,.4);color:var(--magenta);font-weight:700;padding:12px;border-radius:12px;font-size:14px;margin-top:10px;transition:.15s}
+.del-acct:hover{background:rgba(255,77,141,.1)}
+.del-acct:disabled{opacity:.6;cursor:default}
+.del-note{font-size:11px;line-height:1.5;color:var(--muted2);margin-top:10px;text-align:center}
+.del-note a{color:var(--muted);text-decoration:underline}
 </style>
 </head>
 <body>
@@ -387,7 +397,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 
   <section class="view" id="v-detail"></section>
 
-  <footer class="foot"><p>Built for India · Metadata by <b>TMDB</b> · Availability by <b>JustWatch</b></p></footer>
+  <footer class="foot">
+    <p>Built for India · Metadata by <b>TMDB</b> · Availability by <b>JustWatch</b></p>
+    <p class="legal">KahanDekhu is an independent app, not affiliated with, endorsed by, or sponsored by any streaming service shown, nor by TMDB or JustWatch. Streaming-service names and logos are trademarks of their respective owners. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+    <p class="legal"><a href="privacy.html">Privacy policy</a> · <a href="delete-account.html">Delete your account &amp; data</a></p>
+  </footer>
 </main>
 
 <nav class="nav" id="nav">
@@ -721,6 +735,7 @@ function renderDetail(d){
         <div class="credits"><span class="credit jw">Where-to-watch by <b>JustWatch</b></span><span class="credit tmdb">Metadata by TMDB</span></div>
         ${wp&&wp.link?`<a class="openlink" href="${wp.link}" target="_blank" rel="noopener">More options ↗</a>`:''}
       </div>
+      <p class="disc">Logos and names are trademarks of their owners. KahanDekhu is independent and not affiliated with, endorsed by, or sponsored by any streaming service shown.</p>
     </div>`;
 
   if(poster){ const img=el('img'); img.src=poster; img.alt=titleOf(d); img.style.cssText='width:100%;height:100%;object-fit:cover'; const slot=$('#dPoster'); slot.textContent=''; slot.appendChild(img); img.onerror=()=>{slot.textContent=titleOf(d);}; }
@@ -1046,8 +1061,11 @@ function renderAuthModal(){
     title.textContent='Account';
     const initial=(USER.email||'?')[0].toUpperCase();
     body.innerHTML=`<div class="auth-row"><div class="auth-avatar">${initial}</div><div><div class="auth-email">${escapeHtml(USER.email||'Signed in')}</div><div class="auth-sync">✓ Syncing across your devices</div></div></div>
-      <button class="signout-btn" id="authSignout">Sign out</button>`;
+      <button class="signout-btn" id="authSignout">Sign out</button>
+      <button class="del-acct" id="authDelete">Delete account &amp; data</button>
+      <p class="del-note">Permanently removes your account, email, watchlist and preferences from our servers. This can't be undone. You can also request deletion at <a href="delete-account.html" target="_blank" rel="noopener">this page</a>.</p>`;
     $('#authSignout').addEventListener('click',doSignOut);
+    $('#authDelete').addEventListener('click',doDeleteAccount);
     return;
   }
   title.textContent = authMode==='signup' ? 'Create account' : 'Sign in';
@@ -1102,6 +1120,32 @@ async function doSignOut(){
   if($('#v-watchlist').classList.contains('on')) renderWatchlist();
   if(typeof CURRENT!=='undefined' && CURRENT && $('#v-detail').classList.contains('on')) renderDetail(CURRENT);
   updateAccountUI(); renderAuthModal(); toast('Signed out — cleared from this device');
+}
+
+/* Permanently delete the account + all cloud data (Play Store requirement for account apps).
+   Calls a Supabase Edge Function that deletes the auth user with the service-role key;
+   the preferences/watchlist rows cascade-delete via their ON DELETE CASCADE foreign keys. */
+async function doDeleteAccount(){
+  if(!USER) return;
+  if(!confirm('Permanently delete your account and all synced data? This cannot be undone.')) return;
+  const btn=$('#authDelete'); if(btn){ btn.disabled=true; btn.textContent='Deleting…'; }
+  try{
+    const { data:{ session } } = await SB.auth.getSession();
+    const res = await fetch(SUPABASE_URL+'/functions/v1/delete-account', {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer '+(session?session.access_token:''), 'apikey':SUPABASE_ANON_KEY }
+    });
+    if(!res.ok) throw new Error('delete failed '+res.status);
+    try{ await SB.auth.signOut(); }catch(e){}
+    USER=null; WATCHLIST=[]; REGION='IN'; SERVICES=new Set();
+    ['kd_watchlist','kd_region','kd_services'].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    reflectRegion();
+    if($('#v-watchlist').classList.contains('on')) renderWatchlist();
+    updateAccountUI(); closeModal('#authModal'); toast('Account and data deleted');
+  }catch(e){
+    if(btn){ btn.disabled=false; btn.textContent='Delete account & data'; }
+    toast('Could not delete right now — please try the deletion page');
+  }
 }
 
 /* BOOT */
