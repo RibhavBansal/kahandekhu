@@ -51,7 +51,7 @@ a{color:inherit}
 .tbtn:hover{color:var(--text);border-color:var(--gold-dim)}
 .tbtn.cta{color:#1a1405;background:var(--gold);border-color:var(--gold)}
 .tbtn.cta:hover{filter:brightness(1.06)}
-.tbtn svg{width:15px;height:15px}
+.tbtn svg{width:15px;height:15px;flex:none}
 .region-flag{font-size:15px}
 
 .offlinebar{display:none;text-align:center;font-size:13px;font-weight:600;color:#1a1405;background:var(--magenta);padding:8px}
@@ -272,6 +272,49 @@ a{color:inherit}
   .go span{display:none}.go{padding:12px 16px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ============ UI polish layer ============ */
+/* Icons never squish (fixes clipped heart / icons in crowded topbar) */
+.tbtn svg,.act svg,.notify-btn svg,.backbtn svg{flex:none}
+.tbtn.cta svg{width:16px;height:16px}
+
+/* Keyboard accessibility — visible focus ring on every interactive element */
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.chip:focus-visible,.card:focus-visible{
+  outline:2px solid var(--gold);outline-offset:3px;border-radius:10px}
+.searchfield:focus-within{outline:none}
+
+/* Tactile press feedback on buttons */
+.tbtn,.go,.set-save,.paybtn,.retry,.notify-btn,.act,.chip,.region-opt,.segment button,.copybtn,.signout-btn,.cta-btn{
+  transition:transform .14s cubic-bezier(.2,.8,.3,1),filter .15s,box-shadow .2s,border-color .15s,background .15s,color .15s}
+.tbtn:active,.go:active,.set-save:active,.paybtn:active,.retry:active,.notify-btn:active,.act:active,.segment button:active,.copybtn:active,.signout-btn:active,.cta-btn:active{transform:translateY(1px) scale(.985)}
+.chip:active,.region-opt:active,.prov:active{transform:scale(.97)}
+.nav button:active{transform:scale(.92)}
+
+/* Soft gold glow + lift on primary gold actions */
+.tbtn.cta,.go,.set-save,.paybtn.primary,.retry,.notify-btn,.act.trailer,.empty .cta-btn{box-shadow:0 6px 18px rgba(245,196,81,.22)}
+.tbtn.cta:hover,.go:hover,.set-save:hover,.paybtn.primary:hover,.retry:hover,.notify-btn:hover,.act.trailer:hover,.empty .cta-btn:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(245,196,81,.34)}
+
+/* Richer poster hover on browse/search cards */
+.card .poster{transition:transform .25s cubic-bezier(.2,.8,.3,1),box-shadow .25s,border-color .25s}
+.card:hover .poster{box-shadow:0 20px 38px rgba(0,0,0,.52);border-color:var(--gold-dim)}
+.card:hover .ct{color:var(--gold);transition:color .15s}
+
+/* Provider tiles get a soft shadow on hover; "yours" gets a gentle pulse-free glow */
+.prov:hover{box-shadow:0 10px 24px rgba(0,0,0,.4)}
+.prov.mine{box-shadow:0 0 0 1px var(--gold),0 0 18px rgba(245,196,81,.18)}
+
+/* Active bottom-nav icon glows */
+.nav button.on svg{filter:drop-shadow(0 0 7px rgba(245,196,81,.55))}
+
+/* Search results lift subtly */
+.results{box-shadow:0 28px 70px rgba(0,0,0,.6)}
+.r-poster,.poster,.d-poster,.prov-logo{transition:transform .2s}
+
+/* Brand bulb gentle breathing glow (idle delight, motion-safe) */
+@media (prefers-reduced-motion:no-preference){
+  .brand .bulb{animation:bulbPulse 3.2s ease-in-out infinite}
+  @keyframes bulbPulse{0%,100%{box-shadow:0 0 14px var(--gold),0 0 4px #fff inset}50%{box-shadow:0 0 22px var(--gold),0 0 6px #fff inset}}
+}
 </style>
 </head>
 <body>
@@ -289,7 +332,7 @@ a{color:inherit}
       <span class="region-flag" id="regionFlag">🇮🇳</span><span id="regionLabel">India</span>
     </button>
     <button class="tbtn cta" id="openSupport">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.6 8.5 2 5 5.5 5c2 0 3.3 1.2 4 2.3.7-1.1 2-2.3 4-2.3 3.5 0 4.9 3.5 3.5 6.7C19.5 16.4 12 21 12 21z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 1 1 6.8-6.8l1 1 1-1a4.8 4.8 0 1 1 6.8 6.8Z"/></svg>
       Support
     </button>
   </div>
@@ -1006,7 +1049,18 @@ async function doSignUp(){
   if(data.session){ closeModal('#authModal'); toast('Account created ✓'); }
   else authStatus('Almost there — check your email to confirm, then sign in.');
 }
-async function doSignOut(){ await SB.auth.signOut(); USER=null; updateAccountUI(); renderAuthModal(); toast('Signed out'); }
+async function doSignOut(){
+  await SB.auth.signOut();
+  USER=null;
+  // Wipe this account's data from the device so the next person starts clean.
+  // (The cloud copy stays, so signing back in restores everything.)
+  WATCHLIST=[]; REGION='IN'; SERVICES=new Set();
+  ['kd_watchlist','kd_region','kd_services'].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+  reflectRegion();
+  if($('#v-watchlist').classList.contains('on')) renderWatchlist();
+  if(typeof CURRENT!=='undefined' && CURRENT && $('#v-detail').classList.contains('on')) renderDetail(CURRENT);
+  updateAccountUI(); renderAuthModal(); toast('Signed out — cleared from this device');
+}
 
 /* BOOT */
 (async function init(){
