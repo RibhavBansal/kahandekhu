@@ -991,8 +991,19 @@ async function doSignUp(){
   if(pw.length<6) return authStatus('Password must be at least 6 characters.');
   authStatus('Creating your account…');
   const { data, error } = await SB.auth.signUp({ email, password:pw });
-  if(error) authStatus(error.message);
-  else if(data.session){ closeModal('#authModal'); toast('Account created ✓'); }
+  if(error){
+    if(/already.*(regist|exist)/i.test(error.message||'') || error.code==='user_already_exists')
+      authStatus('That email already has an account. Switch to Sign in below.');
+    else authStatus(error.message);
+    return;
+  }
+  // Supabase anti-enumeration: signing up an existing (confirmed) email returns
+  // a user with an empty identities array and no session — i.e. already registered.
+  if(data && data.user && Array.isArray(data.user.identities) && data.user.identities.length===0){
+    authStatus('That email already has an account. Switch to Sign in below.');
+    return;
+  }
+  if(data.session){ closeModal('#authModal'); toast('Account created ✓'); }
   else authStatus('Almost there — check your email to confirm, then sign in.');
 }
 async function doSignOut(){ await SB.auth.signOut(); USER=null; updateAccountUI(); renderAuthModal(); toast('Signed out'); }
