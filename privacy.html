@@ -29,26 +29,36 @@
 <div class="wrap">
   <div class="brand"><span class="bulb"></span><span class="wm">Kahan<span>Dekhu</span></span></div>
   <h1>Privacy Policy</h1>
-  <div class="eff">Effective date: <strong>[ADD DATE]</strong></div>
+  <div class="eff">Effective date: <strong>June 20, 2026</strong></div>
 
   <p>KahanDekhu ("we", "us", "the app") helps you find where to legally watch movies and shows in India. We've built it to need as little of your data as possible. This policy explains what we do and don't collect.</p>
 
   <div class="card">
-    <p style="margin:0"><strong>The short version:</strong> We don't have accounts and we don't ask for your name, email, or phone number. Your preferences and watchlist are stored only on your own device. We don't sell your data.</p>
+    <p style="margin:0"><strong>The short version:</strong> The app works fully without an account, and by default your preferences and watchlist are stored only on your own device. Creating an account is <strong>optional</strong> — if you choose to, we store your email address (to sign you in) and sync your preferences and watchlist across your devices. We don't ask for your name or phone number, and we never sell your data.</p>
   </div>
 
   <h2>Information we store</h2>
-  <p>The app stores a small amount of information <strong>locally on your device</strong> (in your browser's storage), never on our servers:</p>
+  <p>By default — when you are <strong>not</strong> signed in — the app stores a small amount of information <strong>locally on your device</strong> (in your browser's storage), never on our servers:</p>
   <ul>
     <li>Your selected region (e.g. India)</li>
     <li>The streaming services you tell us you subscribe to</li>
     <li>Your watchlist of saved titles</li>
   </ul>
-  <p>This stays on your device. Clearing your browser data or uninstalling the app removes it. We have no way to access it.</p>
+  <p>This stays on your device. Clearing your browser data or uninstalling the app removes it, and we have no way to access it.</p>
+
+  <h2>If you create an account (optional)</h2>
+  <p>Accounts are optional and exist only to sync your data across your devices. The app is fully usable without one. If you choose to sign up:</p>
+  <ul>
+    <li>We store your <strong>email address</strong>, used solely to sign you in and secure your account. Your password is handled by our authentication provider (Supabase) and is stored in encrypted/hashed form — we never see it.</li>
+    <li>We store the same preferences and watchlist described above on our servers, linked to your account, so they appear on every device you sign in to.</li>
+    <li>Each account can only ever access its own data, enforced by row-level security.</li>
+  </ul>
+  <p>You can delete your account and all associated data at any time — see "Your choices" below.</p>
 
   <h2>Information we do <em>not</em> collect</h2>
   <ul>
-    <li>No account, name, email, phone number, or password</li>
+    <li>No name or phone number</li>
+    <li>No password visible to us (sign-in is handled by our authentication provider)</li>
     <li>No location tracking (your "region" is a manual setting, not your GPS)</li>
     <li>No selling or sharing of personal data with advertisers</li>
   </ul>
@@ -61,6 +71,7 @@
     <li><strong>TMDB (The Movie Database)</strong> — supplies movie/show metadata, posters, and artwork.</li>
     <li><strong>JustWatch</strong> — supplies the "where to watch" availability data shown in the app.</li>
     <li><strong>Cloudflare</strong> — hosts the app and our data proxy.</li>
+    <li><strong>Supabase</strong> — provides authentication and database storage if you choose to create an account (email sign-in and cross-device sync). Used only for signed-in users.</li>
     <li><strong>Payment providers (UPI apps / Razorpay)</strong> — if you choose to make a voluntary donation, the payment is handled entirely by your UPI app or the payment provider. We never see or store your card, bank, or UPI credentials.</li>
   </ul>
   <p>These services have their own privacy policies, which govern data they process.</p>
@@ -69,19 +80,23 @@
   <p>Donations are entirely voluntary and give you no additional features — the app is free either way. We do not store any payment information.</p>
 
   <h2>Children</h2>
-  <p>KahanDekhu is a general-audience app and is not directed at children under 13. We do not knowingly collect personal information from children. Since we don't collect personal information from anyone, this risk is minimal.</p>
+  <p>KahanDekhu is a general-audience app and is not directed at children under 13. We do not knowingly collect personal information from children. If you believe a child has created an account, contact us and we will delete it.</p>
 
   <h2>Analytics</h2>
   <p>We may use privacy-friendly, aggregate analytics to understand overall usage (for example, how many people use the app), without tracking individuals or building profiles. If this changes materially, we will update this policy.</p>
 
   <h2>Your choices</h2>
-  <p>Because your data lives on your device, you are in control: clear it any time through your browser or device settings, or by uninstalling the app.</p>
+  <p>You are in control of your data:</p>
+  <ul>
+    <li><strong>Local data:</strong> clear it any time through your browser or device settings, or by uninstalling the app.</li>
+    <li><strong>Account data:</strong> if you created an account, you can delete it — and all preferences and watchlist data linked to it — by contacting us at the email below. Deletion is permanent.</li>
+  </ul>
 
   <h2>Changes to this policy</h2>
   <p>We may update this policy as the app evolves. Material changes will be reflected here with a new effective date.</p>
 
   <h2>Contact</h2>
-  <p>Questions about this policy? Contact us at <strong>[ADD YOUR EMAIL]</strong>.</p>
+  <p>Questions about this policy? Contact us at <strong>bansalribhav0987@gmail.com</strong>.</p>
 
   <div class="foot">
     KahanDekhu · Metadata by TMDB · Availability by JustWatch · This product uses the TMDB and JustWatch data but is not endorsed or certified by them.

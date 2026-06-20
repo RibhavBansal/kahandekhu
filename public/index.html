@@ -392,12 +392,12 @@ const TELEGRAM_BOT = '';   // your bot username without @ (e.g. 'KahanDekhuBot')
 
 /* Cloud sync (optional). Fill both to enable accounts. The anon key is SAFE to ship
    in client code — Row Level Security protects the data. NEVER put the service_role key here. */
-const SUPABASE_URL = '';        // e.g. 'https://abcdxyz.supabase.co'
-const SUPABASE_ANON_KEY = '';   // your project's anon / public key
+const SUPABASE_URL = 'https://seutsrdubftizbasgyim.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNldXRzcmR1YmZ0aXpiYXNneWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjczOTYsImV4cCI6MjA5NzU0MzM5Nn0.6GuB8Wv__6N6hB44eD9V_fVqeB6ovEBIQYK-DBuNN4U';
 
-const SUPPORT_UPI = 'kahandekhu@upi';
+const SUPPORT_UPI = 'ribhav2003@ybl';
 const SUPPORT_NAME = 'KahanDekhu';
-const SUPPORT_RAZORPAY = 'https://razorpay.me/@kahandekhu';
+const SUPPORT_RAZORPAY = '';   // add your razorpay.me link to show the cards/netbanking button
 
 let API_KEY = '';
 const live = () => USE_PROXY || !!API_KEY;
@@ -820,7 +820,8 @@ $('#openSupport').addEventListener('click',()=>{ openModal('#supportModal'); bui
 function buildSupport(){
   $('#upiId').textContent=SUPPORT_UPI;
   const link=`upi://pay?pa=${encodeURIComponent(SUPPORT_UPI)}&pn=${encodeURIComponent(SUPPORT_NAME)}&cu=INR`;
-  $('#upiPay').href=link; $('#razorpayLink').href=SUPPORT_RAZORPAY;
+  $('#upiPay').href=link;
+  const rz=$('#razorpayLink'); if(SUPPORT_RAZORPAY){ rz.href=SUPPORT_RAZORPAY; rz.style.display=''; } else { rz.style.display='none'; }
   const box=$('#qrcode'); box.innerHTML='';
   if(typeof QRCode!=='undefined'){ try{ new QRCode(box,{text:link,width:168,height:168,colorDark:'#0D0B1A',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }catch(e){ box.innerHTML='<div class="qr-fallback">Scan unavailable — use the UPI ID below.</div>'; } }
   else box.innerHTML='<div class="qr-fallback">Scan unavailable — use the UPI ID below.</div>';
