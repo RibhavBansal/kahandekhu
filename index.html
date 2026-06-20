@@ -315,6 +315,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
   .brand .bulb{animation:bulbPulse 3.2s ease-in-out infinite}
   @keyframes bulbPulse{0%,100%{box-shadow:0 0 14px var(--gold),0 0 4px #fff inset}50%{box-shadow:0 0 22px var(--gold),0 0 6px #fff inset}}
 }
+
+/* Sign-in coachmark (one-time hint pointing at the Sign in button) */
+.coach{position:fixed;z-index:75;width:252px;background:linear-gradient(180deg,var(--surface2),var(--surface));border:1px solid var(--gold-dim);border-radius:14px;padding:12px 14px 13px;box-shadow:0 20px 48px rgba(0,0,0,.55),0 0 0 1px rgba(245,196,81,.1);opacity:0;transform:translateY(-8px) scale(.95);pointer-events:none;transition:opacity .28s ease,transform .28s cubic-bezier(.2,1,.3,1)}
+.coach.show{opacity:1;transform:none;pointer-events:auto;animation:coachBob 2.6s ease-in-out .45s infinite}
+@keyframes coachBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.coach-arrow{position:absolute;top:-7px;left:120px;width:14px;height:14px;background:var(--surface2);border-left:1px solid var(--gold-dim);border-top:1px solid var(--gold-dim);transform:rotate(45deg);border-radius:4px 0 0 0}
+.coach-x{position:absolute;top:5px;right:7px;width:22px;height:22px;border-radius:50%;color:var(--muted);font-size:17px;line-height:1;display:grid;place-items:center;transition:.15s}
+.coach-x:hover{background:var(--bg2);color:var(--text)}
+.coach-key{display:inline-block;font-family:'JetBrains Mono';font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+.coach p{font-size:12.5px;line-height:1.5;color:var(--text);padding-right:12px}
+.coach p b{color:var(--gold);font-weight:700}
+@media (prefers-reduced-motion:reduce){.coach.show{animation:none}}
 </style>
 </head>
 <body>
@@ -418,6 +430,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="coach" id="signinHint" role="status" aria-live="polite">
+  <span class="coach-arrow"></span>
+  <button class="coach-x" id="coachX" aria-label="Dismiss">&times;</button>
+  <span class="coach-key">Tip</span>
+  <p>Use it free — no sign-in needed. <b>Sign in</b> to keep your watchlist across all your devices.</p>
+</div>
 
 <div class="modal-bg" id="authModal">
   <div class="modal">
@@ -950,6 +968,30 @@ function updateAccountUI(){
   const b=$('#accountBtn'); if(!b) return;
   b.classList.toggle('authed', !!USER);
   $('#accountLabel').textContent = USER ? 'Synced' : 'Sign in';
+  if(USER) dismissSigninHint();
+}
+
+/* ---- one-time sign-in coachmark (arrow points at the Sign in button) ---- */
+let hintT, hintDone=false;
+function positionHint(){
+  const btn=$('#accountBtn'), c=$('#signinHint'); if(!btn||!c) return;
+  const ar=c.querySelector('.coach-arrow'), W=252, M=8;
+  const r=btn.getBoundingClientRect(), cx=r.left+r.width/2;   // centre of the Sign in button
+  // Anchor the box so it extends LEFT of the button cluster — clearly tied to "Sign in".
+  const left=Math.min(Math.max(M, cx+26-W), window.innerWidth-W-M);
+  c.style.left=left+'px'; c.style.top=(r.bottom+11)+'px';
+  ar.style.left=Math.min(Math.max(14, cx-left-7), W-28)+'px'; // arrow tip on the button centre
+}
+function showSigninHint(){
+  if(!accountsEnabled() || USER || hintDone) return;          // signed out only; shows every load
+  const btn=$('#accountBtn'), c=$('#signinHint'); if(!btn||!c||btn.offsetParent===null) return;
+  positionHint();
+  c.classList.add('show');
+  clearTimeout(hintT); hintT=setTimeout(dismissSigninHint, 9000);
+}
+function dismissSigninHint(){
+  hintDone=true; clearTimeout(hintT);
+  const c=$('#signinHint'); if(c) c.classList.remove('show');
 }
 
 /* On sign-in: merge local data with the cloud, then keep both in sync. */
@@ -1071,6 +1113,10 @@ async function doSignOut(){
   loadTrending();
 })();
 initAuth();
+$('#coachX')?.addEventListener('click',dismissSigninHint);
+$('#accountBtn')?.addEventListener('click',dismissSigninHint);
+setTimeout(showSigninHint, 1400);
+window.addEventListener('resize',()=>{ const c=$('#signinHint'); if(c&&c.classList.contains('show')) positionHint(); });
 
 /* PWA: register the service worker (enables install + offline shell) */
 if('serviceWorker' in navigator){
