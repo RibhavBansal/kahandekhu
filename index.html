@@ -82,7 +82,8 @@ a{color:inherit}
 .clearbtn{display:none;width:30px;height:30px;border-radius:50%;color:var(--muted);font-size:18px}
 .clearbtn.show{display:grid;place-items:center}
 .clearbtn:hover{background:var(--surface2);color:var(--text)}
-.go{background:var(--gold);color:#1a1405;font-weight:700;font-size:14px;padding:12px 22px;border-radius:999px;flex:none;transition:.15s}
+.go{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:#1a1405;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;flex:none;transition:.15s}
+.go svg{width:17px;height:17px;flex:none}
 .go:hover{filter:brightness(1.06)}
 
 .results{position:absolute;left:0;right:0;top:calc(100% + 10px);z-index:30;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:none;text-align:left;max-height:62vh;overflow-y:auto}
@@ -406,7 +407,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
           <svg class="lens" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
           <input id="q" type="text" placeholder="Drishyam, Scam 1992, Panchayat…" autocomplete="off" spellcheck="false" />
           <button class="clearbtn" id="clearBtn" aria-label="Clear">×</button>
-          <button class="go" id="goBtn"><span>Search</span></button>
+          <button class="go" id="goBtn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg><span>Search</span></button>
         </div>
         <div class="results" id="results"></div>
       </div>
