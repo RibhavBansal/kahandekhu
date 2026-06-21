@@ -115,7 +115,7 @@ a{color:inherit}
 .card:hover{transform:translateY(-4px)}
 .poster{width:130px;height:195px;border-radius:12px;object-fit:cover;background:var(--surface2);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;font-family:'Bricolage Grotesque';font-weight:700;color:var(--muted2);text-align:center;padding:8px;font-size:14px}
 .card .ct{font-size:13px;font-weight:600;margin-top:9px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .cy{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-top:2px}
+.card .cy{font-family:'JetBrains Mono';font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:16px;margin-top:20px}
 .grid .card{width:100%}
@@ -385,14 +385,14 @@ body.kb-open .nav, body.kb-open .fab-support{display:none}
 .elsewhere{margin:18px 0 2px}
 .elsewhere-label{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .elsewhere-label svg{width:14px;height:14px;color:var(--gold);flex:none}
-.region-chips{display:flex;flex-wrap:wrap;gap:10px}
-.rchip{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 14px 8px 11px;transition:transform .15s,border-color .15s,box-shadow .15s}
+.region-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.rchip{display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;font-family:inherit;text-align:left;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 14px 8px 11px;transition:transform .15s,border-color .15s,box-shadow .15s}
 .rchip:hover{border-color:var(--gold-dim);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.38)}
 .rchip:active{transform:translateY(0) scale(.98)}
 .rc-flag{font-size:22px;line-height:1;flex:none}
 .rc-meta{display:flex;flex-direction:column;gap:1px;min-width:0}
-.rc-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.2}
-.rc-prov{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.rc-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-prov{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .elsewhere-mini{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
 .em-label{font-size:12px;color:var(--muted);font-weight:600}
 .flagbtn{font-size:20px;line-height:1;cursor:pointer;background:none;border:none;padding:2px 3px;border-radius:8px;transition:transform .15s}

@@ -1,7 +1,7 @@
 # KahanDekhu — Project Reference (living document)
 
 > **Maintained by Claude.** This file is updated on every change to the project — features, fixes, deploys, decisions. It is the single source of truth for how everything works.
-> **Last updated:** 21 Jun 2026
+> **Last updated:** 21 Jun 2026 — Tier-1 features (multi-region availability, regional language filter, recommendations) + card/region-chip overflow fixes.
 
 ---
 
