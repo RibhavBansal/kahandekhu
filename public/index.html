@@ -232,8 +232,9 @@ a{color:inherit}
 .set-section{margin-bottom:22px}
 .set-section h4{font-size:13px;font-weight:700;margin-bottom:4px}
 .set-section .desc{font-size:12.5px;color:var(--muted);margin-bottom:12px;line-height:1.5}
-.region-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
-.region-opt{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);transition:.15s}
+.region-grid{display:flex;flex-wrap:wrap;gap:8px}
+.region-opt{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);transition:.15s}
+.region-opt .region-flag,.region-opt span:first-child{flex:none}
 .region-opt:hover{border-color:var(--gold-dim)}
 .region-opt.on{border-color:var(--gold);background:rgba(245,196,81,.1);color:var(--gold)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -385,14 +386,14 @@ body.kb-open .nav, body.kb-open .fab-support{display:none}
 .elsewhere{margin:18px 0 2px}
 .elsewhere-label{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .elsewhere-label svg{width:14px;height:14px;color:var(--gold);flex:none}
-.region-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.rchip{display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;font-family:inherit;text-align:left;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 14px 8px 11px;transition:transform .15s,border-color .15s,box-shadow .15s}
-.rchip:hover{border-color:var(--gold-dim);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.38)}
-.rchip:active{transform:translateY(0) scale(.98)}
-.rc-flag{font-size:22px;line-height:1;flex:none}
-.rc-meta{display:flex;flex-direction:column;gap:1px;min-width:0}
-.rc-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rc-prov{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.region-list{display:flex;flex-direction:column;gap:8px}
+.rrow{display:flex;align-items:center;gap:12px;width:100%;cursor:pointer;font-family:inherit;text-align:left;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:11px 14px;transition:border-color .15s,background .15s,transform .12s}
+.rrow:hover{border-color:var(--gold-dim);background:var(--surface)}
+.rrow:active{transform:scale(.99)}
+.rr-flag{font-size:21px;line-height:1;flex:none}
+.rr-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;flex:none}
+.rr-prov{flex:1;min-width:0;text-align:right;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr-arrow{width:15px;height:15px;color:var(--muted2);flex:none}
 .elsewhere-mini{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
 .em-label{font-size:12px;color:var(--muted);font-weight:600}
 .flagbtn{font-size:20px;line-height:1;cursor:pointer;background:none;border:none;padding:2px 3px;border-radius:8px;transition:transform .15s}
@@ -951,8 +952,8 @@ function elsewhereHTML(d, prominent){
   const list=regionsWithStreaming(d, REGION);
   if(!list.length) return '';
   if(prominent){
-    return `<div class="elsewhere"><div class="elsewhere-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Streaming in other regions</div><div class="region-chips">${
-      list.map(r=>`<button class="rchip" onclick="switchRegionTo('${r.code}')"><span class="rc-flag">${r.flag}</span><span class="rc-meta"><span class="rc-name">${r.name}</span><span class="rc-prov">${escapeHtml(r.top)}${r.count>1?' +'+(r.count-1):''}</span></span></button>`).join('')
+    return `<div class="elsewhere"><div class="elsewhere-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Streaming in other regions</div><div class="region-list">${
+      list.map(r=>`<button class="rrow" onclick="switchRegionTo('${r.code}')"><span class="rr-flag">${r.flag}</span><span class="rr-name">${escapeHtml(r.name)}</span><span class="rr-prov">${escapeHtml(r.top)}${r.count>1?' +'+(r.count-1):''}</span><svg class="rr-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>`).join('')
     }</div></div>`;
   }
   return `<div class="elsewhere-mini"><span class="em-label">Also streaming in</span>${list.map(r=>`<button class="flagbtn" title="${r.name} — ${escapeHtml(r.top)}" onclick="switchRegionTo('${r.code}')">${r.flag}</button>`).join('')}</div>`;

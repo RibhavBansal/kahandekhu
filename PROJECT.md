@@ -1,7 +1,7 @@
 # KahanDekhu — Project Reference (living document)
 
 > **Maintained by Claude.** This file is updated on every change to the project — features, fixes, deploys, decisions. It is the single source of truth for how everything works.
-> **Last updated:** 21 Jun 2026 — Tier-1 features (multi-region availability, regional language filter, recommendations) + card/region-chip overflow fixes.
+> **Last updated:** 21 Jun 2026 — Tier-1 features (multi-region availability, regional language filter, recommendations) + overflow fixes (card meta, region chips, and the region selector now wraps as content-sized pills so long names like "Singapore" never overflow).
 
 ---
 
@@ -118,7 +118,7 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - `openItem(item)` → `tmdb.detail()` → `renderDetail(d)`.
 - **Where to watch:** from `watch/providers.results[REGION]`, grouped Subscription / Free / Rent / Buy with provider logos. "YOURS" badge + banner for platforms in the user's `SERVICES`. "Only mine" filter.
 - **Region pill** (switch region), **rating/runtime/genres facts**, overview, **Trailer** (from `videos`), **Watchlist** toggle, **Share** (canvas 1080×1350 card with gold app-link CTA), **Notify me** (web push, only when not streaming in region).
-- **Multi-region availability** — `elsewhereHTML()` reads `watch/providers.results` for all supported regions (same fetch, no extra calls). When not in your region it shows prominent tappable region cards ("🇺🇸 USA · Netflix +1"); when available it shows a compact "Also streaming in" flag row. Tapping a flag calls `switchRegionTo(code)`.
+- **Multi-region availability** — `elsewhereHTML()` reads `watch/providers.results` for all supported regions (same fetch, no extra calls). When not in your region it shows a **full-width tappable list** of regions (`🇸🇬 Singapore … Netflix ›` — full-width rows so long names never overflow); when available it shows a compact "Also streaming in" flag row. Tapping a row calls `switchRegionTo(code)`.
 - **"More like this"** rail — `tmdb.recommendations()` for the current title (TMDB `/recommendations`, proxy-allowed).
 - **Attribution + disclaimer** ("not affiliated…", TMDB/JustWatch) shown on every detail page.
 
