@@ -39,9 +39,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 input,select{font-family:inherit}
 a{color:inherit}
 ::selection{background:var(--gold);color:#1a1405}
-.wrap{max-width:1040px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 max(clamp(16px,5vw,40px),env(safe-area-inset-right)) 0 max(clamp(16px,5vw,40px),env(safe-area-inset-left))}
 
-.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px clamp(16px,5vw,40px);backdrop-filter:blur(14px);background:linear-gradient(180deg,rgba(13,11,26,.92),rgba(13,11,26,.55));border-bottom:1px solid var(--line)}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) max(clamp(16px,5vw,40px),env(safe-area-inset-right)) 14px max(clamp(16px,5vw,40px),env(safe-area-inset-left));backdrop-filter:blur(14px);background:linear-gradient(180deg,rgba(13,11,26,.96),rgba(13,11,26,.62));border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
 .brand .bulb{width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px var(--gold),0 0 4px #fff inset}
 .wordmark{font-family:'Bricolage Grotesque';font-weight:800;font-size:20px;letter-spacing:-.02em}
@@ -54,7 +54,7 @@ a{color:inherit}
 .tbtn svg{width:15px;height:15px;flex:none}
 .region-flag{font-size:15px}
 
-.offlinebar{display:none;text-align:center;font-size:13px;font-weight:600;color:#1a1405;background:var(--magenta);padding:8px}
+.offlinebar{display:none;text-align:center;font-size:13px;font-weight:600;color:#1a1405;background:var(--magenta);padding:calc(8px + env(safe-area-inset-top)) 8px 8px}
 .offlinebar.show{display:block}
 
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:50;height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:flex;background:rgba(18,15,34,.94);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
@@ -245,7 +245,7 @@ a{color:inherit}
 .set-save{width:100%;background:var(--gold);color:#1a1405;font-weight:700;padding:13px;border-radius:12px;font-size:14px;margin-top:4px}
 .set-save:hover{filter:brightness(1.06)}
 
-.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 18px);transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--gold-dim);color:var(--text);font-size:13px;font-weight:600;padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:88vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--gold-dim);color:var(--text);font-size:13px;font-weight:600;padding:12px 18px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:88vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .tbtn.authed{color:#1a1405;background:var(--gold);border-color:var(--gold)}
@@ -339,6 +339,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 .del-note a{color:var(--muted);text-decoration:underline}
 .notify-btn.done{background:rgba(52,211,153,.15);color:var(--good);box-shadow:none}
 .notify-btn:disabled{opacity:.7;cursor:default}
+/* When the offline bar is visible it already reserves the top inset — don't double it on the topbar */
+.offlinebar.show + .topbar{padding-top:14px}
+/* Keep modals clear of the notch/home-indicator on phones */
+.modal-bg{padding:calc(20px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom))}
+
+/* Floating Support button — moved out of the topbar, sits above the bottom nav */
+.fab-support{position:fixed;z-index:45;right:max(16px,env(safe-area-inset-right));bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#1a1405;background:var(--gold);border-radius:999px;padding:12px 18px;box-shadow:0 10px 26px rgba(245,196,81,.34),0 2px 8px rgba(0,0,0,.3);transition:transform .15s,box-shadow .2s,filter .15s}
+.fab-support svg{width:17px;height:17px;flex:none}
+.fab-support:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(245,196,81,.44)}
+.fab-support:active{transform:translateY(0) scale(.97)}
+
+/* Small screens: tighten the topbar so Sign in + region never overlap */
+@media (max-width:380px){
+  .topbar-actions{gap:6px}
+  .tbtn{padding:8px 11px;font-size:12.5px}
+  .wordmark{font-size:18px}
+  .fab-support{font-size:13px;padding:11px 16px}
+}
 </style>
 </head>
 <body>
@@ -354,10 +372,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
     </button>
     <button class="tbtn" id="openSettings" title="Region & your services">
       <span class="region-flag" id="regionFlag">🇮🇳</span><span id="regionLabel">India</span>
-    </button>
-    <button class="tbtn cta" id="openSupport">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 1 1 6.8-6.8l1 1 1-1a4.8 4.8 0 1 1 6.8 6.8Z"/></svg>
-      Support
     </button>
   </div>
 </header>
@@ -405,6 +419,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
     <p class="legal"><a href="privacy.html">Privacy policy</a> · <a href="delete-account.html">Delete your account &amp; data</a></p>
   </footer>
 </main>
+
+<button class="fab-support" id="openSupport" title="Support KahanDekhu">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 1 1 6.8-6.8l1 1 1-1a4.8 4.8 0 1 1 6.8 6.8Z"/></svg>
+  <span>Support</span>
+</button>
 
 <nav class="nav" id="nav">
   <button class="on" data-view="v-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search</button>
@@ -546,6 +565,7 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<'
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id===id));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.view===id));
+  const fab=document.getElementById('openSupport'); if(fab) fab.style.display = (id==='v-detail') ? 'none' : '';
   window.scrollTo({top:0});
 }
 document.querySelectorAll('#nav button').forEach(b=>{
