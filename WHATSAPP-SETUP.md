@@ -11,6 +11,16 @@ A "where to watch" bot: users WhatsApp a title (or "where to watch X") and get a
 
 ---
 
+## 0. Create your business portfolio (Meta)
+
+WhatsApp requires a **business portfolio** first (Meta's container for your assets — formerly "Business Manager"). It's **free**, and you do **not** need a registered company — create it with your own details.
+
+1. Click **Create a business portfolio**.
+2. Fill in: **Portfolio name** = `KahanDekhu`, **Your name**, **Business email** = `bansalribhav0987@gmail.com`.
+3. Submit → return to the onboarding page and continue with step 1 below.
+
+> **Business verification** (ID/legal docs) is a *separate, later* step. You do NOT need it to build or test (test number + up to 5 recipients). It's only required to message the general public at scale.
+
 ## 1. Create the Meta app
 
 1. Go to **developers.facebook.com → My Apps → Create App → "Business"**.
@@ -23,9 +33,10 @@ A "where to watch" bot: users WhatsApp a title (or "where to watch X") and get a
 ## 2. Get a permanent token (so the bot stays up)
 
 The 24h token dies overnight. For a permanent one:
-1. **business.facebook.com → Business Settings → Users → System users → Add** (a system user).
-2. Give it the app, then **Generate token** with scopes **`whatsapp_business_messaging`** and **`whatsapp_business_management`**.
-3. Copy it → this is `WHATSAPP_TOKEN`.
+1. **business.facebook.com → Business Settings → Users → System users → Add**. Name it `kahandekhu-bot`, role **Admin** (simplest — avoids permission errors).
+2. **Add assets** → select your app + WhatsApp account → enable **full control**.
+3. **Generate new token** → pick the app → check scopes **`whatsapp_business_messaging`** and **`whatsapp_business_management`** → Generate.
+4. Copy it immediately (shown once) → this is `WHATSAPP_TOKEN`.
 
 ## 3. Deploy the Worker
 
@@ -66,3 +77,22 @@ You should get back a "where to watch in India" reply within a second.
 - Every reply links back to the app for full options + reminders.
 
 > The bot reuses your existing TMDB proxy — no new data source, no extra cost.
+
+---
+
+## Troubleshooting
+
+**"This business account didn't comply with our Advertising Policies or other standards."**
+Meta's automated systems often flag *brand-new* business portfolios with this — usually a **false positive**, not anything you did. Fix:
+1. Go to **business.facebook.com/accountquality** → select the portfolio → **Request review**. (Re-review is typically 24–48h.)
+2. Improve approval odds: ensure the **personal Facebook account** that owns it is established (real name, photo, confirmed email/phone); complete the portfolio info (name + website `kahandekhu.pages.dev`); don't spin up multiple portfolios quickly.
+3. If it stays blocked, use a **BSP** (Twilio / Gupshup / Wati) which handles onboarding for you, **or skip WhatsApp for now** — it's a bonus channel; the app, accounts, push, and Play Store launch don't depend on it.
+
+**"Account Restricted — This account's messaging capabilities have been restricted… You can request a review."**
+Same new-account auto-flag, now on the WhatsApp side — it blocks sending/receiving (so the Test step won't work until it's lifted).
+1. **Business Support Home** (business.facebook.com/support) → open the restriction → **Request review**. Wait for the decision (often 24–72h).
+2. If you've hit this **more than once** on the same new account, the direct Meta path may keep fighting you. Two pragmatic routes:
+   - **Use a BSP that has a sandbox** — e.g. **Twilio WhatsApp Sandbox**: you join a shared test number instantly (no Meta business verification, no restriction) and can test the bot **today, free**. (The bot's `send()` would need Twilio's API format instead of Meta's Graph API — a small worker change; ask and it'll be added.)
+   - **Or ship without WhatsApp now** and add it once Meta clears the account. Nothing else depends on it.
+
+> Reality check: repeated new-account restrictions are common with Meta. Don't let WhatsApp block your launch — it's the one feature gated on Meta's approval, and it's a bonus.

@@ -1,7 +1,7 @@
 # KahanDekhu — Project Reference (living document)
 
 > **Maintained by Claude.** This file is updated on every change to the project — features, fixes, deploys, decisions. It is the single source of truth for how everything works.
-> **Last updated:** 21 Jun 2026 — Tier-1 features + overflow fixes + **WhatsApp "where to watch" bot** (free, reply-only; code in `whatsapp.worker.js`, setup in `WHATSAPP-SETUP.md`).
+> **Last updated:** 21 Jun 2026 — WhatsApp bot + "Ask on WhatsApp" everywhere + **ASO-optimized Play Store listing (English + Hindi) in `STORE-LISTING.md`**.
 
 ---
 
@@ -66,6 +66,7 @@ KahanDekhu is an **India-first "where to watch" tracker**. Type a movie or show 
 | `ui-kit.html` | Standalone premium UI component kit (reference only) | — |
 | `store-assets/feature-graphic.png` | 1024×500 Play Store feature graphic | — |
 | `PLAYSTORE-SETUP.md` | Play Store submission + compliance guide | reference |
+| `STORE-LISTING.md` | ASO-optimized listing copy (English + Hindi) | reference |
 | `PUSH-SETUP.md` | Web-push deploy guide | reference |
 | `SUPABASE-SETUP.md` | Accounts/sync setup guide | reference |
 | `telegram-legacy/` | Archived (unused) Telegram bot — kept for future | — |
@@ -181,6 +182,8 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - **Endpoints:** `GET /webhook` (Meta verification), `POST /webhook` (incoming messages).
 - **Free by design:** reply-only, always inside the 24-hour user window (service messages are free; no paid templates).
 - **Vars:** `TMDB_PROXY`, `APP_URL`, `GRAPH_VERSION`. **Secrets:** `WHATSAPP_TOKEN`, `PHONE_NUMBER_ID`, `VERIFY_TOKEN`. Setup in `WHATSAPP-SETUP.md`.
+- Each reply ends with an app-install CTA ("Save it to your watchlist & get a reminder…").
+- **In-app entry points:** an "Ask on WhatsApp" button on the detail page (prefilled with the title) and a footer link — both gated on the client `WHATSAPP_NUMBER` constant (hidden until you set the bot number).
 
 ---
 
@@ -207,6 +210,24 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 | Supabase | Run `supabase-schema.sql`; deploy `delete-account` Edge Function; set Site URL to the app URL |
 
 ---
+
+## 7b. Scale & free-tier limits (verified Jun 2026)
+
+No limit on Play Store installs or app loading (Pages is unlimited). The ceilings are backend free tiers:
+
+| Component | Free limit | ≈ capacity | Upgrade |
+|---|---|---|---|
+| Cloudflare Pages | Unlimited | ∞ users loading the app | — |
+| **Cloudflare Workers** (proxy + push + WhatsApp) | **100k requests/day**, account-wide (Error 1027 over) | **~5–10k daily active users** | Workers Paid **$5/mo** → 10M/month |
+| Supabase (optional accounts) | **50k MAU**, 500 MB DB | 50k *sign-ins*/month; most users don't sign in | Pro **$25/mo** |
+| Cloudflare D1 (reminders) | 5 GB, 5M reads/100k writes per day | tens of thousands | with Workers Paid |
+| TMDB API | no hard daily cap (rate-limited) | proxy edge-caches keep calls low | — |
+
+**Bottleneck:** Workers 100k req/day (~10–12 calls per active user → ~5–10k DAU). Cross it → enable Workers Paid ($5/mo).
+
+**Caveats:** (1) Supabase free projects pause after ~7 days of no auth activity — only account *sync* is affected (search/browse/local watchlist keep working); avoid via traffic, a weekly keep-alive, or Pro. (2) The 100k Workers limit is shared across all three workers.
+
+**Cost ladder:** ₹0 (launch) → ~$5/mo (early scale, Workers Paid) → ~$30/mo (real scale, + Supabase Pro).
 
 ## 8. Compliance (verified against current Google Play policy)
 

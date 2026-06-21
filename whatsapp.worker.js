@@ -113,7 +113,7 @@ function formatReply(d, type, env) {
         ? `\n\n❌ Not streaming in India yet.\n🌍 *Available in:* ${others.join(" · ")}`
         : `\n\n❌ Not on any streaming platform we can find yet.`;
     }
-    return `${head}${body}\n\n▶️ More options & reminders:\n${env.APP_URL}`;
+    return `${head}${body}\n\n📲 Save it to your watchlist & get a reminder when it lands — open KahanDekhu:\n${env.APP_URL}`;
 }
 
 async function send(to, text, env) {

@@ -72,6 +72,7 @@ Prime Video, SonyLIV, ZEE5 and more — split into subscription, free, rent and 
 • Switch regions: India, USA, UK, UAE, Canada, Australia, Singapore, Germany
 • Optional free account to sync your watchlist across devices
 • Works offline and installs like a native app
+• Or just ask on WhatsApp — no install needed: message "where to watch <title>" to wa.me/<your-number>
 
 KahanDekhu is a free, independent app. It is not affiliated with, endorsed by,
 or sponsored by any streaming service. Where-to-watch data by JustWatch;

@@ -399,6 +399,9 @@
                     .flagbtn{font-size:20px;line-height:1;cursor:pointer;background:none;border:none;padding:2px 3px;border-radius:8px;transition:transform .15s}
                     .flagbtn:hover{transform:scale(1.22)}
                     .gchips.lang{padding-top:2px}
+                    .act.wa{color:#06341d;background:#25D366;border-color:#25D366;font-weight:700}
+                    .act.wa:hover{filter:brightness(1.05);border-color:#25D366}
+                    #waFoot a{color:#25D366;font-weight:600}
                 </style>
             </head>
     <body>
@@ -477,6 +480,7 @@
                 <p>Built for India · Metadata by <b>TMDB</b> · Availability by <b>JustWatch</b></p>
                 <p class="legal">KahanDekhu is an independent app, not affiliated with, endorsed by, or sponsored by any streaming service shown, nor by TMDB or JustWatch. Streaming-service names and logos are trademarks of their respective owners. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
                 <p class="legal"><a href="privacy.html">Privacy policy</a> · <a href="delete-account.html">Delete your account &amp; data</a></p>
+                <p class="legal" id="waFoot" style="display:none"></p>
             </footer>
         </main>
         
@@ -544,6 +548,9 @@
             const API_BASE  = 'https://kahandekhu-tmdb.bansalribhav0987.workers.dev';
             const IMG = 'https://image.tmdb.org/t/p';
             const APP_URL = 'https://kahandekhu.pages.dev';
+            const WHATSAPP_NUMBER = '';   // your bot's number, digits only incl. country code e.g. '919876543210' — enables "Ask on WhatsApp"
+            function waEnabled(){ return !!WHATSAPP_NUMBER; }
+            function waLink(prefill){ return WHATSAPP_NUMBER ? 'https://wa.me/'+WHATSAPP_NUMBER+(prefill?'?text='+encodeURIComponent(prefill):'') : ''; }
             // Web push "Notify me when it streams". Paste your push Worker URL after deploying push.worker.js.
             const PUSH_API = 'https://kahandekhu-push.bansalribhav0987.workers.dev';
             const VAPID_PUBLIC = 'BEyo9E1f3uPLscC8_b8kFGcg3I1UE-CmYbmaQe9OOqXTswii6o5gtXxmtXDSLbcxc3sUaaCZNLDY_mE3_M9rexs';
@@ -854,6 +861,7 @@
             <button class="act ${saved?'saved':''}" id="saveBtn"><svg viewBox="0 0 24 24" fill="${saved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>${saved?'Saved':'Watchlist'}</span></button>
             <button class="act" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
             ${trailer?`<a class="act trailer" href="https://www.youtube.com/watch?v=${trailer}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Trailer</a>`:''}
+            ${waEnabled()?`<a class="act wa" href="${waLink('Where to watch '+titleOf(d))}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.6-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 .9-2.2c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.1.3.7 1.1 1.4 1.8 1 .8 1.7 1.1 2 1.2.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.6-.1l1.9.9c.3.1.4.2.5.3.1.2.1.6-.1 1.1z"/></svg>WhatsApp</a>`:''}
             </div>
             </div>
             </div>
@@ -1099,6 +1107,7 @@
                                                x.textAlign='left'; x.fillStyle='#F3EEFF'; x.fillText('Kahan',fx,H-72);
                                                x.fillStyle='#F5C451'; x.fillText('Dekhu',fx+lw,H-72);
                                                x.textAlign='center'; x.fillStyle='#F5C451'; x.font='700 23px "JetBrains Mono", monospace'; x.fillText('Find where to watch → '+APP_URL.replace('https://','').replace(/\/$/,''),W/2,H-36);
+                                               if(WHATSAPP_NUMBER){ x.fillStyle='#25D366'; x.font='600 21px "JetBrains Mono", monospace'; x.fillText('Ask on WhatsApp · wa.me/'+WHATSAPP_NUMBER, W/2, H-104); }
                                                return await new Promise((res,rej)=>{ try{ c.toBlob(b=>b?res(b):rej(new Error('null blob')),'image/png'); }catch(e){ rej(e); } });
             }
             function wrapText(x,text,cx,topY,maxW,lh,maxLines){
@@ -1385,6 +1394,8 @@
                 loadForYou();
             })();
             initAuth();
+            /* Footer "Ask on WhatsApp" link (shown only once WHATSAPP_NUMBER is set) */
+            (function(){ const f=$('#waFoot'); if(f&&waEnabled()){ f.innerHTML=`Got a quick question? <a href="${waLink('Where to watch ')}" target="_blank" rel="noopener">Ask us on WhatsApp</a>`; f.style.display=''; } })();
             $('#coachX')?.addEventListener('click',dismissSigninHint);
             $('#accountBtn')?.addEventListener('click',dismissSigninHint);
             setTimeout(showSigninHint, 1400);
