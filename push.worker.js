@@ -52,6 +52,21 @@ export default {
       return json({ ok: true, sent: n });
     }
 
+    // Delivery test: pushes to every stored subscription regardless of streaming
+    // status, and reports the push-service status code per subscription.
+    if (req.method === 'GET' && url.pathname === '/test') {
+      if (url.searchParams.get('secret') !== env.RUN_SECRET) return json({ error: 'forbidden' }, 403);
+      const { results } = await env.DB.prepare(`SELECT * FROM reminders`).all();
+      const out = [];
+      for (const r of results || []) {
+        const sub = { endpoint: r.endpoint, keys: { p256dh: r.p256dh, auth: r.auth } };
+        const payload = JSON.stringify({ title: 'KahanDekhu test ✓', body: `Push delivery works! (${r.title})`, url: env.DEFAULT_APP_URL || '/', tag: 'kd-test' });
+        let status; try { status = await sendPush(sub, payload, env); } catch (e) { status = 'err: ' + e; }
+        out.push({ title: r.title, status });
+      }
+      return json({ ok: true, count: out.length, results: out });
+    }
+
     return json({ ok: true, service: 'kahandekhu-push' });
   },
 
