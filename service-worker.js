@@ -4,10 +4,11 @@
    - API calls (your TMDB Worker) are always network — never cached here
      (the Worker already does its own edge caching).
 */
-const CACHE = 'kahandekhu-v2';
+const CACHE = 'kahandekhu-v4';
 const SHELL = [
   './',
   './index.html',
+  './qrcode.min.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -52,5 +53,31 @@ self.addEventListener('fetch', (e) => {
       caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
       return res;
     }).catch(() => hit))
+  );
+});
+
+// --- Web push: show the "now streaming" notification ---
+self.addEventListener('push', (e) => {
+  let data = {};
+  try { data = e.data ? e.data.json() : {}; } catch (_) { data = { title: 'KahanDekhu', body: (e.data && e.data.text()) || '' }; }
+  const title = data.title || 'KahanDekhu';
+  const options = {
+    body: data.body || '',
+    icon: './icon-192.png',
+    badge: './icon-192.png',
+    tag: data.tag || 'kahandekhu',
+    data: { url: data.url || './index.html' }
+  };
+  e.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || './index.html';
+  e.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((cs) => {
+      for (const c of cs) { if ('focus' in c) return c.focus(); }
+      return clients.openWindow(url);
+    })
   );
 });

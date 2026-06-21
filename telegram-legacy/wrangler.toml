@@ -1,0 +1,22 @@
+# Wrangler config for the KahanDekhu Telegram bot Worker.
+# Deploy with:  wrangler deploy
+
+name = "kahandekhu-bot"
+main = "telegram-bot.worker.js"
+compatibility_date = "2024-11-01"
+
+# Database binding — paste your D1 id after running `wrangler d1 create kahandekhu`
+[[d1_databases]]
+binding = "DB"
+database_name = "kahandekhu"
+database_id = "047fd534-ece8-4e68-8e85-20c06c231ad1"
+
+# Cron: re-check reminders every 6 hours (change as you like).
+# "0 */6 * * *" = at minute 0, every 6th hour.
+[triggers]
+crons = ["0 */6 * * *"]
+
+# Secrets are NOT stored here. Set them with:
+#   wrangler secret put BOT_TOKEN
+#   wrangler secret put TMDB_API_KEY
+#   wrangler secret put WEBHOOK_SECRET

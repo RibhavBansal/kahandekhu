@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -337,6 +337,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 .del-acct:disabled{opacity:.6;cursor:default}
 .del-note{font-size:11px;line-height:1.5;color:var(--muted2);margin-top:10px;text-align:center}
 .del-note a{color:var(--muted);text-decoration:underline}
+.notify-btn.done{background:rgba(52,211,153,.15);color:var(--good);box-shadow:none}
+.notify-btn:disabled{opacity:.7;cursor:default}
 </style>
 </head>
 <body>
@@ -463,7 +465,9 @@ const USE_PROXY = true;
 const API_BASE  = 'https://kahandekhu-tmdb.bansalribhav0987.workers.dev';
 const IMG = 'https://image.tmdb.org/t/p';
 const APP_URL = 'https://kahandekhu.pages.dev';
-const TELEGRAM_BOT = '';   // your bot username without @ (e.g. 'KahanDekhuBot') — enables "Notify me on Telegram"
+// Web push "Notify me when it streams". Paste your push Worker URL after deploying push.worker.js.
+const PUSH_API = 'https://kahandekhu-push.bansalribhav0987.workers.dev';
+const VAPID_PUBLIC = 'BEyo9E1f3uPLscC8_b8kFGcg3I1UE-CmYbmaQe9OOqXTswii6o5gtXxmtXDSLbcxc3sUaaCZNLDY_mE3_M9rexs';
 
 /* Cloud sync (optional). Fill both to enable accounts. The anon key is SAFE to ship
    in client code — Row Level Security protects the data. NEVER put the service_role key here. */
@@ -777,9 +781,8 @@ function renderWatch(wp,filterMine,d){
 function notAvail(d){
   const regionName=(REGIONS.find(r=>r[0]===REGION)||[,'this region'])[1];
   let notify='';
-  if(TELEGRAM_BOT && d){
-    const type=d.media_type||(d.title?'movie':'tv');
-    notify=`<a class="notify-btn" href="https://t.me/${TELEGRAM_BOT}?start=${type}_${d.id}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg> Notify me when it streams</a>`;
+  if(pushEnabled() && d){
+    notify=`<button class="notify-btn" onclick="subscribePush(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg> Notify me when it streams</button>`;
   }
   return `<div class="notavail"><span class="ic">🍿</span><div><h4>Not streaming in ${regionName} right now</h4><p>We couldn't find this on any platform here yet. It may arrive later, or be available in another region — switch region above.</p>${notify}</div></div>`;
 }
@@ -804,13 +807,13 @@ async function shareTitle(d,wp){
   catch(e){ try{ blob=await drawCard(d,wp,null); }catch(e2){ blob=null; } }
   if(!blob){
     const txt=shareText(d,wp);
-    if(navigator.share){ try{ await navigator.share({text:txt}); return; }catch(e){} }
+    if(navigator.share){ try{ await navigator.share({text:txt, url:APP_URL}); return; }catch(e){} }
     try{ await navigator.clipboard.writeText(txt); toast('Copied — paste it anywhere!'); }catch(e){ toast('Couldn\'t create the card here.'); }
     return;
   }
   const file=new File([blob],'kahandekhu.png',{type:'image/png'});
   if(navigator.canShare && navigator.canShare({files:[file]})){
-    try{ await navigator.share({files:[file], text:shareText(d,wp)}); return; }catch(e){ if(e.name==='AbortError') return; }
+    try{ await navigator.share({files:[file], text:shareText(d,wp), url:APP_URL}); return; }catch(e){ if(e.name==='AbortError') return; }
   }
   const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='kahandekhu.png'; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),4000);
@@ -820,6 +823,36 @@ async function shareTitle(d,wp){
 function shareText(d,wp){
   const where=wp&&wp.flatrate&&wp.flatrate.length?` Streaming on ${wp.flatrate[0].provider_name}.`:'';
   return `${titleOf(d)} — where to watch in India.${where} Find anything → ${APP_URL}`;
+}
+
+/* ---- Web push: "Notify me when it streams" ---- */
+function pushEnabled(){
+  return !!(PUSH_API && VAPID_PUBLIC && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window);
+}
+function urlB64ToU8(s){
+  const pad='='.repeat((4-s.length%4)%4);
+  const b=(s+pad).replace(/-/g,'+').replace(/_/g,'/');
+  const raw=atob(b); const out=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) out[i]=raw.charCodeAt(i);
+  return out;
+}
+async function subscribePush(btn){
+  const d=CURRENT; if(!d||!pushEnabled()){ toast('Reminders aren’t available here'); return; }
+  const orig=btn.innerHTML; btn.disabled=true; btn.textContent='Enabling…';
+  try{
+    const perm=await Notification.requestPermission();
+    if(perm!=='granted'){ toast('Allow notifications to get a reminder'); btn.disabled=false; btn.innerHTML=orig; return; }
+    const reg=await navigator.serviceWorker.ready;
+    let sub=await reg.pushManager.getSubscription();
+    if(!sub) sub=await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:urlB64ToU8(VAPID_PUBLIC) });
+    const type=d.media_type||(d.title?'movie':'tv');
+    const res=await fetch(PUSH_API+'/subscribe',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ subscription:sub, tmdb_id:d.id, media_type:type, title:titleOf(d), region:REGION })
+    });
+    if(!res.ok) throw new Error('subscribe '+res.status);
+    btn.textContent='✓ We’ll notify you'; btn.classList.add('done');
+  }catch(e){ toast('Couldn’t set the reminder — try again'); btn.disabled=false; btn.innerHTML=orig; }
 }
 async function drawCard(d,wp,posterImg){
   const W=1080,H=1350; const c=document.createElement('canvas'); c.width=W;c.height=H; const x=c.getContext('2d');
@@ -871,7 +904,7 @@ async function drawCard(d,wp,posterImg){
   const lw=x.measureText('Kahan').width, rw=x.measureText('Dekhu').width, fx=(W-(lw+rw))/2;
   x.textAlign='left'; x.fillStyle='#F3EEFF'; x.fillText('Kahan',fx,H-72);
   x.fillStyle='#F5C451'; x.fillText('Dekhu',fx+lw,H-72);
-  x.textAlign='center'; x.fillStyle='#615C7E'; x.font='500 22px "JetBrains Mono", monospace'; x.fillText(APP_URL.replace('https://',''),W/2,H-38);
+  x.textAlign='center'; x.fillStyle='#F5C451'; x.font='700 23px "JetBrains Mono", monospace'; x.fillText('Find where to watch → '+APP_URL.replace('https://','').replace(/\/$/,''),W/2,H-36);
   return await new Promise((res,rej)=>{ try{ c.toBlob(b=>b?res(b):rej(new Error('null blob')),'image/png'); }catch(e){ rej(e); } });
 }
 function wrapText(x,text,cx,topY,maxW,lh,maxLines){
