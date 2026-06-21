@@ -32,22 +32,22 @@ India-first streaming aggregator. Type a movie or show → see every legal India
 ## Architecture overview
 
 ```
-Browser / PWA / TWA
-       │
-       ├── index.html  (all UI, vanilla JS, localStorage + Supabase sync)
-       │
-       ├── Cloudflare Worker: tmdb-proxy  (hides TMDB key, edge caches results)
-       │       └── TMDB API  →  movie/show data, posters, availability (JustWatch data)
-       │
-       ├── Cloudflare Worker: telegram-bot  (search, subscribe, cron notify)
-       │       ├── Cloudflare D1  (reminder subscriptions table)
-       │       ├── TMDB API  (re-checks availability on cron)
-       │       └── Telegram Bot API  (sends notifications)
-       │
-       └── Supabase  (optional accounts + cross-device sync)
-               ├── auth.users  (managed email/password auth)
-               ├── preferences  (region, services — RLS per user)
-               └── watchlist   (saved titles — RLS per user)
+    Browser / PWA / TWA
+    │
+    ├── index.html  (all UI, vanilla JS, localStorage + Supabase sync)
+    │
+    ├── Cloudflare Worker: tmdb-proxy  (hides TMDB key, edge caches results)
+    │       └── TMDB API  →  movie/show data, posters, availability (JustWatch data)
+    │
+    ├── Cloudflare Worker: telegram-bot  (search, subscribe, cron notify)
+    │       ├── Cloudflare D1  (reminder subscriptions table)
+    │       ├── TMDB API  (re-checks availability on cron)
+    │       └── Telegram Bot API  (sends notifications)
+    │
+    └── Supabase  (optional accounts + cross-device sync)
+    ├── auth.users  (managed email/password auth)
+    ├── preferences  (region, services — RLS per user)
+    └── watchlist   (saved titles — RLS per user)
 ```
 
 **Cost at launch: ₹0/month** (all free tiers). The only one-time cost is the Play Console registration fee (~₹2,000 / $25).
@@ -99,12 +99,12 @@ Browser / PWA / TWA
 Open `index.html` and fill these near the top of the `<script>`:
 
 ```js
-const SUPPORT_UPI      = 'kahandekhu@upi';          // → your real UPI ID
-const SUPPORT_RAZORPAY = 'https://razorpay.me/@kahandekhu'; // → your real Razorpay link
-const TELEGRAM_BOT     = '';                         // → your bot username e.g. 'KahanDekhuBot'
-const SUPABASE_URL     = '';                         // → from Supabase project settings
-const SUPABASE_ANON_KEY = '';                        // → anon/public key (safe to be public)
-const APP_URL          = 'https://kahandekhu.pages.dev'; // → your real deployed URL
+    const SUPPORT_UPI      = 'kahandekhu@upi';          // → your real UPI ID
+    const SUPPORT_RAZORPAY = 'https://razorpay.me/@kahandekhu'; // → your real Razorpay link
+    const TELEGRAM_BOT     = '';                         // → your bot username e.g. 'KahanDekhuBot'
+    const SUPABASE_URL     = '';                         // → from Supabase project settings
+    const SUPABASE_ANON_KEY = '';                        // → anon/public key (safe to be public)
+    const APP_URL          = 'https://kahandekhu.pages.dev'; // → your real deployed URL
 ```
 
 Also fill in `privacy.html`:
@@ -121,23 +121,23 @@ Also fill in `privacy.html`:
 ### Step 3 — Verify the TMDB proxy is live
 Open in a browser:
 ```
-https://kahandekhu-tmdb.bansalribhav0987.workers.dev/trending/all/day
+    https://kahandekhu-tmdb.bansalribhav0987.workers.dev/trending/all/day
 ```
 You should see JSON. If not, go to the Worker in the Cloudflare dashboard → Settings → Variables and Secrets → confirm `TMDB_API_KEY` is set as a Secret.
 
 ### Step 4 — Deploy the Telegram bot (follow `TELEGRAM-BOT-SETUP.md`)
 Short version:
 ```bash
-npm install -g wrangler
-wrangler login
-wrangler d1 create kahandekhu            # paste the database_id into wrangler.toml
-wrangler d1 execute kahandekhu --remote --file=schema.sql
-wrangler secret put BOT_TOKEN            # from @BotFather
-wrangler secret put TMDB_API_KEY         # your TMDB v3 key
-wrangler secret put WEBHOOK_SECRET       # any random string
-wrangler deploy                          # note the Worker URL
-# then register the webhook:
-curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>&secret_token=<WEBHOOK_SECRET>"
+    npm install -g wrangler
+    wrangler login
+    wrangler d1 create kahandekhu            # paste the database_id into wrangler.toml
+    wrangler d1 execute kahandekhu --remote --file=schema.sql
+    wrangler secret put BOT_TOKEN            # from @BotFather
+    wrangler secret put TMDB_API_KEY         # your TMDB v3 key
+    wrangler secret put WEBHOOK_SECRET       # any random string
+    wrangler deploy                          # note the Worker URL
+    # then register the webhook:
+    curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>&secret_token=<WEBHOOK_SECRET>"
 ```
 Then set `TELEGRAM_BOT = 'YourBotUsername'` in `index.html` and redeploy the web app.
 

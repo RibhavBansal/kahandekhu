@@ -1,7 +1,7 @@
 # KahanDekhu — Project Reference (living document)
 
 > **Maintained by Claude.** This file is updated on every change to the project — features, fixes, deploys, decisions. It is the single source of truth for how everything works.
-> **Last updated:** 21 Jun 2026 — Tier-1 features (multi-region availability, regional language filter, recommendations) + overflow fixes (card meta, region chips, and the region selector now wraps as content-sized pills so long names like "Singapore" never overflow).
+> **Last updated:** 21 Jun 2026 — Tier-1 features + overflow fixes + **WhatsApp "where to watch" bot** (free, reply-only; code in `whatsapp.worker.js`, setup in `WHATSAPP-SETUP.md`).
 
 ---
 
@@ -20,20 +20,20 @@ KahanDekhu is an **India-first "where to watch" tracker**. Type a movie or show 
 ## 2. Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Browser / installed PWA / Android TWA                       │
-│  index.html  (all UI + logic, single file, vanilla JS)       │
-└───────┬───────────────┬───────────────┬─────────────────────┘
-        │               │               │
-        ▼               ▼               ▼
-  TMDB proxy       Push worker      Supabase
-  (Worker)         (Worker + D1)    (Auth + Postgres + Edge fn)
-        │               │               │
-        ▼               ▼               ▼
-   TMDB API        Web Push +       Accounts, preferences,
-  (movie data +    cron re-check    watchlist sync, account
-   JustWatch       of availability  deletion
-   availability)
+    ┌─────────────────────────────────────────────────────────────┐
+    │  Browser / installed PWA / Android TWA                       │
+    │  index.html  (all UI + logic, single file, vanilla JS)       │
+    └───────┬───────────────┬───────────────┬─────────────────────┘
+    │               │               │
+    ▼               ▼               ▼
+    TMDB proxy       Push worker      Supabase
+    (Worker)         (Worker + D1)    (Auth + Postgres + Edge fn)
+    │               │               │
+    ▼               ▼               ▼
+    TMDB API        Web Push +       Accounts, preferences,
+    (movie data +    cron re-check    watchlist sync, account
+    JustWatch       of availability  deletion
+    availability)
 ```
 
 **Cost:** ₹0/month on free tiers. One-time ~$25 Play Console fee.
@@ -56,7 +56,10 @@ KahanDekhu is an **India-first "where to watch" tracker**. Type a movie or show 
 | `public/` | **The folder actually deployed to Pages** (mirror of the above) | Pages |
 | `tmdb-proxy.worker.js` | TMDB API proxy (hides key, edge-caches, CORS) | Cloudflare Workers |
 | `push.worker.js` | Web-push backend (subscribe + cron + send) | Cloudflare Workers |
+| `whatsapp.worker.js` | WhatsApp "where to watch" bot (reply-only, free) | Cloudflare Workers |
 | `wrangler.toml` | Wrangler config for the **push** worker (name `kahandekhu-push`) | local |
+| `wrangler.whatsapp.toml` | Wrangler config for the WhatsApp bot (name `kahandekhu-whatsapp`) | local |
+| `WHATSAPP-SETUP.md` | WhatsApp bot setup guide (Meta + deploy) | reference |
 | `push-schema.sql` | D1 schema for push reminders | Cloudflare D1 |
 | `supabase-schema.sql` | Postgres schema + RLS for accounts | Supabase |
 | `supabase/functions/delete-account/index.ts` | Edge Function that deletes a user | Supabase |
@@ -172,6 +175,12 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - **`supabase-schema.sql`:** `preferences` (1/user) + `watchlist` (many/user), both with **Row-Level Security** (each user sees only their own rows). Anon role gets nothing.
 - **Edge Function `delete-account`:** verifies the caller's JWT, deletes the auth user with the service-role key; `preferences`/`watchlist` cascade-delete via FK. Env vars (`SUPABASE_URL/ANON/SERVICE_ROLE_KEY`) are auto-injected.
 - Email confirmation is **off** (chosen for launch — email is just a login handle).
+
+### 5.4 WhatsApp bot (`whatsapp.worker.js`) — `kahandekhu-whatsapp`
+- Users WhatsApp a title (or "where to watch X"); the bot searches via the TMDB proxy and replies with where it's streaming **in India** (subscription / rent / buy), rating, and — if not in India — which other regions have it, plus an app link.
+- **Endpoints:** `GET /webhook` (Meta verification), `POST /webhook` (incoming messages).
+- **Free by design:** reply-only, always inside the 24-hour user window (service messages are free; no paid templates).
+- **Vars:** `TMDB_PROXY`, `APP_URL`, `GRAPH_VERSION`. **Secrets:** `WHATSAPP_TOKEN`, `PHONE_NUMBER_ID`, `VERIFY_TOKEN`. Setup in `WHATSAPP-SETUP.md`.
 
 ---
 

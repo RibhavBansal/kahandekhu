@@ -1,0 +1,16 @@
+# Wrangler config for the KahanDekhu WhatsApp bot Worker.
+# Deploy with:  wrangler deploy -c wrangler.whatsapp.toml
+
+name = "kahandekhu-whatsapp"
+main = "whatsapp.worker.js"
+compatibility_date = "2024-11-01"
+
+ [vars]
+     TMDB_PROXY    = "https://kahandekhu-tmdb.bansalribhav0987.workers.dev"
+     APP_URL       = "https://kahandekhu.pages.dev"
+     GRAPH_VERSION = "v21.0"
+     
+     # Secrets (NOT stored here) — set with:
+     #   wrangler secret put WHATSAPP_TOKEN   -c wrangler.whatsapp.toml
+     #   wrangler secret put PHONE_NUMBER_ID  -c wrangler.whatsapp.toml
+     #   wrangler secret put VERIFY_TOKEN     -c wrangler.whatsapp.toml

@@ -1,33 +1,33 @@
 {
-  "name": "KahanDekhu — Where to Watch, India",
-  "short_name": "KahanDekhu",
-  "description": "Find where to watch any movie or show in India — across Netflix, JioHotstar, Prime, SonyLIV, ZEE5 and more.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0D0B1A",
-  "theme_color": "#0D0B1A",
-  "lang": "en-IN",
-  "categories": ["entertainment", "lifestyle"],
-  "icons": [
-    { "src": "icon-192.png",          "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png",          "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ],
-  "screenshots": [
-    {
-      "src": "screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "label": "Search and discover where to watch in India"
-    },
-    {
-      "src": "screenshot-wide.png",
-      "sizes": "1280x800",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Browse trending titles and see full availability"
-    }
-  ]
+    "name": "KahanDekhu — Where to Watch, India",
+    "short_name": "KahanDekhu",
+    "description": "Find where to watch any movie or show in India — across Netflix, JioHotstar, Prime, SonyLIV, ZEE5 and more.",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#0D0B1A",
+    "theme_color": "#0D0B1A",
+    "lang": "en-IN",
+    "categories": ["entertainment", "lifestyle"],
+    "icons": [
+        { "src": "icon-192.png",          "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "icon-512.png",          "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshot-mobile.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "label": "Search and discover where to watch in India"
+        },
+        {
+            "src": "screenshot-wide.png",
+            "sizes": "1280x800",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Browse trending titles and see full availability"
+        }
+    ]
 }

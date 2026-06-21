@@ -7,7 +7,7 @@ Replaces the Telegram bot with native push notifications — works on Android/Ch
 Generate your own VAPID key pair locally (so the private key never leaves your machine):
 
 ```bash
-node -e "const c=require('crypto');const{publicKey,privateKey}=c.generateKeyPairSync('ec',{namedCurve:'prime256v1'});const b=x=>Buffer.from(x).toString('base64url');console.log('PUBLIC =',b(publicKey.export({type:'spki',format:'der'}).slice(-65)));console.log('PRIVATE =',privateKey.export({format:'jwk'}).d)"
+    node -e "const c=require('crypto');const{publicKey,privateKey}=c.generateKeyPairSync('ec',{namedCurve:'prime256v1'});const b=x=>Buffer.from(x).toString('base64url');console.log('PUBLIC =',b(publicKey.export({type:'spki',format:'der'}).slice(-65)));console.log('PRIVATE =',privateKey.export({format:'jwk'}).d)"
 ```
 
 | Key | Where it goes |
@@ -20,9 +20,9 @@ node -e "const c=require('crypto');const{publicKey,privateKey}=c.generateKeyPair
 ## 1. Create the D1 database
 
 ```bash
-npm install -g wrangler
-wrangler login
-wrangler d1 create kahandekhu-push
+    npm install -g wrangler
+    wrangler login
+    wrangler d1 create kahandekhu-push
 ```
 
 Paste the printed `database_id` into `wrangler.toml` (replace `PASTE_YOUR_D1_DATABASE_ID_HERE`).
@@ -30,24 +30,24 @@ Paste the printed `database_id` into `wrangler.toml` (replace `PASTE_YOUR_D1_DAT
 ## 2. Create the tables
 
 ```bash
-wrangler d1 execute kahandekhu-push --remote --file=push-schema.sql
+    wrangler d1 execute kahandekhu-push --remote --file=push-schema.sql
 ```
 
 ## 3. Set the secrets
 
 ```bash
-wrangler secret put VAPID_PRIVATE
-#   paste: your generated VAPID private key
-#   (if it asks to create the "kahandekhu-push" Worker, answer YES)
-
-wrangler secret put RUN_SECRET
-#   paste: any random string you choose (used only to manually trigger a check)
+    wrangler secret put VAPID_PRIVATE
+    #   paste: your generated VAPID private key
+    #   (if it asks to create the "kahandekhu-push" Worker, answer YES)
+    
+    wrangler secret put RUN_SECRET
+    #   paste: any random string you choose (used only to manually trigger a check)
 ```
 
 ## 4. Deploy the Worker
 
 ```bash
-wrangler deploy
+    wrangler deploy
 ```
 
 Note the deployed URL, e.g. `https://kahandekhu-push.<you>.workers.dev`.
@@ -57,7 +57,7 @@ Note the deployed URL, e.g. `https://kahandekhu-push.<you>.workers.dev`.
 In `index.html`, set:
 
 ```js
-const PUSH_API = 'https://kahandekhu-push.<you>.workers.dev';
+    const PUSH_API = 'https://kahandekhu-push.<you>.workers.dev';
 ```
 
 Re-copy `index.html` into `public/` and redeploy Pages. The "Notify me when it streams" button now appears on any title that **isn't** currently streaming in the user's region.
@@ -66,10 +66,10 @@ Re-copy `index.html` into `public/` and redeploy Pages. The "Notify me when it s
 
 1. Open the **installed** app (or Chrome on Android) on a title that isn't streaming in India → tap **Notify me when it streams** → allow notifications. Button shows "✓ We'll notify you".
 2. Force a check immediately instead of waiting for the cron:
-   ```
-   https://kahandekhu-push.<you>.workers.dev/run?secret=YOUR_RUN_SECRET
-   ```
-   It returns `{ "sent": N }`. If the title is now streaming, you get a push. (To guarantee a push for a test, subscribe to a title that *is* already streaming — it'll fire on the next `/run`.)
+```
+    https://kahandekhu-push.<you>.workers.dev/run?secret=YOUR_RUN_SECRET
+```
+It returns `{ "sent": N }`. If the title is now streaming, you get a push. (To guarantee a push for a test, subscribe to a title that *is* already streaming — it'll fire on the next `/run`.)
 
 ## How it works
 

@@ -13,39 +13,39 @@ Files (keep them together in one folder):
 
 ## 2. Install Wrangler & log in
 ```
-npm install -g wrangler
-wrangler login
+    npm install -g wrangler
+    wrangler login
 ```
 
 ## 3. Create the database
 ```
-wrangler d1 create kahandekhu
+    wrangler d1 create kahandekhu
 ```
 Copy the printed **`database_id`** into `wrangler.toml` (replace `PASTE_YOUR_D1_DATABASE_ID_HERE`).
 
 Then create the table:
 ```
-wrangler d1 execute kahandekhu --remote --file=schema.sql
+    wrangler d1 execute kahandekhu --remote --file=schema.sql
 ```
 
 ## 4. Set the secrets
 Run each and paste the value when prompted:
 ```
-wrangler secret put BOT_TOKEN          # the @BotFather token
-wrangler secret put TMDB_API_KEY       # your free TMDB v3 key (same one is fine)
-wrangler secret put WEBHOOK_SECRET     # any random string you invent, e.g. a long password
+    wrangler secret put BOT_TOKEN          # the @BotFather token
+    wrangler secret put TMDB_API_KEY       # your free TMDB v3 key (same one is fine)
+    wrangler secret put WEBHOOK_SECRET     # any random string you invent, e.g. a long password
 ```
 
 ## 5. Deploy
 ```
-wrangler deploy
+    wrangler deploy
 ```
 Note the Worker URL it prints, e.g. `https://kahandekhu-bot.<your-subdomain>.workers.dev`.
 
 ## 6. Point Telegram at your Worker (webhook)
 Replace `<TOKEN>`, `<WORKER_URL>`, and `<WEBHOOK_SECRET>` and run this once (in a terminal/browser):
 ```
-curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/&secret_token=<WEBHOOK_SECRET>"
+    curl "https://api.telegram.org/bot<TOKEN>/setWebhook?url=<WORKER_URL>/&secret_token=<WEBHOOK_SECRET>"
 ```
 You should get `{"ok":true,...}`. (The `secret_token` must match the `WEBHOOK_SECRET` you set in step 4 — the Worker rejects requests that don't carry it.)
 
@@ -56,23 +56,23 @@ You should get `{"ok":true,...}`. (The `secret_token` must match the `WEBHOOK_SE
 
 The **cron** (step in `wrangler.toml`) runs automatically every 6 hours and notifies people when a saved title becomes available. To test the cron immediately without waiting:
 ```
-wrangler dev --test-scheduled
-# then in another terminal:
-curl "http://localhost:8787/__scheduled"
+    wrangler dev --test-scheduled
+    # then in another terminal:
+    curl "http://localhost:8787/__scheduled"
 ```
 
 ## 8. Connect the web app
 In `kahandekhu.html`, set your bot username (without `@`):
 ```js
-const TELEGRAM_BOT = 'KahanDekhuBot';
+    const TELEGRAM_BOT = 'KahanDekhuBot';
 ```
 Now any title that isn't streaming yet shows a **"Notify me when it streams"** button that opens the bot and auto-subscribes the user. Re-deploy the web app.
 
 ## 9. (Optional) Nicer bot menu
 Message @BotFather → `/setcommands` → choose your bot → paste:
 ```
-list - Your reminders
-help - How this works
+    list - Your reminders
+    help - How this works
 ```
 
 ## Notes & scaling

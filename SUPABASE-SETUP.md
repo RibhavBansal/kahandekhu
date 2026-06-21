@@ -17,8 +17,8 @@ This adds optional sign-in so a user's **watchlist, region, and services follow 
 
 In `kahandekhu.html`, fill these in near the top of the script:
 ```js
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGci...';   // the anon/public key
+    const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGci...';   // the anon/public key
 ```
 Once both are set, an **Account** button appears in the app. Re-deploy.
 
