@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>KahanDekhu — Premium UI Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   KahanDekhu — Premium OTT UI Kit
+   Copy any block below. Design tokens live in :root.
+   ============================================================ */
+:root{
+  /* surfaces */
+  --bg:#0D0B1A;
+  --glass:rgba(255,255,255,.04);          /* glassmorphism fill   */
+  --glass-strong:rgba(255,255,255,.06);
+  --glass-border:rgba(255,255,255,.08);   /* crisp hairline border */
+  --glass-border-hi:rgba(255,255,255,.16);
+  /* text hierarchy */
+  --text:#FFFFFF;                          /* titles               */
+  --muted:#94A3B8;                         /* lavender-gray meta    */
+  --muted-2:#6B7280;
+  /* single accent */
+  --accent:#F6C766;                        /* refined gold          */
+  --accent-ink:#1A1405;                    /* text on gold          */
+  --glow:rgba(246,199,102,.22);            /* soft hover glow       */
+  --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(1100px 560px at 15% -10%, #241A47 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(246,199,102,.06) 0%, transparent 55%),
+    var(--bg);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  padding:clamp(20px,5vw,56px) clamp(16px,5vw,48px) 80px;
+  line-height:1.5;
+}
+.shell{max-width:1180px;margin:0 auto}
+
+/* ---------- 3 · Typography & hierarchy ---------- */
+.display{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spacing:-.025em;color:var(--text)}
+h1.display{font-size:clamp(28px,5vw,46px);line-height:1.04}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.lede{color:var(--muted);font-size:clamp(15px,2vw,17px);max-width:54ch;margin-top:10px}
+.section-head{display:flex;align-items:baseline;gap:14px;margin:44px 0 18px}
+.section-head h2{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em}
+.section-head .count{color:var(--muted-2);font-size:13px;font-weight:500}
+
+/* ---------- 2 · Glassmorphism utility ---------- */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-radius:var(--radius);
+}
+
+/* ---------- 5 · Modern search bar ---------- */
+.searchbar{
+  display:flex;align-items:center;gap:12px;
+  padding:6px 6px 6px 18px;border-radius:999px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  max-width:620px;transition:border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.searchbar:focus-within{
+  border-color:rgba(246,199,102,.55);
+  background:var(--glass-strong);
+  box-shadow:0 0 0 4px rgba(246,199,102,.12);
+}
+.searchbar svg{width:20px;height:20px;color:var(--muted);flex:none}
+.searchbar input{
+  flex:1;min-width:0;background:none;border:none;outline:none;
+  color:var(--text);font-size:16px;font-family:inherit;padding:13px 0;
+}
+.searchbar input::placeholder{color:var(--muted-2)}
+.searchbar .go{
+  flex:none;border:none;cursor:pointer;font-family:inherit;
+  background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px;
+  padding:12px 22px;border-radius:999px;transition:transform .15s ease,filter .15s ease;
+}
+.searchbar .go:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.searchbar .go:active{transform:translateY(0)}
+
+/* ---------- Filter chips (glass + active accent) ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.chip{
+  cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:600;
+  color:var(--muted);padding:9px 16px;border-radius:999px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:all .18s ease;
+}
+.chip:hover{color:var(--text);border-color:var(--glass-border-hi)}
+.chip.active{
+  color:var(--accent-ink);background:var(--accent);border-color:var(--accent);
+  box-shadow:0 6px 18px var(--glow);
+}
+
+/* ---------- 5 · Responsive poster grid ---------- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:clamp(14px,2vw,22px);
+}
+@media (max-width:540px){ .grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px} }
+
+/* ---------- 1 · Premium poster cards ---------- */
+.card{cursor:pointer;display:flex;flex-direction:column;gap:11px}
+.poster{
+  position:relative;width:100%;aspect-ratio:2 / 3;border-radius:14px;overflow:hidden;
+  background:#16132A;border:1px solid var(--glass-border);
+  transition:all .2s ease-in-out;            /* smooth lift + glow */
+  will-change:transform;
+}
+/* use object-fit:cover so real <img> posters never distort */
+.poster img{width:100%;height:100%;object-fit:cover;display:block}
+.poster .art{position:absolute;inset:0;display:grid;place-items:center;padding:14px;text-align:center}
+.poster .art b{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;color:rgba(255,255,255,.92)}
+.poster .grad{position:absolute;inset:0;opacity:.95}
+.poster .rating{
+  position:absolute;top:9px;right:9px;z-index:2;
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11.5px;font-weight:700;color:#fff;
+  padding:4px 8px;border-radius:999px;
+  background:rgba(10,8,20,.55);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.poster .rating svg{width:12px;height:12px;color:var(--accent)}
+.card:hover .poster{
+  transform:translateY(-4px) scale(1.02);
+  border-color:rgba(246,199,102,.35);
+  box-shadow:0 18px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(246,199,102,.18), 0 10px 34px var(--glow);
+}
+.card .title{font-size:14.5px;font-weight:600;color:var(--text);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .meta{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.card .meta .dot{width:3px;height:3px;border-radius:50%;background:var(--muted-2)}
+.card:hover .title{color:var(--accent)}
+
+/* ---------- 4 · Streaming provider pills ---------- */
+.providers{display:flex;flex-wrap:wrap;gap:10px}
+.pill{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:8px 15px 8px 9px;border-radius:999px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  font-size:13.5px;font-weight:600;color:var(--text);
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.pill:hover{transform:translateY(-2px);border-color:var(--glass-border-hi);background:var(--glass-strong)}
+.pill .mark{
+  width:26px;height:26px;border-radius:8px;flex:none;
+  display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.pill .type{color:var(--muted);font-weight:500;font-size:12px}
+/* subtle brand accent behind each logo mark */
+.pill.netflix .mark{background:#E50914}
+.pill.prime   .mark{background:#1399FF}
+.pill.hotstar .mark{background:linear-gradient(135deg,#1F80E0,#7B2FF7)}
+.pill.sonyliv .mark{background:#0B1F3A}
+.pill.zee5    .mark{background:#8230C6}
+.pill.netflix{background:rgba(229,9,20,.10);border-color:rgba(229,9,20,.22)}
+.pill.prime{background:rgba(19,153,255,.10);border-color:rgba(19,153,255,.22)}
+.pill.hotstar{background:rgba(123,47,247,.12);border-color:rgba(123,47,247,.24)}
+.pill.sonyliv{background:rgba(120,140,180,.10);border-color:rgba(120,140,180,.22)}
+.pill.zee5{background:rgba(130,48,198,.12);border-color:rgba(130,48,198,.24)}
+
+.kit-note{margin-top:14px;color:var(--muted-2);font-size:12.5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== Header / typography ===== -->
+  <header>
+    <div class="eyebrow">Where to watch · India</div>
+    <h1 class="display">Find where to watch <span style="color:var(--accent)">anything</span>.</h1>
+    <p class="lede">A premium, glassy interface for KahanDekhu — crisp white titles, calm lavender-gray metadata, and a single warm-gold accent over deep purple.</p>
+  </header>
+
+  <!-- ===== 5 · Search bar (glass) ===== -->
+  <div style="margin-top:26px">
+    <div class="searchbar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" placeholder="Search a movie or show…" aria-label="Search" />
+      <button class="go">Search</button>
+    </div>
+
+    <!-- Filter chips -->
+    <div class="chips">
+      <button class="chip active">All</button>
+      <button class="chip">Movies</button>
+      <button class="chip">Shows</button>
+      <button class="chip">Trending</button>
+      <button class="chip">In cinemas</button>
+      <button class="chip">Top rated</button>
+    </div>
+  </div>
+
+  <!-- ===== 1 + 5 · Poster grid ===== -->
+  <div class="section-head">
+    <h2>Trending in India</h2><span class="count">Today</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <!-- ===== 4 · Provider pills ===== -->
+  <div class="section-head">
+    <h2>Where to watch</h2><span class="count">Subscription</span>
+  </div>
+  <div class="providers">
+    <span class="pill netflix"><span class="mark">N</span>Netflix</span>
+    <span class="pill prime"><span class="mark">P</span>Prime Video</span>
+    <span class="pill hotstar"><span class="mark">JH</span>JioHotstar</span>
+    <span class="pill sonyliv"><span class="mark">S</span>SonyLIV <span class="type">· Rent</span></span>
+    <span class="pill zee5"><span class="mark">Z5</span>ZEE5</span>
+  </div>
+  <p class="kit-note">Pills use a faint tint of each brand colour behind a glass base — recognisable, but calm and on-theme.</p>
+
+</div>
+
+<script>
+/* Demo data — swap the gradient posters for <img src="…poster.jpg"> in production.
+   The .poster img{object-fit:cover} rule keeps real posters crisp at 2:3. */
+const TITLES = [
+  ['Theatrical Release','2026','Action','8.4',['#3b2f6b','#0d0b1a']],
+  ['Midnight Express','2026','Thriller','7.9',['#5a2a4d','#160f2a']],
+  ['The Last Monsoon','2025','Drama','8.1',['#1f4d4a','#0d0b1a']],
+  ['Neon Bazaar','2026','Sci-Fi','7.2',['#4a2f6b','#12102a']],
+  ['Coastline','2025','Romance','7.6',['#6b3a2f','#160f1a']],
+  ['Iron Verdict','2026','Crime','8.0',['#2f3a6b','#0d0b1a']],
+  ['Paper Lanterns','2024','Family','7.4',['#5a4a1f','#160f0a']],
+  ['Echo Chamber','2026','Mystery','8.6',['#2a4d3a','#0d0b1a']],
+  ['Velvet Hour','2025','Drama','7.1',['#4d2a44','#12102a']],
+  ['Skybound','2026','Adventure','7.8',['#2a3d4d','#0d0b1a']],
+  ['Saffron Road','2025','Drama','8.2',['#6b4a2f','#160f0a']],
+  ['Quantum Bylanes','2026','Sci-Fi','7.5',['#3a2a6b','#12102a']],
+];
+const star = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>';
+document.getElementById('grid').innerHTML = TITLES.map(t => `
+  <article class="card">
+    <div class="poster">
+      <div class="grad" style="background:linear-gradient(150deg,${t[4][0]},${t[4][1]})"></div>
+      <div class="rating">${star}${t[3]}</div>
+      <div class="art"><b>${t[0]}</b></div>
+    </div>
+    <div class="title">${t[0]}</div>
+    <div class="meta">${t[1]}<span class="dot"></span>${t[2]}</div>
+  </article>`).join('');
+</script>
+</body>
+</html>
