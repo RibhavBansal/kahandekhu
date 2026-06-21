@@ -380,6 +380,24 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 
 /* Hide the fixed bottom nav + FAB while the keyboard is open (prevents drift on scroll) */
 body.kb-open .nav, body.kb-open .fab-support{display:none}
+
+/* Multi-region availability — "streaming in other regions" */
+.elsewhere{margin:18px 0 2px}
+.elsewhere-label{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.elsewhere-label svg{width:14px;height:14px;color:var(--gold);flex:none}
+.region-chips{display:flex;flex-wrap:wrap;gap:10px}
+.rchip{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-family:inherit;text-align:left;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 14px 8px 11px;transition:transform .15s,border-color .15s,box-shadow .15s}
+.rchip:hover{border-color:var(--gold-dim);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.38)}
+.rchip:active{transform:translateY(0) scale(.98)}
+.rc-flag{font-size:22px;line-height:1;flex:none}
+.rc-meta{display:flex;flex-direction:column;gap:1px;min-width:0}
+.rc-name{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.2}
+.rc-prov{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.elsewhere-mini{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.em-label{font-size:12px;color:var(--muted);font-weight:600}
+.flagbtn{font-size:20px;line-height:1;cursor:pointer;background:none;border:none;padding:2px 3px;border-radius:8px;transition:transform .15s}
+.flagbtn:hover{transform:scale(1.22)}
+.gchips.lang{padding-top:2px}
 </style>
 </head>
 <body>
@@ -419,6 +437,10 @@ body.kb-open .nav, body.kb-open .fab-support{display:none}
       <div class="section-head"><h2 id="searchHead">Results</h2></div>
       <div class="grid" id="searchGrid"></div>
     </div>
+    <div class="section" id="forYouSec" style="display:none">
+      <div class="section-head"><h2 id="forYouHead">For you</h2></div>
+      <div class="rail" id="forYouRail"></div>
+    </div>
     <div class="section" id="trendingSec">
       <div class="section-head"><h2>Trending in India</h2><span class="tag">Today</span></div>
       <div class="grid" id="rail-trending"></div>
@@ -430,6 +452,7 @@ body.kb-open .nav, body.kb-open .fab-support{display:none}
     <p class="page-sub">Filter by type, genre and rating — then see where to watch.</p>
     <div class="segment" id="browseSeg"><button class="on" data-type="movie">Movies</button><button data-type="tv">Shows</button></div>
     <div class="gchips" id="genreChips"></div>
+    <div class="gchips lang" id="langChips"></div>
     <div class="browse-row">
       <select id="sortSel" class="sort-sel" aria-label="Sort by">
         <option value="popularity">Most popular</option>
@@ -578,7 +601,8 @@ const tmdb = {
     const d = await apiGet('/trending/all/day', {});
     return (d.results||[]).filter(r => r.media_type==='movie'||r.media_type==='tv').slice(0,16);
   },
-  async list(path, params){ const d = await apiGet(path, params); return (d.results||[]); }
+  async list(path, params){ const d = await apiGet(path, params); return (d.results||[]); },
+  async recommendations(type,id){ const d = await apiGet(`/${type}/${id}/recommendations`, {}); return (d.results||[]).filter(r=>r.poster_path); }
 };
 
 const titleOf = x => x.title || x.name || 'Untitled';
@@ -613,6 +637,7 @@ document.querySelectorAll('#nav button').forEach(b=>{
     const v=b.dataset.view; showView(v);
     if (v==='v-browse' && !browseLoaded) loadBrowse(currentBrowseType);
     if (v==='v-watchlist') renderWatchlist();
+    if (v==='v-search') loadForYou();
   });
 });
 $('#brandHome').addEventListener('click',()=>showView('v-search'));
@@ -621,8 +646,22 @@ $('#brandHome').addEventListener('click',()=>showView('v-search'));
 const qInput=$('#q'), clearBtn=$('#clearBtn');
 let debounceT, currentResults=[];
 const CARD_SKELETON=Array(8).fill('<div class="card"><div class="poster-wrap"><div class="poster"></div></div></div>').join('');
-function enterSearch(){ $('#trendingSec').style.display='none'; $('#searchSec').style.display=''; }
-function exitSearch(){ $('#searchSec').style.display='none'; $('#trendingSec').style.display=''; }
+function enterSearch(){ $('#trendingSec').style.display='none'; const fy=$('#forYouSec'); if(fy) fy.style.display='none'; $('#searchSec').style.display=''; }
+function exitSearch(){ $('#searchSec').style.display='none'; $('#trendingSec').style.display=''; const fy=$('#forYouSec'); if(fy&&fy.dataset.has) fy.style.display=''; }
+async function loadForYou(){
+  const sec=$('#forYouSec'); if(!sec) return;
+  if(!WATCHLIST.length){ sec.style.display='none'; sec.dataset.has=''; return; }
+  const seed=WATCHLIST[Math.floor(Math.random()*Math.min(WATCHLIST.length,6))];
+  const stype=seed.media_type||typeOf(seed);
+  try{
+    const recs=await tmdb.recommendations(stype, seed.id);
+    if(!recs.length){ sec.style.display='none'; sec.dataset.has=''; return; }
+    $('#forYouHead').textContent=`Because you saved ${seed.title}`;
+    const rail=$('#forYouRail'); rail.innerHTML=''; recs.slice(0,16).forEach(it=>{ it.media_type=it.media_type||stype; rail.appendChild(buildCard(it)); });
+    sec.dataset.has='1';
+    if($('#searchSec').style.display==='none') sec.style.display='';
+  }catch(e){ sec.style.display='none'; sec.dataset.has=''; }
+}
 function hideResults(){ const r=$('#results'); if(r) r.classList.remove('show'); }  // legacy no-op for openItem()
 qInput.addEventListener('input',()=>{
   const v=qInput.value.trim(); clearBtn.classList.toggle('show',v.length>0);
@@ -682,8 +721,9 @@ async function loadTrending(){
 }
 /* BROWSE — filterable grid (type · genre · sort) + Surprise me */
 let browseLoaded=false, currentBrowseType='movie';
-let BROWSE_POOL=[], BROWSE_SHOWN=[], browseGenre=null, browseSort='popularity';
+let BROWSE_POOL=[], BROWSE_SHOWN=[], browseGenre=null, browseSort='popularity', browseLang=null;
 const GENRE_CHIPS=[['All',null],['Action',[28,10759]],['Comedy',[35]],['Drama',[18]],['Thriller',[53,9648]],['Sci-Fi',[878,10765]],['Romance',[10749]],['Horror',[27]],['Crime',[80]],['Adventure',[12]],['Animation',[16]],['Documentary',[99]],['Family',[10751]]];
+const LANG_CHIPS=[['All langs',null],['Hindi','hi'],['Tamil','ta'],['Telugu','te'],['Malayalam','ml'],['Kannada','kn'],['Bengali','bn'],['Marathi','mr'],['Punjabi','pa'],['English','en']];
 const dateOf=x=>x.release_date||x.first_air_date||'';
 const BROWSE_SKELETON=Array(12).fill('<div class="card"><div class="poster-wrap"><div class="poster"></div></div></div>').join('');
 
@@ -693,6 +733,15 @@ function renderGenreChips(){
     const b=el('button','gchip'+((browseGenre===ids)?' on':''));
     b.textContent=label;
     b.addEventListener('click',()=>{ browseGenre=ids; host.querySelectorAll('.gchip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); applyBrowseFilters(); });
+    host.appendChild(b);
+  });
+}
+function renderLangChips(){
+  const host=$('#langChips'); host.innerHTML='';
+  LANG_CHIPS.forEach(([label,code])=>{
+    const b=el('button','gchip'+((browseLang===code)?' on':''));
+    b.textContent=label;
+    b.addEventListener('click',()=>{ browseLang=code; host.querySelectorAll('.gchip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); applyBrowseFilters(); });
     host.appendChild(b);
   });
 }
@@ -708,10 +757,11 @@ $('#surpriseBtn').addEventListener('click',()=>{ const pool=BROWSE_SHOWN.length?
 async function loadBrowse(type){
   browseLoaded=true; currentBrowseType=type;
   if(!$('#genreChips').children.length) renderGenreChips();
+  if(!$('#langChips').children.length) renderLangChips();
   const grid=$('#browseGrid'); grid.innerHTML=BROWSE_SKELETON;
   const paths = type==='movie'
-    ? [['/movie/popular',{page:1}],['/movie/popular',{page:2}],['/movie/top_rated',{page:1}],['/movie/now_playing',{page:1}]]
-    : [['/tv/popular',{page:1}],['/tv/popular',{page:2}],['/tv/top_rated',{page:1}],['/tv/on_the_air',{page:1}]];
+    ? [['/movie/popular',{page:1}],['/movie/popular',{page:2}],['/movie/popular',{page:3}],['/movie/top_rated',{page:1}],['/movie/now_playing',{page:1}]]
+    : [['/tv/popular',{page:1}],['/tv/popular',{page:2}],['/tv/popular',{page:3}],['/tv/top_rated',{page:1}],['/tv/on_the_air',{page:1}]];
   try{
     const lists=await Promise.all(paths.map(([p,pr])=>tmdb.list(p,{region:REGION,...pr}).catch(()=>[])));
     const seen=new Set(); BROWSE_POOL=[];
@@ -722,6 +772,7 @@ async function loadBrowse(type){
 function applyBrowseFilters(){
   let list=BROWSE_POOL.slice();
   if(browseGenre) list=list.filter(it=>(it.genre_ids||[]).some(id=>browseGenre.includes(id)));
+  if(browseLang) list=list.filter(it=>it.original_language===browseLang);
   if(browseSort==='rating') list.sort((a,b)=>(b.vote_average||0)-(a.vote_average||0));
   else if(browseSort==='newest') list.sort((a,b)=>dateOf(b).localeCompare(dateOf(a)));
   else list.sort((a,b)=>(b.popularity||0)-(a.popularity||0));
@@ -821,6 +872,10 @@ function renderDetail(d){
         ${wp&&wp.link?`<a class="openlink" href="${wp.link}" target="_blank" rel="noopener">More options ↗</a>`:''}
       </div>
       <p class="disc">Logos and names are trademarks of their owners. KahanDekhu is independent and not affiliated with, endorsed by, or sponsored by any streaming service shown.</p>
+    </div>
+    <div class="section more-like" id="moreLike" style="display:none">
+      <div class="section-head"><h2>More like this</h2></div>
+      <div class="rail" id="moreLikeRail"></div>
     </div>`;
 
   if(poster){ const img=el('img'); img.src=poster; img.alt=titleOf(d); img.style.cssText='width:100%;height:100%;object-fit:cover'; const slot=$('#dPoster'); slot.textContent=''; slot.appendChild(img); img.onerror=()=>{slot.textContent=titleOf(d);}; }
@@ -834,6 +889,16 @@ function renderDetail(d){
   $('#shareBtn').addEventListener('click',()=>shareTitle(d,wp));
   const mt=$('#mineToggle');
   if(mt) mt.addEventListener('click',()=>{ onlyMine=!onlyMine; mt.classList.toggle('on',onlyMine); $('#watchBody').innerHTML=renderWatch(wp,onlyMine,d); });
+  loadMoreLike(type, d.id);
+}
+async function loadMoreLike(type,id){
+  try{
+    const recs=await tmdb.recommendations(type,id);
+    const sec=$('#moreLike'), rail=$('#moreLikeRail');
+    if(!recs.length||!sec||!rail) return;
+    rail.innerHTML=''; recs.slice(0,16).forEach(it=>{ it.media_type=it.media_type||type; rail.appendChild(buildCard(it)); });
+    sec.style.display='';
+  }catch(e){}
 }
 
 function findTrailer(d){
@@ -857,7 +922,7 @@ function renderWatch(wp,filterMine,d){
     if(list.length){ any=true; html+=`<div class="avail-group"><div class="avail-label">${label}<span class="ln"></span></div><div class="providers">${list.map(p=>provTile(p,label.startsWith('Stream')?'Subscription':label)).join('')}</div></div>`; }
   });
   if(!any) return filterMine ? mineBanner+'<div class="notavail"><span class="ic">🔍</span><div><h4>None on your services</h4><p>Turn off "Only mine" to see all platforms.</p></div></div>' : notAvail(d);
-  return html;
+  return html + elsewhereHTML(d,false);
 }
 function notAvail(d){
   const regionName=(REGIONS.find(r=>r[0]===REGION)||[,'this region'])[1];
@@ -866,9 +931,40 @@ function notAvail(d){
     if(isNotified(d)) notify=`<button class="notify-btn done" disabled>✓ We’ll notify you when it streams</button>`;
     else notify=`<button class="notify-btn" onclick="subscribePush(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg> Notify me when it streams</button>`;
   }
-  return `<div class="notavail"><span class="ic">🍿</span><div><h4>Not streaming in ${regionName} right now</h4><p>We couldn't find this on any platform here yet. It may arrive later, or be available in another region — switch region above.</p>${notify}</div></div>`;
+  return `<div class="notavail"><span class="ic">🍿</span><div><h4>Not streaming in ${regionName} right now</h4><p>We couldn't find this on any platform here yet.</p>${notify}</div></div>${elsewhereHTML(d,true)}`;
 }
 function dedupe(arr){ const seen=new Set(),out=[]; arr.forEach(p=>{ if(!seen.has(p.provider_name)){seen.add(p.provider_name);out.push(p);} }); return out; }
+
+/* ---- Multi-region availability: which of our supported regions stream this ---- */
+function regionsWithStreaming(d, exclude){
+  const results=(d&&d['watch/providers']&&d['watch/providers'].results)||{};
+  const out=[];
+  REGIONS.forEach(([code,name,flag])=>{
+    if(code===exclude) return;
+    const r=results[code]; if(!r) return;
+    const provs=dedupe([...(r.flatrate||[]),...(r.free||[]),...(r.ads||[])]);
+    if(provs.length) out.push({code,name,flag,count:provs.length,top:provs[0].provider_name});
+  });
+  return out;
+}
+function elsewhereHTML(d, prominent){
+  const list=regionsWithStreaming(d, REGION);
+  if(!list.length) return '';
+  if(prominent){
+    return `<div class="elsewhere"><div class="elsewhere-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg> Streaming in other regions</div><div class="region-chips">${
+      list.map(r=>`<button class="rchip" onclick="switchRegionTo('${r.code}')"><span class="rc-flag">${r.flag}</span><span class="rc-meta"><span class="rc-name">${r.name}</span><span class="rc-prov">${escapeHtml(r.top)}${r.count>1?' +'+(r.count-1):''}</span></span></button>`).join('')
+    }</div></div>`;
+  }
+  return `<div class="elsewhere-mini"><span class="em-label">Also streaming in</span>${list.map(r=>`<button class="flagbtn" title="${r.name} — ${escapeHtml(r.top)}" onclick="switchRegionTo('${r.code}')">${r.flag}</button>`).join('')}</div>`;
+}
+function switchRegionTo(code){
+  if(!REGIONS.some(r=>r[0]===code)) return;
+  REGION=code; sSet('kd_region',REGION);
+  try{ cloudSavePrefs(); }catch(e){}
+  reflectRegion();
+  if(CURRENT) renderDetail(CURRENT);
+  if(browseLoaded) loadBrowse(currentBrowseType);
+}
 function provTile(p,typeLabel){
   const mine=isMine(p.provider_name);
   let logo;
@@ -1273,6 +1369,7 @@ async function doDeleteAccount(){
   const wl=await sGet('kd_watchlist'); if(wl) WATCHLIST=wl;
   reflectRegion();
   loadTrending();
+  loadForYou();
 })();
 initAuth();
 $('#coachX')?.addEventListener('click',dismissSigninHint);
