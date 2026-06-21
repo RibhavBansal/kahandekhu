@@ -377,6 +377,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.c
 .surprise{display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--gold);background:rgba(245,196,81,.1);border:1px solid var(--gold-dim);padding:9px 16px;border-radius:999px;transition:all .15s}
 .surprise:hover{background:rgba(245,196,81,.18);transform:translateY(-1px)}
 .surprise:active{transform:scale(.97)}
+
+/* Hide the fixed bottom nav + FAB while the keyboard is open (prevents drift on scroll) */
+body.kb-open .nav, body.kb-open .fab-support{display:none}
 </style>
 </head>
 <body>
@@ -634,6 +637,9 @@ qInput.addEventListener('keydown',e=>{
 });
 $('#goBtn').addEventListener('click',()=>{ const v=qInput.value.trim(); if(currentResults[0]) openItem(currentResults[0]); else if(v){ enterSearch(); $('#searchGrid').innerHTML=CARD_SKELETON; runSearch(v); } });
 clearBtn.addEventListener('click',()=>{ qInput.value=''; clearBtn.classList.remove('show'); exitSearch(); qInput.focus(); });
+/* Keyboard open → hide the fixed bottom nav so it can't drift while scrolling results */
+qInput.addEventListener('focus',()=>document.body.classList.add('kb-open'));
+qInput.addEventListener('blur',()=>document.body.classList.remove('kb-open'));
 async function runSearch(q){
   try{ currentResults=(await tmdb.searchMulti(q)).slice(0,24); renderSearchGrid(currentResults,q); }
   catch(e){ $('#searchHead').textContent='Results'; $('#searchGrid').innerHTML='<div class="r-empty" style="grid-column:1/-1;padding:30px 12px">Couldn\'t reach the catalog. Check your connection and try again.</div>'; }
