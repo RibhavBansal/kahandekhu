@@ -52,8 +52,14 @@
                     .tbtn.cta{color:#1a1405;background:var(--gold);border-color:var(--gold)}
                     .tbtn.cta:hover{filter:brightness(1.06)}
                     .tbtn svg{width:15px;height:15px;flex:none}
+                    .tbtn.icon-only{padding:9px}                 /* clean square-ish gear button */
+                    .tbtn.icon-only svg{width:17px;height:17px}
                     .tbtn-label{white-space:nowrap}
-                    .region-flag{font-size:15px;line-height:1}
+                    /* Small circular country badge — just displays the active region */
+                    .region-badge{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;transition:.15s;padding:0;overflow:hidden}
+                    .region-badge:hover{border-color:var(--gold-dim);transform:translateY(-1px)}
+                    .region-badge:active{transform:translateY(0) scale(.96)}
+                    .region-flag{font-size:18px;line-height:1}
                     
                     .offlinebar{display:none;text-align:center;font-size:13px;font-weight:600;color:#1a1405;background:var(--magenta);padding:calc(8px + env(safe-area-inset-top)) 8px 8px}
                     .offlinebar.show{display:block}
@@ -419,9 +425,11 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
                     <span id="accountLabel" class="tbtn-label" data-i18n="acct.signin">Sign in</span>
                 </button>
-                <button class="tbtn" id="openSettings" title="Settings — language, region &amp; your services" aria-label="Settings">
+                <button class="region-badge" id="regionBadge" title="Your region" aria-label="Your region">
+                    <span class="region-flag" id="regionFlag">🇮🇳</span>
+                </button>
+                <button class="tbtn icon-only" id="openSettings" title="Settings — language, region &amp; your services" aria-label="Settings">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    <span class="region-flag" id="regionFlag">🇮🇳</span><span id="settingsLabel" class="tbtn-label">Settings</span>
                 </button>
             </div>
         </header>
@@ -1457,6 +1465,7 @@
             }
             
             $('#openSettings').addEventListener('click',()=>{ buildSettings(); openModal('#settingsModal'); });
+            $('#regionBadge')?.addEventListener('click',()=>{ buildSettings(); openModal('#settingsModal'); });
             let tmpRegion=REGION, tmpServices=new Set();
             function buildSettings(){
                 tmpRegion=REGION; tmpServices=new Set(SERVICES);
