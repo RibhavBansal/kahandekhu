@@ -782,6 +782,32 @@
                     'coach.tipLabel':'ਟਿੱਪ','coach.text':'ਸਾਈਨ-ਇਨ ਤੋਂ ਬਿਨਾਂ ਮੁਫ਼ਤ ਵਰਤੋ। ਆਪਣੀ ਵਾਚਲਿਸਟ ਸਾਰੇ ਡਿਵਾਈਸਾਂ ਤੇ ਰੱਖਣ ਲਈ <b>ਸਾਈਨ ਇਨ</b> ਕਰੋ।',
                 },
             };
+            // Country names by language (for the region pill, settings, and multi-region cards).
+            const REGION_NAMES = {
+                en:{IN:'India',US:'USA',GB:'UK',AE:'UAE',CA:'Canada',AU:'Australia',SG:'Singapore',DE:'Germany'},
+                hi:{IN:'भारत',US:'अमेरिका',GB:'यूके',AE:'यूएई',CA:'कनाडा',AU:'ऑस्ट्रेलिया',SG:'सिंगापुर',DE:'जर्मनी'},
+                bn:{IN:'ভারত',US:'আমেরিকা',GB:'যুক্তরাজ্য',AE:'সংযুক্ত আরব আমিরাত',CA:'কানাডা',AU:'অস্ট্রেলিয়া',SG:'সিঙ্গাপুর',DE:'জার্মানি'},
+                ta:{IN:'இந்தியா',US:'அமெரிக்கா',GB:'இங்கிலாந்து',AE:'ஐக்கிய அரபு அமீரகம்',CA:'கனடா',AU:'ஆஸ்திரேலியா',SG:'சிங்கப்பூர்',DE:'ஜெர்மனி'},
+                te:{IN:'భారత్',US:'అమెరికా',GB:'యూకే',AE:'యూఏఈ',CA:'కెనడా',AU:'ఆస్ట్రేలియా',SG:'సింగపూర్',DE:'జర్మనీ'},
+                mr:{IN:'भारत',US:'अमेरिका',GB:'यूके',AE:'यूएई',CA:'कॅनडा',AU:'ऑस्ट्रेलिया',SG:'सिंगापूर',DE:'जर्मनी'},
+                kn:{IN:'ಭಾರತ',US:'ಅಮೆರಿಕ',GB:'ಯುಕೆ',AE:'ಯುಎಇ',CA:'ಕೆನಡಾ',AU:'ಆಸ್ಟ್ರೇಲಿಯಾ',SG:'ಸಿಂಗಾಪುರ',DE:'ಜರ್ಮನಿ'},
+                ml:{IN:'ഇന്ത്യ',US:'അമേരിക്ക',GB:'യുകെ',AE:'യുഎഇ',CA:'കാനഡ',AU:'ഓസ്‌ട്രേലിയ',SG:'സിംഗപ്പൂർ',DE:'ജർമനി'},
+                gu:{IN:'ભારત',US:'અમેરિકા',GB:'યુકે',AE:'યુએઈ',CA:'કેનેડા',AU:'ઓસ્ટ્રેલિયા',SG:'સિંગાપોર',DE:'જર્મની'},
+                pa:{IN:'ਭਾਰਤ',US:'ਅਮਰੀਕਾ',GB:'ਯੂਕੇ',AE:'ਯੂਏਈ',CA:'ਕੈਨੇਡਾ',AU:'ਆਸਟ੍ਰੇਲੀਆ',SG:'ਸਿੰਗਾਪੁਰ',DE:'ਜਰਮਨੀ'},
+            };
+            // Genre labels by language (card subtitles + Browse chips).
+            const GENRE_NAMES = {
+                en:{Action:'Action',Adventure:'Adventure',Animation:'Animation',Comedy:'Comedy',Crime:'Crime',Documentary:'Documentary',Drama:'Drama',Family:'Family',Fantasy:'Fantasy',History:'History',Horror:'Horror',Music:'Music',Mystery:'Mystery',Romance:'Romance','Sci-Fi':'Sci-Fi','TV Movie':'TV Movie',Thriller:'Thriller',War:'War',Western:'Western',Kids:'Kids',News:'News',Reality:'Reality',Soap:'Soap',Talk:'Talk'},
+                hi:{Action:'एक्शन',Adventure:'साहसिक',Animation:'एनिमेशन',Comedy:'कॉमेडी',Crime:'अपराध',Documentary:'डॉक्यूमेंट्री',Drama:'ड्रामा',Family:'परिवार',Fantasy:'फैंटेसी',History:'इतिहास',Horror:'हॉरर',Music:'संगीत',Mystery:'रहस्य',Romance:'रोमांस','Sci-Fi':'साइ-फाई','TV Movie':'टीवी मूवी',Thriller:'थ्रिलर',War:'युद्ध',Western:'वेस्टर्न',Kids:'बच्चे',News:'समाचार',Reality:'रियलिटी',Soap:'सोप',Talk:'टॉक शो'},
+                bn:{Action:'অ্যাকশন',Adventure:'অ্যাডভেঞ্চার',Animation:'অ্যানিমেশন',Comedy:'কমেডি',Crime:'অপরাধ',Documentary:'ডকুমেন্টারি',Drama:'ড্রামা',Family:'পরিবার',Fantasy:'ফ্যান্টাসি',History:'ইতিহাস',Horror:'হরর',Music:'সঙ্গীত',Mystery:'রহস্য',Romance:'রোম্যান্স','Sci-Fi':'সাই-ফাই','TV Movie':'টিভি মুভি',Thriller:'থ্রিলার',War:'যুদ্ধ',Western:'ওয়েস্টার্ন',Kids:'শিশু',News:'সংবাদ',Reality:'রিয়েলিটি',Soap:'সোপ',Talk:'টক শো'},
+                ta:{Action:'அதிரடி',Adventure:'சாகசம்',Animation:'அனிமேஷன்',Comedy:'நகைச்சுவை',Crime:'குற்றம்',Documentary:'ஆவணப்படம்',Drama:'நாடகம்',Family:'குடும்பம்',Fantasy:'கற்பனை',History:'வரலாறு',Horror:'திகில்',Music:'இசை',Mystery:'மர்மம்',Romance:'காதல்','Sci-Fi':'அறிபுனைவு','TV Movie':'டிவி படம்',Thriller:'த்ரில்லர்',War:'போர்',Western:'மேற்கத்திய',Kids:'குழந்தைகள்',News:'செய்திகள்',Reality:'ரியாலிட்டி',Soap:'தொடர்',Talk:'பேட்டி நிகழ்ச்சி'},
+                te:{Action:'యాక్షన్',Adventure:'సాహసం',Animation:'యానిమేషన్',Comedy:'హాస్యం',Crime:'నేరం',Documentary:'డాక్యుమెంటరీ',Drama:'డ్రామా',Family:'కుటుంబం',Fantasy:'ఫాంటసీ',History:'చరిత్ర',Horror:'భయానకం',Music:'సంగీతం',Mystery:'రహస్యం',Romance:'రొమాన్స్','Sci-Fi':'సై-ఫై','TV Movie':'టీవీ సినిమా',Thriller:'థ్రిల్లర్',War:'యుద్ధం',Western:'వెస్టర్న్',Kids:'పిల్లలు',News:'వార్తలు',Reality:'రియాలిటీ',Soap:'సోప్',Talk:'టాక్ షో'},
+                mr:{Action:'अॅक्शन',Adventure:'साहसी',Animation:'अॅनिमेशन',Comedy:'विनोदी',Crime:'गुन्हेगारी',Documentary:'माहितीपट',Drama:'नाट्य',Family:'कौटुंबिक',Fantasy:'काल्पनिक',History:'इतिहास',Horror:'भयपट',Music:'संगीत',Mystery:'रहस्य',Romance:'प्रणय','Sci-Fi':'विज्ञान कथा','TV Movie':'टीव्ही चित्रपट',Thriller:'थरारक',War:'युद्ध',Western:'वेस्टर्न',Kids:'मुलांसाठी',News:'बातम्या',Reality:'रिअॅलिटी',Soap:'मालिका',Talk:'टॉक शो'},
+                kn:{Action:'ಆಕ್ಷನ್',Adventure:'ಸಾಹಸ',Animation:'ಅನಿಮೇಶನ್',Comedy:'ಹಾಸ್ಯ',Crime:'ಅಪರಾಧ',Documentary:'ಸಾಕ್ಷ್ಯಚಿತ್ರ',Drama:'ನಾಟಕ',Family:'ಕುಟುಂಬ',Fantasy:'ಫ್ಯಾಂಟಸಿ',History:'ಇತಿಹಾಸ',Horror:'ಭಯಾನಕ',Music:'ಸಂಗೀತ',Mystery:'ರಹಸ್ಯ',Romance:'ಪ್ರಣಯ','Sci-Fi':'ವೈಜ್ಞಾನಿಕ','TV Movie':'ಟಿವಿ ಚಲನಚಿತ್ರ',Thriller:'ಥ್ರಿಲ್ಲರ್',War:'ಯುದ್ಧ',Western:'ವೆಸ್ಟರ್ನ್',Kids:'ಮಕ್ಕಳ',News:'ಸುದ್ದಿ',Reality:'ರಿಯಾಲಿಟಿ',Soap:'ಧಾರಾವಾಹಿ',Talk:'ಟಾಕ್ ಶೋ'},
+                ml:{Action:'ആക്ഷൻ',Adventure:'സാഹസികം',Animation:'ആനിമേഷൻ',Comedy:'കോമഡി',Crime:'കുറ്റകൃത്യം',Documentary:'ഡോക്യുമെന്ററി',Drama:'നാടകം',Family:'കുടുംബം',Fantasy:'ഫാന്റസി',History:'ചരിത്രം',Horror:'ഹൊറർ',Music:'സംഗീതം',Mystery:'നിഗൂഢം',Romance:'പ്രണയം','Sci-Fi':'സയൻസ് ഫിക്ഷൻ','TV Movie':'ടിവി സിനിമ',Thriller:'ത്രില്ലർ',War:'യുദ്ധം',Western:'വെസ്റ്റേൺ',Kids:'കുട്ടികൾ',News:'വാർത്ത',Reality:'റിയാലിറ്റി',Soap:'സോപ്പ്',Talk:'ടോക്ക് ഷോ'},
+                gu:{Action:'એક્શન',Adventure:'સાહસ',Animation:'એનિમેશન',Comedy:'કોમેડી',Crime:'અપરાધ',Documentary:'દસ્તાવેજી',Drama:'ડ્રામા',Family:'કુટુંબ',Fantasy:'ફૅન્ટસી',History:'ઇતિહાસ',Horror:'હોરર',Music:'સંગીત',Mystery:'રહસ્ય',Romance:'રોમાન્સ','Sci-Fi':'સાય-ફાય','TV Movie':'ટીવી મૂવી',Thriller:'થ્રિલર',War:'યુદ્ધ',Western:'વેસ્ટર્ન',Kids:'બાળકો',News:'સમાચાર',Reality:'રિયાલિટી',Soap:'સોપ',Talk:'ટોક શો'},
+                pa:{Action:'ਐਕਸ਼ਨ',Adventure:'ਸਾਹਸ',Animation:'ਐਨੀਮੇਸ਼ਨ',Comedy:'ਕਾਮੇਡੀ',Crime:'ਅਪਰਾਧ',Documentary:'ਦਸਤਾਵੇਜ਼ੀ',Drama:'ਡਰਾਮਾ',Family:'ਪਰਿਵਾਰ',Fantasy:'ਫੈਂਟਸੀ',History:'ਇਤਿਹਾਸ',Horror:'ਡਰਾਉਣੀ',Music:'ਸੰਗੀਤ',Mystery:'ਰਹੱਸ',Romance:'ਰੋਮਾਂਸ','Sci-Fi':'ਸਾਇ-ਫਾਇ','TV Movie':'ਟੀਵੀ ਮੂਵੀ',Thriller:'ਥ੍ਰਿਲਰ',War:'ਯੁੱਧ',Western:'ਵੈਸਟਰਨ',Kids:'ਬੱਚੇ',News:'ਖ਼ਬਰਾਂ',Reality:'ਰਿਐਲਿਟੀ',Soap:'ਸੋਪ',Talk:'ਟਾਕ ਸ਼ੋ'},
+            };
             let LANG = 'en';
             function t(key, vars){
                 let s = (STRINGS[LANG] && STRINGS[LANG][key]) || STRINGS.en[key] || key;
@@ -798,11 +824,30 @@
                 if(!STRINGS[code]) code='en';
                 LANG=code; applyI18n();
                 if(save!==false) sSet('kd_lang', LANG);   // device-local; language is a per-device choice
+                reloadContent();   // refresh movie titles/overviews/regions in the new language
             }
             function detectLang(){
                 const saved=sGet('kd_lang'); if(saved && STRINGS[saved]) return saved;
                 const nav=(navigator.language||'en').slice(0,2).toLowerCase();
                 return STRINGS[nav] ? nav : 'en';
+            }
+            // TMDB content language for titles/overviews (e.g. hi → hi-IN). TMDB returns the
+            // original title when it lacks a translation; overviews can come back empty → we
+            // fall back to English in tmdb.detail.
+            function tmdbLang(){ return LANG==='en' ? 'en-IN' : (LANG + '-IN'); }
+            // Localized country name (e.g. "India" → "भारत"); falls back to English then the code.
+            function regNameOf(code){ return (REGION_NAMES[LANG]&&REGION_NAMES[LANG][code]) || REGION_NAMES.en[code] || code; }
+            // Localized genre label; falls back to the English label.
+            function tGenre(label){ return (GENRE_NAMES[LANG]&&GENRE_NAMES[LANG][label]) || GENRE_NAMES.en[label] || label; }
+            // Re-fetch whatever's on screen so titles/overviews come back in the new language.
+            function reloadContent(){
+                try{ reflectRegion(); }catch(e){}
+                try{ loadTrending(); }catch(e){}
+                try{ loadForYou(); }catch(e){}
+                try{ if($('#genreChips').children.length){ renderGenreChips(); renderLangChips(); } }catch(e){}
+                try{ if(browseLoaded) loadBrowse(currentBrowseType); }catch(e){}
+                try{ const qv=(qInput&&qInput.value||'').trim(); if(qv) runSearch(qv); }catch(e){}
+                try{ if(CURRENT && $('#v-detail').classList.contains('on')) openItem(CURRENT); }catch(e){}
             }
 
             let API_KEY = '';
@@ -828,7 +873,7 @@
             async function apiGet(path, params = {}){
                 const url = new URL(API_BASE + path);
                 if (!USE_PROXY) url.searchParams.set('api_key', API_KEY);
-                url.searchParams.set('language', 'en-IN');
+                url.searchParams.set('language', tmdbLang());
                 Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('TMDB ' + res.status);
@@ -843,7 +888,10 @@
                 async detail(type,id){
                     if (!live()) return mockDetail(id);
                     const d = await apiGet(`/${type}/${id}`, { append_to_response:'watch/providers,videos' });
-                    d.media_type = type; return d;
+                    d.media_type = type;
+                    // TMDB returns an empty overview when it has no translation → fall back to English.
+                    if(!d.overview && tmdbLang()!=='en-IN'){ try{ const en=await apiGet(`/${type}/${id}`,{language:'en-US'}); if(en&&en.overview) d.overview=en.overview; }catch(e){} }
+                    return d;
                 },
                 async trending(){
                     if (!live()) return MOCK.slice().sort((a,b)=>(b.popularity||0)-(a.popularity||0));
@@ -941,7 +989,7 @@
             
             /* TMDB genre id → short label (movie + tv combined) */
             const GENRES={28:'Action',12:'Adventure',16:'Animation',35:'Comedy',80:'Crime',99:'Documentary',18:'Drama',10751:'Family',14:'Fantasy',36:'History',27:'Horror',10402:'Music',9648:'Mystery',10749:'Romance',878:'Sci-Fi',10770:'TV Movie',53:'Thriller',10752:'War',37:'Western',10759:'Action',10762:'Kids',10763:'News',10764:'Reality',10765:'Sci-Fi',10766:'Soap',10767:'Talk',10768:'War'};
-            function genreOf(item){ const ids=item.genre_ids||(item.genres&&item.genres.map(g=>g.id))||[]; for(const id of ids){ if(GENRES[id]) return GENRES[id]; } return ''; }
+            function genreOf(item){ const ids=item.genre_ids||(item.genres&&item.genres.map(g=>g.id))||[]; for(const id of ids){ if(GENRES[id]) return tGenre(GENRES[id]); } return ''; }
             function ratingOf(item){ const v=item.vote_average; return (typeof v==='number'&&v>0)?v.toFixed(1):''; }
             const STAR='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>';
             
@@ -971,6 +1019,8 @@
             /* BROWSE — filterable grid (type · genre · sort) + Surprise me */
             let browseLoaded=false, currentBrowseType='movie';
             let BROWSE_POOL=[], BROWSE_SHOWN=[], browseGenre=null, browseSort='popularity', browseLang=null;
+            const BROWSE_ALL = { en:['All','All langs'],hi:['सभी','सभी भाषाएँ'],bn:['সব','সব ভাষা'],ta:['அனைத்தும்','எல்லா மொழிகளும்'],te:['అన్నీ','అన్ని భాషలు'],mr:['सर्व','सर्व भाषा'],kn:['ಎಲ್ಲಾ','ಎಲ್ಲಾ ಭಾಷೆಗಳು'],ml:['എല്ലാം','എല്ലാ ഭാഷകളും'],gu:['બધું','બધી ભાષાઓ'],pa:['ਸਾਰੇ','ਸਾਰੀਆਂ ਭਾਸ਼ਾਵਾਂ'] };
+            function allLabel(i){ return (BROWSE_ALL[LANG]||BROWSE_ALL.en)[i]; }
             const GENRE_CHIPS=[['All',null],['Action',[28,10759]],['Comedy',[35]],['Drama',[18]],['Thriller',[53,9648]],['Sci-Fi',[878,10765]],['Romance',[10749]],['Horror',[27]],['Crime',[80]],['Adventure',[12]],['Animation',[16]],['Documentary',[99]],['Family',[10751]]];
             const LANG_CHIPS=[['All langs',null],['Hindi','hi'],['Tamil','ta'],['Telugu','te'],['Malayalam','ml'],['Kannada','kn'],['Bengali','bn'],['Marathi','mr'],['Punjabi','pa'],['English','en']];
             const dateOf=x=>x.release_date||x.first_air_date||'';
@@ -980,16 +1030,17 @@
                 const host=$('#genreChips'); host.innerHTML='';
                 GENRE_CHIPS.forEach(([label,ids])=>{
                     const b=el('button','gchip'+((browseGenre===ids)?' on':''));
-                    b.textContent=label;
+                    b.textContent = label==='All' ? allLabel(0) : tGenre(label);
                     b.addEventListener('click',()=>{ browseGenre=ids; host.querySelectorAll('.gchip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); applyBrowseFilters(); });
                     host.appendChild(b);
                 });
             }
             function renderLangChips(){
                 const host=$('#langChips'); host.innerHTML='';
+                const NL=Object.fromEntries(LANGS);
                 LANG_CHIPS.forEach(([label,code])=>{
                     const b=el('button','gchip'+((browseLang===code)?' on':''));
-                    b.textContent=label;
+                    b.textContent = code ? (NL[code]||label) : allLabel(1);
                     b.addEventListener('click',()=>{ browseLang=code; host.querySelectorAll('.gchip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); applyBrowseFilters(); });
                     host.appendChild(b);
                 });
@@ -1112,7 +1163,7 @@
             <h3>Available on</h3>
             <div class="watch-tools">
             ${SERVICES.size?`<button class="mine-toggle" id="mineToggle"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m20 6-11 11-5-5"/></svg> Only mine</button>`:''}
-            <button class="region-pill" onclick="document.getElementById('openSettings').click()"><span>${region[2]}</span> ${region[1]}</button>
+            <button class="region-pill" onclick="document.getElementById('openSettings').click()"><span>${region[2]}</span> ${regNameOf(region[0])}</button>
           </div>
         </div>
         <div id="watchBody">${renderWatch(wp,false,d)}</div>
@@ -1175,7 +1226,7 @@
                 return html + elsewhereHTML(d,false);
             }
             function notAvail(d){
-                const regionName=(REGIONS.find(r=>r[0]===REGION)||[,'this region'])[1];
+                const regionName=regNameOf(REGION);
                 let notify='';
                 if(pushEnabled() && d){
                     if(isNotified(d)) notify=`<button class="notify-btn done" disabled>✓ We’ll notify you when it streams</button>`;
@@ -1193,7 +1244,7 @@
                     if(code===exclude) return;
                     const r=results[code]; if(!r) return;
                     const provs=dedupe([...(r.flatrate||[]),...(r.free||[]),...(r.ads||[])]);
-                    if(provs.length) out.push({code,name,flag,count:provs.length,top:provs[0].provider_name});
+                    if(provs.length) out.push({code,name:regNameOf(code),flag,count:provs.length,top:provs[0].provider_name});
                 });
                 return out;
             }
@@ -1252,7 +1303,7 @@
             function shareText(d, wp){
                 const yr = yearOf(d);
                 const head = `🎬 ${titleOf(d)}${yr ? ` (${yr})` : ''}`;
-                const regionName = (REGIONS.find(r => r[0] === REGION) || [, 'India'])[1];
+                const regionName = regNameOf(REGION);
                 const names = arr => dedupe(arr || []).slice(0, 3).map(p => p.provider_name).join(', ');
                 let where = '';
                 if (wp) {
@@ -1402,7 +1453,7 @@
                 if(ls) ls.value=LANG;
                 const rg=$('#regionGrid'); rg.innerHTML='';
                 REGIONS.forEach(([code,name,flag])=>{
-                    const b=el('button','region-opt'+(code===tmpRegion?' on':'')); b.innerHTML=`<span>${flag}</span> ${name}`;
+                    const b=el('button','region-opt'+(code===tmpRegion?' on':'')); b.innerHTML=`<span>${flag}</span> ${regNameOf(code)}`;
                     b.addEventListener('click',()=>{ tmpRegion=code; rg.querySelectorAll('.region-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
                     rg.appendChild(b);
                 });
@@ -1426,7 +1477,7 @@
             });
             function reflectRegion(){
                 const r=REGIONS.find(x=>x[0]===REGION)||['IN','India','🇮🇳'];
-                $('#regionFlag').textContent=r[2]; $('#regionLabel').textContent=r[1];
+                $('#regionFlag').textContent=r[2]; $('#regionLabel').textContent=regNameOf(REGION);
             }
             
             let toastT;

@@ -109,13 +109,18 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - `buildCard(item)` → poster (2:3) + **rating badge** (gold star + score) + title + **year · genre**. Used by trending, search, browse, watchlist.
 - `GENRES` maps TMDB genre ids → short labels (movie + tv). `genreOf()` / `ratingOf()` helpers.
 
-### 4.3b UI localization (i18n)
-- The interface chrome is localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi, Kannada, Malayalam, Gujarati, Punjabi. (Movie/show data from TMDB stays in its own language — only the app's own text is translated.)
-- `STRINGS = { en:{…}, hi:{…}, … }` keyed by string id; `LANGS` lists `[code, nativeName]` for the picker.
-- `t(key, vars)` resolves the current `LANG` with English fallback and `{x}` interpolation. Static markup carries `data-i18n` (textContent), `data-i18n-html` (innerHTML, for strings with `<span class="em">`/`<b>`), and `data-i18n-ph` (input placeholder). `applyI18n()` swaps them all and sets `<html lang>`.
-- `detectLang()` → saved `kd_lang` → else `navigator.language` 2-letter → else `en`. `setLang(code)` applies + persists. **Language is device-local** (localStorage `kd_lang`), not cloud-synced (no DB column needed).
-- Picker: a `<select id="langSel">` at the top of the Settings sheet, built once in `buildSettings()`. Boot runs `LANG = detectLang(); applyI18n();` before dynamic content paints.
-- Dynamic JS strings routed through `t()`: search "Searching…"/results header, "Because you saved X", and the saved/deleted toasts.
+### 4.3b Localization (i18n) — full app + content
+Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi, Kannada, Malayalam, Gujarati, Punjabi.
+
+**UI chrome.** `STRINGS = { en:{…}, … }` keyed by string id; `LANGS` lists `[code, nativeName]`. `t(key, vars)` resolves `LANG` with English fallback + `{x}` interpolation. Static markup carries `data-i18n` (textContent), `data-i18n-html` (innerHTML, for `<span class="em">`/`<b>`), `data-i18n-ph` (placeholder); `applyI18n()` swaps them all and sets `<html lang>`.
+
+**Movie/show content.** `tmdbLang()` maps `LANG`→TMDB locale (`hi`→`hi-IN`, etc.) and is passed as `language` on every proxy call, so **titles + overviews come back localized**. TMDB returns the original title when it has no translation; overviews can come back empty → `tmdb.detail()` **falls back to an English overview** when the localized one is blank (one extra call, only when empty).
+
+**Country names + genres.** `REGION_NAMES[lang][code]` and `GENRE_NAMES[lang][label]` dictionaries (all 10 langs); `regNameOf(code)` / `tGenre(label)` resolve with English fallback. Wired into the region pill, settings region grid, multi-region "also streaming in" cards, card subtitles (`genreOf`), and Browse genre/language chips (`BROWSE_ALL` covers the "All"/"All langs" chips; language chips show native script via `LANGS`).
+
+**Switching.** `setLang(code)` applies chrome, persists, then `reloadContent()` re-fetches whatever's on screen (trending, for-you, browse + chips, active search, open detail) so content re-renders in the new language. `detectLang()` → saved `kd_lang` → `navigator.language` → `en`. **Language is device-local** (localStorage `kd_lang`), not cloud-synced. Picker: `<select id="langSel">` atop Settings, built once in `buildSettings()`. Boot runs `LANG = detectLang(); applyI18n();` before first paint.
+
+> Not yet localized: detail-page section labels (Where to watch / Rent / Buy / Cast / More like this) remain English — candidate for a follow-up.
 
 ### 4.4 Search (`v-search`)
 - Live, debounced (300 ms). Typing swaps the **Trending grid** out for a **search-results grid** (`#searchSec` ↔ `#trendingSec`).
