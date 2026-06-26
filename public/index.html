@@ -413,7 +413,7 @@
             <div class="topbar-actions">
                 <button class="tbtn" id="accountBtn" style="display:none" title="Account &amp; sync">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-                    <span id="accountLabel">Sign in</span>
+                    <span id="accountLabel" data-i18n="acct.signin">Sign in</span>
                 </button>
                 <button class="tbtn" id="openSettings" title="Region & your services">
                     <span class="region-flag" id="regionFlag">🇮🇳</span><span id="regionLabel">India</span>
@@ -424,53 +424,53 @@
         <main class="wrap">
             <section class="view on" id="v-search">
                 <div class="hero">
-                    <div class="eyebrow">Where to watch · India</div>
-                    <h1>Find <span class="em">where</span> to watch<br/>anything in India.</h1>
-                    <p class="sub">Type a movie or show. See every legal platform it's on — subscription, rent, or buy.</p>
+                    <div class="eyebrow" data-i18n="hero.eyebrow">Where to watch · India</div>
+                    <h1 data-i18n-html="hero.title">Find <span class="em">where</span> to watch<br/>anything in India.</h1>
+                    <p class="sub" data-i18n="hero.sub">Type a movie or show. See every legal platform it's on — subscription, rent, or buy.</p>
                     <div class="searchbox">
                         <div class="searchfield">
                             <svg class="lens" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-                            <input id="q" type="text" placeholder="Drishyam, Scam 1992, Panchayat…" autocomplete="off" spellcheck="false" />
+                            <input id="q" type="text" placeholder="Drishyam, Scam 1992, Panchayat…" data-i18n-ph="search.ph" autocomplete="off" spellcheck="false" />
                             <button class="clearbtn" id="clearBtn" aria-label="Clear">×</button>
-                            <button class="go" id="goBtn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg><span>Search</span></button>
+                            <button class="go" id="goBtn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg><span data-i18n="search.go">Search</span></button>
                         </div>
                         <div class="results" id="results"></div>
                     </div>
                 </div>
                 <div class="section" id="searchSec" style="display:none">
-                    <div class="section-head"><h2 id="searchHead">Results</h2></div>
+                    <div class="section-head"><h2 id="searchHead" data-i18n="search.results">Results</h2></div>
                     <div class="grid" id="searchGrid"></div>
                 </div>
                 <div class="section" id="forYouSec" style="display:none">
-                    <div class="section-head"><h2 id="forYouHead">For you</h2></div>
+                    <div class="section-head"><h2 id="forYouHead" data-i18n="forYou">For you</h2></div>
                     <div class="rail" id="forYouRail"></div>
                 </div>
                 <div class="section" id="trendingSec">
-                    <div class="section-head"><h2>Trending in India</h2><span class="tag">Today</span></div>
+                    <div class="section-head"><h2 data-i18n="trending">Trending in India</h2><span class="tag" data-i18n="trending.today">Today</span></div>
                     <div class="grid" id="rail-trending"></div>
                 </div>
             </section>
             
             <section class="view" id="v-browse">
-                <h1 class="page-title">Browse</h1>
-                <p class="page-sub">Filter by type, genre and rating — then see where to watch.</p>
-                <div class="segment" id="browseSeg"><button class="on" data-type="movie">Movies</button><button data-type="tv">Shows</button></div>
+                <h1 class="page-title" data-i18n="browse.title">Browse</h1>
+                <p class="page-sub" data-i18n="browse.sub">Filter by type, genre and rating — then see where to watch.</p>
+                <div class="segment" id="browseSeg"><button class="on" data-type="movie" data-i18n="browse.movies">Movies</button><button data-type="tv" data-i18n="browse.shows">Shows</button></div>
                 <div class="gchips" id="genreChips"></div>
                 <div class="gchips lang" id="langChips"></div>
                 <div class="browse-row">
                     <select id="sortSel" class="sort-sel" aria-label="Sort by">
-                        <option value="popularity">Most popular</option>
-                        <option value="rating">Top rated</option>
-                        <option value="newest">Newest</option>
+                        <option value="popularity" data-i18n="sort.popular">Most popular</option>
+                        <option value="rating" data-i18n="sort.rating">Top rated</option>
+                        <option value="newest" data-i18n="sort.newest">Newest</option>
                     </select>
-                    <button class="surprise" id="surpriseBtn">🎲 Surprise me</button>
+                    <button class="surprise" id="surpriseBtn" data-i18n="surprise">🎲 Surprise me</button>
                 </div>
                 <div class="grid" id="browseGrid" style="margin-top:18px"></div>
             </section>
             
             <section class="view" id="v-watchlist">
-                <h1 class="page-title">My Watchlist</h1>
-                <p class="page-sub">Titles you've saved to watch later.</p>
+                <h1 class="page-title" data-i18n="watchlist.title">My Watchlist</h1>
+                <p class="page-sub" data-i18n="watchlist.sub">Titles you've saved to watch later.</p>
                 <div id="watchlistBody"></div>
             </section>
             
@@ -479,54 +479,53 @@
             <footer class="foot">
                 <p>Built for India · Metadata by <b>TMDB</b> · Availability by <b>JustWatch</b></p>
                 <p class="legal">KahanDekhu is an independent app, not affiliated with, endorsed by, or sponsored by any streaming service shown, nor by TMDB or JustWatch. Streaming-service names and logos are trademarks of their respective owners. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-                <p class="legal"><a href="privacy.html">Privacy policy</a> · <a href="delete-account.html">Delete your account &amp; data</a></p>
+                <p class="legal"><a href="privacy.html" data-i18n="foot.privacy">Privacy policy</a> · <a href="delete-account.html" data-i18n="foot.delete">Delete your account &amp; data</a></p>
                 <p class="legal" id="waFoot" style="display:none"></p>
             </footer>
         </main>
         
         <button class="fab-support" id="openSupport" title="Support KahanDekhu">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.3 4.2 12.5a4.8 4.8 0 1 1 6.8-6.8l1 1 1-1a4.8 4.8 0 1 1 6.8 6.8Z"/></svg>
-            <span>Support</span>
+            <span data-i18n="support.btn">Support</span>
         </button>
-        
+
         <nav class="nav" id="nav">
-            <button class="on" data-view="v-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search</button>
-            <button data-view="v-browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Browse</button>
-            <button data-view="v-watchlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>Watchlist</button>
+            <button class="on" data-view="v-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span data-i18n="nav.search">Search</span></button>
+            <button data-view="v-browse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span data-i18n="nav.browse">Browse</span></button>
+            <button data-view="v-watchlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.watchlist">Watchlist</span></button>
         </nav>
         
         <div class="modal-bg" id="supportModal">
             <div class="modal">
-                <div class="modal-head"><h3>Support KahanDekhu</h3><button class="xbtn" data-close>×</button></div>
+                <div class="modal-head"><h3 data-i18n="support.title">Support KahanDekhu</h3><button class="xbtn" data-close>×</button></div>
                 <div class="modal-body">
-                    <p class="lead">This app is free and always will be. If it saved you some scrolling, a small voluntary tip helps cover development. Nothing's locked behind it.</p>
-                    <a class="paybtn primary" id="supportLink" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 19h16v2H4zm2-9h12a3 3 0 0 1 0 6h-1.2A5 5 0 0 1 12 18a5 5 0 0 1-4.8-2H6a3 3 0 0 1 0-6zm12 2h-1v2h1a1 1 0 0 0 0-2zM7 4h2v3H7zm4-1h2v4h-2zm4 1h2v3h-2z"/></svg> Support on Buy Me a Coffee</a>
-                    <div id="upiGroup">
-                      <div class="qrwrap"><div id="qrcode"></div></div>
-                      <div class="upi-row"><span class="upi-id" id="upiId">kahandekhu@upi</span><button class="copybtn" id="copyUpi">Copy</button></div>
-                      <a class="paybtn primary" id="upiPay" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h16v4H4zM4 10h16v10H4zm3 3v4h4v-4z"/></svg> Pay via any UPI app</a>
-                      <a class="paybtn ghost" id="razorpayLink" href="#" target="_blank" rel="noopener">Cards · Netbanking · Wallets</a>
-                    </div>
-                    <p class="support-note">A voluntary tip, not a purchase — no goods or services are promised in return.</p>
+                    <p class="lead" data-i18n="support.lead">This app is free and always will be. If it saved you some scrolling, a small voluntary tip helps cover development. Nothing's locked behind it.</p>
+                    <a class="paybtn primary" id="supportLink" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 19h16v2H4zm2-9h12a3 3 0 0 1 0 6h-1.2A5 5 0 0 1 12 18a5 5 0 0 1-4.8-2H6a3 3 0 0 1 0-6zm12 2h-1v2h1a1 1 0 0 0 0-2zM7 4h2v3H7zm4-1h2v4h-2zm4 1h2v3h-2z"/></svg> <span id="supportLabel">Support securely via Razorpay</span></a>
+                    <p class="support-note" data-i18n="support.note">A voluntary tip, not a purchase — no goods or services are promised in return.</p>
                 </div>
             </div>
         </div>
         
         <div class="modal-bg" id="settingsModal">
             <div class="modal">
-                <div class="modal-head"><h3>Region &amp; services</h3><button class="xbtn" data-close>×</button></div>
+                <div class="modal-head"><h3 data-i18n="settings.title">Region &amp; services</h3><button class="xbtn" data-close>×</button></div>
                 <div class="modal-body">
                     <div class="set-section">
-                        <h4>Your region</h4>
-                        <p class="desc">Availability differs by country. We'll show what's streaming where you are.</p>
+                        <h4 data-i18n="settings.language">Language</h4>
+                        <p class="desc" data-i18n="settings.languageDesc">Choose your preferred language for the app.</p>
+                        <select id="langSel" class="sort-sel" aria-label="Language" style="width:100%"></select>
+                    </div>
+                    <div class="set-section">
+                        <h4 data-i18n="settings.region">Your region</h4>
+                        <p class="desc" data-i18n="settings.regionDesc">Availability differs by country. We'll show what's streaming where you are.</p>
                         <div class="region-grid" id="regionGrid"></div>
                     </div>
                     <div class="set-section">
-                        <h4>Services you subscribe to</h4>
-                        <p class="desc">We'll flag titles that are on your platforms — so you instantly know what you can already watch.</p>
+                        <h4 data-i18n="settings.services">Services you subscribe to</h4>
+                        <p class="desc" data-i18n="settings.servicesDesc">We'll flag titles that are on your platforms — so you instantly know what you can already watch.</p>
                         <div class="chips" id="servicesChips"></div>
                     </div>
-                    <button class="set-save" id="saveSettings">Save</button>
+                    <button class="set-save" id="saveSettings" data-i18n="settings.save">Save</button>
                 </div>
             </div>
         </div>
@@ -535,8 +534,8 @@
         <div class="coach" id="signinHint" role="status" aria-live="polite">
             <span class="coach-arrow"></span>
             <button class="coach-x" id="coachX" aria-label="Dismiss">&times;</button>
-            <span class="coach-key">Tip</span>
-            <p>Use it free — no sign-in needed. <b>Sign in</b> to keep your watchlist across all your devices.</p>
+            <span class="coach-key" data-i18n="coach.tipLabel">Tip</span>
+            <p data-i18n-html="coach.text">Use it free — no sign-in needed. <b>Sign in</b> to keep your watchlist across all your devices.</p>
         </div>
         
         <div class="modal-bg" id="authModal">
@@ -563,13 +562,249 @@
             const SUPABASE_URL = 'https://seutsrdubftizbasgyim.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNldXRzcmR1YmZ0aXpiYXNneWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjczOTYsImV4cCI6MjA5NzU0MzM5Nn0.6GuB8Wv__6N6hB44eD9V_fVqeB6ovEBIQYK-DBuNN4U';
             
-            // Preferred: a 3rd-party support page (Buy Me a Coffee / Ko-fi / Razorpay page link).
-            // When set, the support sheet shows ONE button to this page and hides your UPI ID entirely.
-            const SUPPORT_URL = '';   // e.g. 'https://buymeacoffee.com/kahandekhu' or 'https://ko-fi.com/kahandekhu'
-            const SUPPORT_UPI = 'ribhav2003@ybl';   // fallback only — used if SUPPORT_URL is blank
-            const SUPPORT_NAME = 'KahanDekhu';
-            const SUPPORT_RAZORPAY = '';   // add your razorpay.me link to show the cards/netbanking button
-            
+            /* ── Support / tips ──────────────────────────────────────────────
+               The ONLY way tips are collected is a hosted payment page (Razorpay
+               razorpay.me, or an alt page). The app NEVER shows a raw UPI ID or
+               any personal name — there is NO UPI fallback, by design. If neither
+               link below is set, the Support button is hidden entirely.
+               See RAZORPAY-SETUP.md to create the link (~5 min, free). */
+            const SUPPORT_RAZORPAY = 'razorpay.me/@kahandekhu';   // ← your link (https:// optional; added automatically)
+            const SUPPORT_URL = '';   // optional alt page, e.g. 'https://buymeacoffee.com/kahandekhu'
+
+            /* ── i18n: localized UI chrome ───────────────────────────────────
+               Translates the app's interface. Movie/show data from TMDB stays
+               in its own language. The choice is saved per-device and synced
+               to the user's account when signed in. */
+            const LANGS = [
+                ['en','English'],['hi','हिन्दी'],['bn','বাংলা'],['ta','தமிழ்'],
+                ['te','తెలుగు'],['mr','मराठी'],['kn','ಕನ್ನಡ'],['ml','മലയാളം'],
+                ['gu','ગુજરાતી'],['pa','ਪੰਜਾਬੀ'],
+            ];
+            const STRINGS = {
+                en:{
+                    'acct.signin':'Sign in','nav.search':'Search','nav.browse':'Browse','nav.watchlist':'Watchlist',
+                    'hero.eyebrow':'Where to watch · India','hero.title':'Find <span class="em">where</span> to watch<br/>anything in India.',
+                    'hero.sub':"Type a movie or show. See every legal platform it's on — subscription, rent, or buy.",
+                    'search.ph':'Drishyam, Scam 1992, Panchayat…','search.go':'Search','search.results':'Results','search.searching':'Searching…',
+                    'forYou':'For you','forYou.because':'Because you saved {x}','trending':'Trending in India','trending.today':'Today',
+                    'browse.title':'Browse','browse.sub':'Filter by type, genre and rating — then see where to watch.',
+                    'browse.movies':'Movies','browse.shows':'Shows','sort.popular':'Most popular','sort.rating':'Top rated','sort.newest':'Newest','surprise':'🎲 Surprise me',
+                    'watchlist.title':'My Watchlist','watchlist.sub':"Titles you've saved to watch later.",
+                    'support.btn':'Support','support.title':'Support KahanDekhu',
+                    'support.lead':"This app is free and always will be. If it saved you some scrolling, a small voluntary tip helps cover development. Nothing's locked behind it.",
+                    'support.note':'A voluntary tip, not a purchase — no goods or services are promised in return.',
+                    'support.razorpay':'Support securely via Razorpay','support.bmc':'Support on Buy Me a Coffee','support.upiPay':'Pay via any UPI app','support.copy':'Copy',
+                    'settings.title':'Region & services','settings.language':'Language','settings.languageDesc':'Choose your preferred language for the app.',
+                    'settings.region':'Your region','settings.regionDesc':"Availability differs by country. We'll show what's streaming where you are.",
+                    'settings.services':'Services you subscribe to','settings.servicesDesc':"We'll flag titles that are on your platforms — so you instantly know what you can already watch.",
+                    'settings.save':'Save','toast.saved':'Preferences saved ✓','toast.deleted':'Account and data deleted',
+                    'foot.privacy':'Privacy policy','foot.delete':'Delete your account & data',
+                    'coach.tipLabel':'Tip','coach.text':'Use it free — no sign-in needed. <b>Sign in</b> to keep your watchlist across all your devices.',
+                },
+                hi:{
+                    'acct.signin':'साइन इन','nav.search':'खोज','nav.browse':'ब्राउज़','nav.watchlist':'वॉचलिस्ट',
+                    'hero.eyebrow':'कहाँ देखें · भारत','hero.title':'भारत में <span class="em">कहाँ</span> देखें<br/>कुछ भी, तुरंत जानें।',
+                    'hero.sub':'कोई फ़िल्म या शो टाइप करें। देखें वो किन-किन प्लेटफ़ॉर्म पर है — सब्सक्रिप्शन, रेंट या खरीदें।',
+                    'search.ph':'दृश्यम, Scam 1992, पंचायत…','search.go':'खोजें','search.results':'परिणाम','search.searching':'खोज रहे हैं…',
+                    'forYou':'आपके लिए','forYou.because':'क्योंकि आपने {x} सहेजा','trending':'भारत में ट्रेंडिंग','trending.today':'आज',
+                    'browse.title':'ब्राउज़ करें','browse.sub':'टाइप, जॉनर और रेटिंग से फ़िल्टर करें — फिर देखें कहाँ देखें।',
+                    'browse.movies':'फ़िल्में','browse.shows':'शोज़','sort.popular':'सबसे लोकप्रिय','sort.rating':'टॉप रेटेड','sort.newest':'नवीनतम','surprise':'🎲 कुछ भी दिखाओ',
+                    'watchlist.title':'मेरी वॉचलिस्ट','watchlist.sub':'बाद में देखने के लिए सहेजे गए टाइटल।',
+                    'support.btn':'सहयोग','support.title':'KahanDekhu को सहयोग दें',
+                    'support.lead':'यह ऐप मुफ़्त है और हमेशा रहेगा। अगर इसने आपका समय बचाया, तो एक छोटा-सा स्वैच्छिक टिप डेवलपमेंट में मदद करता है। कुछ भी इसके पीछे लॉक नहीं है।',
+                    'support.note':'एक स्वैच्छिक टिप, खरीदारी नहीं — बदले में किसी वस्तु या सेवा का वादा नहीं।',
+                    'support.razorpay':'Razorpay से सुरक्षित सहयोग दें','support.bmc':'Buy Me a Coffee पर सहयोग दें','support.upiPay':'किसी भी UPI ऐप से भुगतान करें','support.copy':'कॉपी',
+                    'settings.title':'क्षेत्र और सेवाएँ','settings.language':'भाषा','settings.languageDesc':'ऐप के लिए अपनी पसंदीदा भाषा चुनें।',
+                    'settings.region':'आपका क्षेत्र','settings.regionDesc':'उपलब्धता देश के अनुसार बदलती है। हम दिखाएँगे आपके यहाँ क्या स्ट्रीम हो रहा है।',
+                    'settings.services':'आपकी सब्सक्राइब की हुई सेवाएँ','settings.servicesDesc':'हम उन टाइटल्स को चिह्नित करेंगे जो आपके प्लेटफ़ॉर्म पर हैं — ताकि आपको तुरंत पता चले आप क्या पहले से देख सकते हैं।',
+                    'settings.save':'सहेजें','toast.saved':'प्राथमिकताएँ सहेजी गईं ✓','toast.deleted':'अकाउंट और डेटा हटा दिया गया',
+                    'foot.privacy':'गोपनीयता नीति','foot.delete':'अपना अकाउंट और डेटा हटाएँ',
+                    'coach.tipLabel':'टिप','coach.text':'बिना साइन-इन मुफ़्त इस्तेमाल करें। <b>साइन इन</b> करें ताकि आपकी वॉचलिस्ट सभी डिवाइस पर बनी रहे।',
+                },
+                bn:{
+                    'acct.signin':'সাইন ইন','nav.search':'খুঁজুন','nav.browse':'ব্রাউজ','nav.watchlist':'ওয়াচলিস্ট',
+                    'hero.eyebrow':'কোথায় দেখবেন · ভারত','hero.title':'ভারতে যেকোনো কিছু<br/><span class="em">কোথায়</span> দেখবেন, এক নিমেষে।',
+                    'hero.sub':'একটি সিনেমা বা শো লিখুন। দেখুন এটি কোন কোন প্ল্যাটফর্মে আছে — সাবস্ক্রিপশন, ভাড়া বা কেনা।',
+                    'search.ph':'দৃশ্যম, Scam 1992, পঞ্চায়েত…','search.go':'খুঁজুন','search.results':'ফলাফল','search.searching':'খুঁজছি…',
+                    'forYou':'আপনার জন্য','forYou.because':'আপনি {x} সেভ করেছেন বলে','trending':'ভারতে ট্রেন্ডিং','trending.today':'আজ',
+                    'browse.title':'ব্রাউজ করুন','browse.sub':'ধরন, জঁরা ও রেটিং দিয়ে ফিল্টার করুন — তারপর দেখুন কোথায় দেখবেন।',
+                    'browse.movies':'সিনেমা','browse.shows':'শো','sort.popular':'সবচেয়ে জনপ্রিয়','sort.rating':'সেরা রেটিং','sort.newest':'নতুনতম','surprise':'🎲 যেকোনো একটা দেখান',
+                    'watchlist.title':'আমার ওয়াচলিস্ট','watchlist.sub':'পরে দেখার জন্য সেভ করা টাইটেল।',
+                    'support.btn':'সহায়তা','support.title':'KahanDekhu-কে সহায়তা করুন',
+                    'support.lead':'এই অ্যাপটি ফ্রি এবং সবসময় থাকবে। এটি যদি আপনার সময় বাঁচায়, একটি ছোট স্বেচ্ছামূলক টিপ ডেভেলপমেন্টে সাহায্য করে। কিছুই এর পিছনে লক করা নেই।',
+                    'support.note':'একটি স্বেচ্ছামূলক টিপ, কেনাকাটা নয় — বিনিময়ে কোনো পণ্য বা সেবার প্রতিশ্রুতি নেই।',
+                    'support.razorpay':'Razorpay দিয়ে নিরাপদে সহায়তা করুন','support.bmc':'Buy Me a Coffee-তে সহায়তা করুন','support.upiPay':'যেকোনো UPI অ্যাপ দিয়ে পে করুন','support.copy':'কপি',
+                    'settings.title':'অঞ্চল ও পরিষেবা','settings.language':'ভাষা','settings.languageDesc':'অ্যাপের জন্য আপনার পছন্দের ভাষা বেছে নিন।',
+                    'settings.region':'আপনার অঞ্চল','settings.regionDesc':'উপলব্ধতা দেশভেদে আলাদা। আমরা দেখাব আপনার এখানে কী স্ট্রিম হচ্ছে।',
+                    'settings.services':'আপনার সাবস্ক্রাইব করা পরিষেবা','settings.servicesDesc':'আপনার প্ল্যাটফর্মে থাকা টাইটেলগুলো আমরা চিহ্নিত করব — যাতে আপনি সঙ্গে সঙ্গে জানেন কী আগে থেকেই দেখতে পারেন।',
+                    'settings.save':'সংরক্ষণ','toast.saved':'পছন্দ সংরক্ষিত ✓','toast.deleted':'অ্যাকাউন্ট ও ডেটা মুছে ফেলা হয়েছে',
+                    'foot.privacy':'গোপনীয়তা নীতি','foot.delete':'আপনার অ্যাকাউন্ট ও ডেটা মুছুন',
+                    'coach.tipLabel':'টিপ','coach.text':'সাইন-ইন ছাড়াই ফ্রি ব্যবহার করুন। <b>সাইন ইন</b> করুন যাতে আপনার ওয়াচলিস্ট সব ডিভাইসে থাকে।',
+                },
+                ta:{
+                    'acct.signin':'உள்நுழை','nav.search':'தேடு','nav.browse':'உலாவு','nav.watchlist':'பார்வைப்பட்டியல்',
+                    'hero.eyebrow':'எங்கே பார்க்கலாம் · இந்தியா','hero.title':'இந்தியாவில் எதையும்<br/><span class="em">எங்கே</span> பார்க்கலாம் என உடனே அறியுங்கள்.',
+                    'hero.sub':'ஒரு படம் அல்லது நிகழ்ச்சியைத் தட்டச்சு செய்யுங்கள். அது எந்தெந்த தளங்களில் உள்ளது என்று பாருங்கள் — சந்தா, வாடகை அல்லது வாங்குதல்.',
+                    'search.ph':'திருஷ்யம், Scam 1992, பஞ்சாயத்து…','search.go':'தேடு','search.results':'முடிவுகள்','search.searching':'தேடுகிறது…',
+                    'forYou':'உங்களுக்காக','forYou.because':'நீங்கள் {x} சேமித்ததால்','trending':'இந்தியாவில் டிரெண்டிங்','trending.today':'இன்று',
+                    'browse.title':'உலாவு','browse.sub':'வகை, ஜானர் மற்றும் மதிப்பீட்டின் அடிப்படையில் வடிகட்டுங்கள் — பிறகு எங்கே பார்க்கலாம் எனப் பாருங்கள்.',
+                    'browse.movies':'திரைப்படங்கள்','browse.shows':'நிகழ்ச்சிகள்','sort.popular':'மிகவும் பிரபலமானவை','sort.rating':'சிறந்த மதிப்பீடு','sort.newest':'புதியவை','surprise':'🎲 ஏதேனும் காட்டு',
+                    'watchlist.title':'என் பார்வைப்பட்டியல்','watchlist.sub':'பின்னர் பார்க்க நீங்கள் சேமித்த தலைப்புகள்.',
+                    'support.btn':'ஆதரவு','support.title':'KahanDekhu-க்கு ஆதரவு அளியுங்கள்',
+                    'support.lead':'இந்த ஆப் இலவசம், எப்போதும் இலவசமாகவே இருக்கும். இது உங்கள் நேரத்தைச் சேமித்தால், ஒரு சிறிய தன்னார்வ டிப் டெவலப்மென்டுக்கு உதவுகிறது. எதுவும் இதன் பின்னால் பூட்டப்படவில்லை.',
+                    'support.note':'ஒரு தன்னார்வ டிப், கொள்முதல் அல்ல — பதிலுக்கு எந்தப் பொருளோ சேவையோ வாக்களிக்கப்படவில்லை.',
+                    'support.razorpay':'Razorpay மூலம் பாதுகாப்பாக ஆதரவளியுங்கள்','support.bmc':'Buy Me a Coffee-யில் ஆதரவளியுங்கள்','support.upiPay':'எந்த UPI ஆப் மூலமும் செலுத்துங்கள்','support.copy':'நகலெடு',
+                    'settings.title':'பகுதி & சேவைகள்','settings.language':'மொழி','settings.languageDesc':'ஆப்-க்கான உங்கள் விருப்ப மொழியைத் தேர்ந்தெடுக்கவும்.',
+                    'settings.region':'உங்கள் பகுதி','settings.regionDesc':'கிடைப்பு நாட்டுக்கு நாடு மாறுபடும். உங்கள் பகுதியில் என்ன ஸ்ட்ரீம் ஆகிறது என்பதைக் காட்டுவோம்.',
+                    'settings.services':'நீங்கள் சந்தா செலுத்தும் சேவைகள்','settings.servicesDesc':'உங்கள் தளங்களில் உள்ள தலைப்புகளை நாங்கள் குறிப்போம் — எதை ஏற்கனவே பார்க்க முடியும் எனத் தெரியும்.',
+                    'settings.save':'சேமி','toast.saved':'விருப்பங்கள் சேமிக்கப்பட்டன ✓','toast.deleted':'கணக்கு & தரவு நீக்கப்பட்டது',
+                    'foot.privacy':'தனியுரிமைக் கொள்கை','foot.delete':'உங்கள் கணக்கு & தரவை நீக்கவும்',
+                    'coach.tipLabel':'குறிப்பு','coach.text':'உள்நுழையாமல் இலவசமாகப் பயன்படுத்துங்கள். <b>உள்நுழைந்தால்</b> உங்கள் பார்வைப்பட்டியல் எல்லா சாதனங்களிலும் இருக்கும்.',
+                },
+                te:{
+                    'acct.signin':'సైన్ ఇన్','nav.search':'వెతుకు','nav.browse':'బ్రౌజ్','nav.watchlist':'వాచ్‌లిస్ట్',
+                    'hero.eyebrow':'ఎక్కడ చూడాలి · భారత్','hero.title':'భారత్‌లో దేన్నైనా<br/><span class="em">ఎక్కడ</span> చూడాలో వెంటనే తెలుసుకోండి.',
+                    'hero.sub':'ఒక సినిమా లేదా షో టైప్ చేయండి. అది ఏయే ప్లాట్‌ఫామ్‌లలో ఉందో చూడండి — సబ్‌స్క్రిప్షన్, అద్దె లేదా కొనుగోలు.',
+                    'search.ph':'దృశ్యం, Scam 1992, పంచాయతీ…','search.go':'వెతుకు','search.results':'ఫలితాలు','search.searching':'వెతుకుతోంది…',
+                    'forYou':'మీ కోసం','forYou.because':'మీరు {x} సేవ్ చేసారు కాబట్టి','trending':'భారత్‌లో ట్రెండింగ్','trending.today':'నేడు',
+                    'browse.title':'బ్రౌజ్ చేయండి','browse.sub':'రకం, జానర్ మరియు రేటింగ్‌తో ఫిల్టర్ చేయండి — ఆపై ఎక్కడ చూడాలో చూడండి.',
+                    'browse.movies':'సినిమాలు','browse.shows':'షోలు','sort.popular':'అత్యంత ప్రజాదరణ','sort.rating':'టాప్ రేటెడ్','sort.newest':'సరికొత్త','surprise':'🎲 ఏదైనా చూపించు',
+                    'watchlist.title':'నా వాచ్‌లిస్ట్','watchlist.sub':'తర్వాత చూడటానికి మీరు సేవ్ చేసిన టైటిల్‌లు.',
+                    'support.btn':'మద్దతు','support.title':'KahanDekhu‌కు మద్దతు ఇవ్వండి',
+                    'support.lead':'ఈ యాప్ ఉచితం, ఎప్పటికీ ఉచితంగానే ఉంటుంది. ఇది మీ సమయాన్ని ఆదా చేస్తే, ఒక చిన్న స్వచ్ఛంద టిప్ డెవలప్‌మెంట్‌కు సహాయపడుతుంది. దీని వెనుక ఏదీ లాక్ చేయబడలేదు.',
+                    'support.note':'ఒక స్వచ్ఛంద టిప్, కొనుగోలు కాదు — బదులుగా ఏ వస్తువు లేదా సేవ హామీ లేదు.',
+                    'support.razorpay':'Razorpay ద్వారా సురక్షితంగా మద్దతు ఇవ్వండి','support.bmc':'Buy Me a Coffee‌లో మద్దతు ఇవ్వండి','support.upiPay':'ఏ UPI యాప్‌తోనైనా చెల్లించండి','support.copy':'కాపీ',
+                    'settings.title':'ప్రాంతం & సేవలు','settings.language':'భాష','settings.languageDesc':'యాప్ కోసం మీకు నచ్చిన భాషను ఎంచుకోండి.',
+                    'settings.region':'మీ ప్రాంతం','settings.regionDesc':'అందుబాటు దేశాన్ని బట్టి మారుతుంది. మీ ప్రాంతంలో ఏది స్ట్రీమ్ అవుతుందో చూపిస్తాం.',
+                    'settings.services':'మీరు సబ్‌స్క్రైబ్ చేసిన సేవలు','settings.servicesDesc':'మీ ప్లాట్‌ఫామ్‌లలో ఉన్న టైటిల్‌లను మేము గుర్తిస్తాం — మీరు ఇప్పటికే ఏది చూడగలరో వెంటనే తెలుస్తుంది.',
+                    'settings.save':'సేవ్','toast.saved':'ప్రాధాన్యతలు సేవ్ చేయబడ్డాయి ✓','toast.deleted':'ఖాతా & డేటా తొలగించబడింది',
+                    'foot.privacy':'గోప్యతా విధానం','foot.delete':'మీ ఖాతా & డేటాను తొలగించండి',
+                    'coach.tipLabel':'చిట్కా','coach.text':'సైన్-ఇన్ లేకుండా ఉచితంగా వాడండి. మీ వాచ్‌లిస్ట్ అన్ని పరికరాల్లో ఉండేందుకు <b>సైన్ ఇన్</b> చేయండి.',
+                },
+                mr:{
+                    'acct.signin':'साइन इन','nav.search':'शोधा','nav.browse':'ब्राउझ','nav.watchlist':'वॉचलिस्ट',
+                    'hero.eyebrow':'कुठे पाहावे · भारत','hero.title':'भारतात काहीही<br/><span class="em">कुठे</span> पाहावे ते लगेच जाणून घ्या.',
+                    'hero.sub':'एखादा चित्रपट किंवा शो टाइप करा. तो कोणकोणत्या प्लॅटफॉर्मवर आहे ते पाहा — सबस्क्रिप्शन, भाडे किंवा खरेदी.',
+                    'search.ph':'दृश्यम, Scam 1992, पंचायत…','search.go':'शोधा','search.results':'निकाल','search.searching':'शोधत आहे…',
+                    'forYou':'तुमच्यासाठी','forYou.because':'तुम्ही {x} सेव्ह केले म्हणून','trending':'भारतात ट्रेंडिंग','trending.today':'आज',
+                    'browse.title':'ब्राउझ करा','browse.sub':'प्रकार, जॉनर आणि रेटिंगनुसार फिल्टर करा — मग कुठे पाहावे ते पाहा.',
+                    'browse.movies':'चित्रपट','browse.shows':'शोज','sort.popular':'सर्वाधिक लोकप्रिय','sort.rating':'टॉप रेटेड','sort.newest':'नवीनतम','surprise':'🎲 काहीही दाखवा',
+                    'watchlist.title':'माझी वॉचलिस्ट','watchlist.sub':'नंतर पाहण्यासाठी सेव्ह केलेली शीर्षके.',
+                    'support.btn':'पाठिंबा','support.title':'KahanDekhu ला पाठिंबा द्या',
+                    'support.lead':'हे अ‍ॅप मोफत आहे आणि नेहमी राहील. याने तुमचा वेळ वाचवला असेल, तर एक छोटी ऐच्छिक टिप विकासाला मदत करते. यामागे काहीही लॉक केलेले नाही.',
+                    'support.note':'एक ऐच्छिक टिप, खरेदी नाही — बदल्यात कोणत्याही वस्तू किंवा सेवेचे वचन नाही.',
+                    'support.razorpay':'Razorpay द्वारे सुरक्षितपणे पाठिंबा द्या','support.bmc':'Buy Me a Coffee वर पाठिंबा द्या','support.upiPay':'कोणत्याही UPI अ‍ॅपने पैसे द्या','support.copy':'कॉपी',
+                    'settings.title':'प्रदेश व सेवा','settings.language':'भाषा','settings.languageDesc':'अ‍ॅपसाठी तुमची पसंतीची भाषा निवडा.',
+                    'settings.region':'तुमचा प्रदेश','settings.regionDesc':'उपलब्धता देशानुसार बदलते. तुमच्या भागात काय स्ट्रीम होत आहे ते दाखवू.',
+                    'settings.services':'तुम्ही सबस्क्राइब केलेल्या सेवा','settings.servicesDesc':'तुमच्या प्लॅटफॉर्मवरील शीर्षके आम्ही चिन्हांकित करू — म्हणजे तुम्हाला लगेच कळेल काय आधीच पाहता येईल.',
+                    'settings.save':'जतन करा','toast.saved':'प्राधान्ये जतन केली ✓','toast.deleted':'खाते व डेटा हटवला',
+                    'foot.privacy':'गोपनीयता धोरण','foot.delete':'तुमचे खाते व डेटा हटवा',
+                    'coach.tipLabel':'टिप','coach.text':'साइन-इन न करता मोफत वापरा. तुमची वॉचलिस्ट सर्व डिव्हाइसवर राहावी म्हणून <b>साइन इन</b> करा.',
+                },
+                kn:{
+                    'acct.signin':'ಸೈನ್ ಇನ್','nav.search':'ಹುಡುಕು','nav.browse':'ಬ್ರೌಸ್','nav.watchlist':'ವಾಚ್‌ಲಿಸ್ಟ್',
+                    'hero.eyebrow':'ಎಲ್ಲಿ ನೋಡಬೇಕು · ಭಾರತ','hero.title':'ಭಾರತದಲ್ಲಿ ಯಾವುದನ್ನಾದರೂ<br/><span class="em">ಎಲ್ಲಿ</span> ನೋಡಬೇಕೆಂದು ಕೂಡಲೇ ತಿಳಿಯಿರಿ.',
+                    'hero.sub':'ಒಂದು ಸಿನಿಮಾ ಅಥವಾ ಶೋ ಟೈಪ್ ಮಾಡಿ. ಅದು ಯಾವ್ಯಾವ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್‌ಗಳಲ್ಲಿದೆ ಎಂದು ನೋಡಿ — ಸಬ್‌ಸ್ಕ್ರಿಪ್ಶನ್, ಬಾಡಿಗೆ ಅಥವಾ ಖರೀದಿ.',
+                    'search.ph':'ದೃಶ್ಯಂ, Scam 1992, ಪಂಚಾಯತ್…','search.go':'ಹುಡುಕು','search.results':'ಫಲಿತಾಂಶಗಳು','search.searching':'ಹುಡುಕುತ್ತಿದೆ…',
+                    'forYou':'ನಿಮಗಾಗಿ','forYou.because':'ನೀವು {x} ಉಳಿಸಿದ್ದರಿಂದ','trending':'ಭಾರತದಲ್ಲಿ ಟ್ರೆಂಡಿಂಗ್','trending.today':'ಇಂದು',
+                    'browse.title':'ಬ್ರೌಸ್ ಮಾಡಿ','browse.sub':'ಪ್ರಕಾರ, ಜಾನರ್ ಮತ್ತು ರೇಟಿಂಗ್ ಮೂಲಕ ಫಿಲ್ಟರ್ ಮಾಡಿ — ನಂತರ ಎಲ್ಲಿ ನೋಡಬೇಕೆಂದು ನೋಡಿ.',
+                    'browse.movies':'ಸಿನಿಮಾಗಳು','browse.shows':'ಶೋಗಳು','sort.popular':'ಅತಿ ಜನಪ್ರಿಯ','sort.rating':'ಟಾಪ್ ರೇಟೆಡ್','sort.newest':'ಹೊಸತು','surprise':'🎲 ಯಾವುದಾದರೂ ತೋರಿಸಿ',
+                    'watchlist.title':'ನನ್ನ ವಾಚ್‌ಲಿಸ್ಟ್','watchlist.sub':'ನಂತರ ನೋಡಲು ನೀವು ಉಳಿಸಿದ ಶೀರ್ಷಿಕೆಗಳು.',
+                    'support.btn':'ಬೆಂಬಲ','support.title':'KahanDekhu ಗೆ ಬೆಂಬಲ ನೀಡಿ',
+                    'support.lead':'ಈ ಆ್ಯಪ್ ಉಚಿತ, ಯಾವಾಗಲೂ ಉಚಿತವಾಗಿರುತ್ತದೆ. ಇದು ನಿಮ್ಮ ಸಮಯ ಉಳಿಸಿದರೆ, ಒಂದು ಸಣ್ಣ ಸ್ವಯಂಪ್ರೇರಿತ ಟಿಪ್ ಅಭಿವೃದ್ಧಿಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ. ಇದರ ಹಿಂದೆ ಏನೂ ಲಾಕ್ ಆಗಿಲ್ಲ.',
+                    'support.note':'ಒಂದು ಸ್ವಯಂಪ್ರೇರಿತ ಟಿಪ್, ಖರೀದಿ ಅಲ್ಲ — ಪ್ರತಿಯಾಗಿ ಯಾವುದೇ ವಸ್ತು ಅಥವಾ ಸೇವೆಯ ಭರವಸೆ ಇಲ್ಲ.',
+                    'support.razorpay':'Razorpay ಮೂಲಕ ಸುರಕ್ಷಿತವಾಗಿ ಬೆಂಬಲಿಸಿ','support.bmc':'Buy Me a Coffee ನಲ್ಲಿ ಬೆಂಬಲಿಸಿ','support.upiPay':'ಯಾವುದೇ UPI ಆ್ಯಪ್ ಮೂಲಕ ಪಾವತಿಸಿ','support.copy':'ಕಾಪಿ',
+                    'settings.title':'ಪ್ರದೇಶ & ಸೇವೆಗಳು','settings.language':'ಭಾಷೆ','settings.languageDesc':'ಆ್ಯಪ್‌ಗಾಗಿ ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+                    'settings.region':'ನಿಮ್ಮ ಪ್ರದೇಶ','settings.regionDesc':'ಲಭ್ಯತೆ ದೇಶದಿಂದ ದೇಶಕ್ಕೆ ಬದಲಾಗುತ್ತದೆ. ನಿಮ್ಮ ಪ್ರದೇಶದಲ್ಲಿ ಏನು ಸ್ಟ್ರೀಮ್ ಆಗುತ್ತಿದೆ ಎಂದು ತೋರಿಸುತ್ತೇವೆ.',
+                    'settings.services':'ನೀವು ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಿದ ಸೇವೆಗಳು','settings.servicesDesc':'ನಿಮ್ಮ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್‌ಗಳಲ್ಲಿರುವ ಶೀರ್ಷಿಕೆಗಳನ್ನು ನಾವು ಗುರುತಿಸುತ್ತೇವೆ — ನೀವು ಈಗಾಗಲೇ ಏನು ನೋಡಬಹುದು ಎಂದು ತಕ್ಷಣ ತಿಳಿಯುತ್ತದೆ.',
+                    'settings.save':'ಉಳಿಸಿ','toast.saved':'ಆದ್ಯತೆಗಳು ಉಳಿಸಲಾಗಿದೆ ✓','toast.deleted':'ಖಾತೆ & ಡೇಟಾ ಅಳಿಸಲಾಗಿದೆ',
+                    'foot.privacy':'ಗೌಪ್ಯತಾ ನೀತಿ','foot.delete':'ನಿಮ್ಮ ಖಾತೆ & ಡೇಟಾ ಅಳಿಸಿ',
+                    'coach.tipLabel':'ಸಲಹೆ','coach.text':'ಸೈನ್-ಇನ್ ಇಲ್ಲದೆ ಉಚಿತವಾಗಿ ಬಳಸಿ. ನಿಮ್ಮ ವಾಚ್‌ಲಿಸ್ಟ್ ಎಲ್ಲಾ ಸಾಧನಗಳಲ್ಲಿ ಇರಲು <b>ಸೈನ್ ಇನ್</b> ಮಾಡಿ.',
+                },
+                ml:{
+                    'acct.signin':'സൈൻ ഇൻ','nav.search':'തിരയുക','nav.browse':'ബ്രൗസ്','nav.watchlist':'വാച്ച്‌ലിസ്റ്റ്',
+                    'hero.eyebrow':'എവിടെ കാണാം · ഇന്ത്യ','hero.title':'ഇന്ത്യയിൽ എന്തും<br/><span class="em">എവിടെ</span> കാണാമെന്ന് ഉടൻ അറിയൂ.',
+                    'hero.sub':'ഒരു സിനിമയോ ഷോയോ ടൈപ്പ് ചെയ്യൂ. അത് ഏതെല്ലാം പ്ലാറ്റ്‌ഫോമുകളിലുണ്ടെന്ന് കാണൂ — സബ്‌സ്‌ക്രിപ്ഷൻ, വാടക അല്ലെങ്കിൽ വാങ്ങൽ.',
+                    'search.ph':'ദൃശ്യം, Scam 1992, പഞ്ചായത്ത്…','search.go':'തിരയുക','search.results':'ഫലങ്ങൾ','search.searching':'തിരയുന്നു…',
+                    'forYou':'നിങ്ങൾക്കായി','forYou.because':'നിങ്ങൾ {x} സേവ് ചെയ്തതിനാൽ','trending':'ഇന്ത്യയിൽ ട്രെൻഡിങ്','trending.today':'ഇന്ന്',
+                    'browse.title':'ബ്രൗസ് ചെയ്യൂ','browse.sub':'തരം, ജോണർ, റേറ്റിങ് എന്നിവ പ്രകാരം ഫിൽട്ടർ ചെയ്യൂ — പിന്നെ എവിടെ കാണാമെന്ന് നോക്കൂ.',
+                    'browse.movies':'സിനിമകൾ','browse.shows':'ഷോകൾ','sort.popular':'ഏറ്റവും ജനപ്രിയം','sort.rating':'ടോപ് റേറ്റഡ്','sort.newest':'ഏറ്റവും പുതിയത്','surprise':'🎲 എന്തെങ്കിലും കാണിക്കൂ',
+                    'watchlist.title':'എന്റെ വാച്ച്‌ലിസ്റ്റ്','watchlist.sub':'പിന്നീട് കാണാൻ നിങ്ങൾ സേവ് ചെയ്ത ടൈറ്റിലുകൾ.',
+                    'support.btn':'പിന്തുണ','support.title':'KahanDekhu-വിന് പിന്തുണ നൽകൂ',
+                    'support.lead':'ഈ ആപ്പ് സൗജന്യമാണ്, എപ്പോഴും സൗജന്യമായിരിക്കും. ഇത് നിങ്ങളുടെ സമയം ലാഭിച്ചെങ്കിൽ, ഒരു ചെറിയ സ്വമേധയാ ടിപ്പ് വികസനത്തിന് സഹായിക്കും. ഇതിന് പിന്നിൽ ഒന്നും ലോക്ക് ചെയ്തിട്ടില്ല.',
+                    'support.note':'ഒരു സ്വമേധയാ ടിപ്പ്, വാങ്ങലല്ല — പകരം ഒരു ഉൽപ്പന്നമോ സേവനമോ വാഗ്ദാനം ചെയ്യുന്നില്ല.',
+                    'support.razorpay':'Razorpay വഴി സുരക്ഷിതമായി പിന്തുണയ്ക്കൂ','support.bmc':'Buy Me a Coffee-യിൽ പിന്തുണയ്ക്കൂ','support.upiPay':'ഏത് UPI ആപ്പ് വഴിയും പണമടയ്ക്കൂ','support.copy':'പകർത്തുക',
+                    'settings.title':'പ്രദേശം & സേവനങ്ങൾ','settings.language':'ഭാഷ','settings.languageDesc':'ആപ്പിനായി നിങ്ങളുടെ ഇഷ്ട ഭാഷ തിരഞ്ഞെടുക്കൂ.',
+                    'settings.region':'നിങ്ങളുടെ പ്രദേശം','settings.regionDesc':'ലഭ്യത രാജ്യം അനുസരിച്ച് മാറുന്നു. നിങ്ങളുടെ പ്രദേശത്ത് എന്താണ് സ്ട്രീം ചെയ്യുന്നതെന്ന് കാണിക്കാം.',
+                    'settings.services':'നിങ്ങൾ സബ്‌സ്‌ക്രൈബ് ചെയ്ത സേവനങ്ങൾ','settings.servicesDesc':'നിങ്ങളുടെ പ്ലാറ്റ്‌ഫോമുകളിലുള്ള ടൈറ്റിലുകൾ ഞങ്ങൾ അടയാളപ്പെടുത്തും — നിങ്ങൾക്ക് ഇപ്പോൾ തന്നെ എന്ത് കാണാമെന്ന് ഉടൻ അറിയാം.',
+                    'settings.save':'സേവ് ചെയ്യൂ','toast.saved':'മുൻഗണനകൾ സേവ് ചെയ്തു ✓','toast.deleted':'അക്കൗണ്ടും ഡാറ്റയും ഇല്ലാതാക്കി',
+                    'foot.privacy':'സ്വകാര്യതാ നയം','foot.delete':'നിങ്ങളുടെ അക്കൗണ്ടും ഡാറ്റയും ഇല്ലാതാക്കൂ',
+                    'coach.tipLabel':'നുറുങ്ങ്','coach.text':'സൈൻ-ഇൻ ഇല്ലാതെ സൗജന്യമായി ഉപയോഗിക്കൂ. നിങ്ങളുടെ വാച്ച്‌ലിസ്റ്റ് എല്ലാ ഉപകരണങ്ങളിലും നിലനിർത്താൻ <b>സൈൻ ഇൻ</b> ചെയ്യൂ.',
+                },
+                gu:{
+                    'acct.signin':'સાઇન ઇન','nav.search':'શોધો','nav.browse':'બ્રાઉઝ','nav.watchlist':'વૉચલિસ્ટ',
+                    'hero.eyebrow':'ક્યાં જોવું · ભારત','hero.title':'ભારતમાં કંઈપણ<br/><span class="em">ક્યાં</span> જોવું તે તરત જાણો.',
+                    'hero.sub':'એક ફિલ્મ કે શો ટાઇપ કરો. તે કયા-કયા પ્લેટફોર્મ પર છે તે જુઓ — સબ્સ્ક્રિપ્શન, ભાડે કે ખરીદી.',
+                    'search.ph':'દૃશ્યમ, Scam 1992, પંચાયત…','search.go':'શોધો','search.results':'પરિણામો','search.searching':'શોધી રહ્યું છે…',
+                    'forYou':'તમારા માટે','forYou.because':'તમે {x} સાચવ્યું એટલે','trending':'ભારતમાં ટ્રેન્ડિંગ','trending.today':'આજે',
+                    'browse.title':'બ્રાઉઝ કરો','browse.sub':'પ્રકાર, જૉનર અને રેટિંગ પ્રમાણે ફિલ્ટર કરો — પછી જુઓ ક્યાં જોવું.',
+                    'browse.movies':'ફિલ્મો','browse.shows':'શોઝ','sort.popular':'સૌથી લોકપ્રિય','sort.rating':'ટોપ રેટેડ','sort.newest':'નવીનતમ','surprise':'🎲 કંઈપણ બતાવો',
+                    'watchlist.title':'મારી વૉચલિસ્ટ','watchlist.sub':'પછી જોવા માટે તમે સાચવેલા ટાઇટલ.',
+                    'support.btn':'સહયોગ','support.title':'KahanDekhu ને સહયોગ આપો',
+                    'support.lead':'આ ઍપ મફત છે અને હંમેશા રહેશે. જો તેણે તમારો સમય બચાવ્યો હોય, તો એક નાની સ્વૈચ્છિક ટિપ વિકાસમાં મદદ કરે છે. તેની પાછળ કંઈ લૉક નથી.',
+                    'support.note':'એક સ્વૈચ્છિક ટિપ, ખરીદી નહીં — બદલામાં કોઈ વસ્તુ કે સેવાનું વચન નથી.',
+                    'support.razorpay':'Razorpay દ્વારા સુરક્ષિત રીતે સહયોગ આપો','support.bmc':'Buy Me a Coffee પર સહયોગ આપો','support.upiPay':'કોઈપણ UPI ઍપથી ચૂકવો','support.copy':'કૉપિ',
+                    'settings.title':'પ્રદેશ અને સેવાઓ','settings.language':'ભાષા','settings.languageDesc':'ઍપ માટે તમારી પસંદગીની ભાષા પસંદ કરો.',
+                    'settings.region':'તમારો પ્રદેશ','settings.regionDesc':'ઉપલબ્ધતા દેશ પ્રમાણે બદલાય છે. અમે બતાવીશું તમારે ત્યાં શું સ્ટ્રીમ થાય છે.',
+                    'settings.services':'તમે સબ્સ્ક્રાઇબ કરેલી સેવાઓ','settings.servicesDesc':'તમારા પ્લેટફોર્મ પરના ટાઇટલ અમે ચિહ્નિત કરીશું — જેથી તમને તરત ખબર પડે કે તમે શું પહેલેથી જોઈ શકો.',
+                    'settings.save':'સાચવો','toast.saved':'પસંદગીઓ સાચવી ✓','toast.deleted':'એકાઉન્ટ અને ડેટા કાઢી નાખ્યો',
+                    'foot.privacy':'ગોપનીયતા નીતિ','foot.delete':'તમારું એકાઉન્ટ અને ડેટા કાઢો',
+                    'coach.tipLabel':'ટિપ','coach.text':'સાઇન-ઇન વગર મફત વાપરો. તમારી વૉચલિસ્ટ બધા ઉપકરણો પર રહે તે માટે <b>સાઇન ઇન</b> કરો.',
+                },
+                pa:{
+                    'acct.signin':'ਸਾਈਨ ਇਨ','nav.search':'ਖੋਜੋ','nav.browse':'ਬ੍ਰਾਊਜ਼','nav.watchlist':'ਵਾਚਲਿਸਟ',
+                    'hero.eyebrow':'ਕਿੱਥੇ ਵੇਖੀਏ · ਭਾਰਤ','hero.title':'ਭਾਰਤ ਵਿੱਚ ਕੁਝ ਵੀ<br/><span class="em">ਕਿੱਥੇ</span> ਵੇਖੀਏ, ਤੁਰੰਤ ਜਾਣੋ।',
+                    'hero.sub':'ਕੋਈ ਫ਼ਿਲਮ ਜਾਂ ਸ਼ੋਅ ਟਾਈਪ ਕਰੋ। ਵੇਖੋ ਇਹ ਕਿਹੜੇ-ਕਿਹੜੇ ਪਲੇਟਫਾਰਮ ਤੇ ਹੈ — ਸਬਸਕ੍ਰਿਪਸ਼ਨ, ਕਿਰਾਏ ਜਾਂ ਖਰੀਦ।',
+                    'search.ph':'ਦ੍ਰਿਸ਼ਯਮ, Scam 1992, ਪੰਚਾਇਤ…','search.go':'ਖੋਜੋ','search.results':'ਨਤੀਜੇ','search.searching':'ਖੋਜ ਰਿਹਾ ਹੈ…',
+                    'forYou':'ਤੁਹਾਡੇ ਲਈ','forYou.because':'ਕਿਉਂਕਿ ਤੁਸੀਂ {x} ਸੇਵ ਕੀਤਾ','trending':'ਭਾਰਤ ਵਿੱਚ ਟ੍ਰੈਂਡਿੰਗ','trending.today':'ਅੱਜ',
+                    'browse.title':'ਬ੍ਰਾਊਜ਼ ਕਰੋ','browse.sub':'ਕਿਸਮ, ਜੌਨਰ ਅਤੇ ਰੇਟਿੰਗ ਨਾਲ ਫਿਲਟਰ ਕਰੋ — ਫਿਰ ਵੇਖੋ ਕਿੱਥੇ ਵੇਖੀਏ।',
+                    'browse.movies':'ਫ਼ਿਲਮਾਂ','browse.shows':'ਸ਼ੋਅਜ਼','sort.popular':'ਸਭ ਤੋਂ ਪ੍ਰਸਿੱਧ','sort.rating':'ਟਾਪ ਰੇਟਡ','sort.newest':'ਨਵੀਨਤਮ','surprise':'🎲 ਕੁਝ ਵੀ ਵਿਖਾਓ',
+                    'watchlist.title':'ਮੇਰੀ ਵਾਚਲਿਸਟ','watchlist.sub':'ਬਾਅਦ ਵਿੱਚ ਵੇਖਣ ਲਈ ਸੇਵ ਕੀਤੇ ਟਾਈਟਲ।',
+                    'support.btn':'ਸਹਿਯੋਗ','support.title':'KahanDekhu ਨੂੰ ਸਹਿਯੋਗ ਦਿਓ',
+                    'support.lead':'ਇਹ ਐਪ ਮੁਫ਼ਤ ਹੈ ਅਤੇ ਹਮੇਸ਼ਾ ਰਹੇਗੀ। ਜੇ ਇਸਨੇ ਤੁਹਾਡਾ ਸਮਾਂ ਬਚਾਇਆ, ਤਾਂ ਇੱਕ ਛੋਟੀ ਸਵੈ-ਇੱਛਤ ਟਿੱਪ ਵਿਕਾਸ ਵਿੱਚ ਮਦਦ ਕਰਦੀ ਹੈ। ਇਸਦੇ ਪਿੱਛੇ ਕੁਝ ਵੀ ਲਾਕ ਨਹੀਂ ਹੈ।',
+                    'support.note':'ਇੱਕ ਸਵੈ-ਇੱਛਤ ਟਿੱਪ, ਖਰੀਦ ਨਹੀਂ — ਬਦਲੇ ਵਿੱਚ ਕਿਸੇ ਵਸਤੂ ਜਾਂ ਸੇਵਾ ਦਾ ਵਾਅਦਾ ਨਹੀਂ।',
+                    'support.razorpay':'Razorpay ਰਾਹੀਂ ਸੁਰੱਖਿਅਤ ਸਹਿਯੋਗ ਦਿਓ','support.bmc':'Buy Me a Coffee ਤੇ ਸਹਿਯੋਗ ਦਿਓ','support.upiPay':'ਕਿਸੇ ਵੀ UPI ਐਪ ਨਾਲ ਭੁਗਤਾਨ ਕਰੋ','support.copy':'ਕਾਪੀ',
+                    'settings.title':'ਖੇਤਰ ਅਤੇ ਸੇਵਾਵਾਂ','settings.language':'ਭਾਸ਼ਾ','settings.languageDesc':'ਐਪ ਲਈ ਆਪਣੀ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ ਚੁਣੋ।',
+                    'settings.region':'ਤੁਹਾਡਾ ਖੇਤਰ','settings.regionDesc':'ਉਪਲਬਧਤਾ ਦੇਸ਼ ਅਨੁਸਾਰ ਬਦਲਦੀ ਹੈ। ਅਸੀਂ ਵਿਖਾਵਾਂਗੇ ਤੁਹਾਡੇ ਇੱਥੇ ਕੀ ਸਟ੍ਰੀਮ ਹੋ ਰਿਹਾ ਹੈ।',
+                    'settings.services':'ਤੁਹਾਡੀਆਂ ਸਬਸਕ੍ਰਾਈਬ ਕੀਤੀਆਂ ਸੇਵਾਵਾਂ','settings.servicesDesc':'ਤੁਹਾਡੇ ਪਲੇਟਫਾਰਮ ਤੇ ਮੌਜੂਦ ਟਾਈਟਲ ਅਸੀਂ ਨਿਸ਼ਾਨਬੱਧ ਕਰਾਂਗੇ — ਤਾਂ ਜੋ ਤੁਹਾਨੂੰ ਤੁਰੰਤ ਪਤਾ ਲੱਗੇ ਕਿ ਤੁਸੀਂ ਪਹਿਲਾਂ ਤੋਂ ਕੀ ਵੇਖ ਸਕਦੇ ਹੋ।',
+                    'settings.save':'ਸੇਵ ਕਰੋ','toast.saved':'ਤਰਜੀਹਾਂ ਸੇਵ ਹੋ ਗਈਆਂ ✓','toast.deleted':'ਖਾਤਾ ਅਤੇ ਡਾਟਾ ਮਿਟਾ ਦਿੱਤਾ',
+                    'foot.privacy':'ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ','foot.delete':'ਆਪਣਾ ਖਾਤਾ ਅਤੇ ਡਾਟਾ ਮਿਟਾਓ',
+                    'coach.tipLabel':'ਟਿੱਪ','coach.text':'ਸਾਈਨ-ਇਨ ਤੋਂ ਬਿਨਾਂ ਮੁਫ਼ਤ ਵਰਤੋ। ਆਪਣੀ ਵਾਚਲਿਸਟ ਸਾਰੇ ਡਿਵਾਈਸਾਂ ਤੇ ਰੱਖਣ ਲਈ <b>ਸਾਈਨ ਇਨ</b> ਕਰੋ।',
+                },
+            };
+            let LANG = 'en';
+            function t(key, vars){
+                let s = (STRINGS[LANG] && STRINGS[LANG][key]) || STRINGS.en[key] || key;
+                if(vars) Object.keys(vars).forEach(k=>{ s = s.replace('{'+k+'}', vars[k]); });
+                return s;
+            }
+            function applyI18n(){
+                document.documentElement.lang = LANG;
+                document.querySelectorAll('[data-i18n]').forEach(e=>{ const v=t(e.dataset.i18n); if(v) e.textContent=v; });
+                document.querySelectorAll('[data-i18n-html]').forEach(e=>{ const v=t(e.dataset.i18nHtml); if(v) e.innerHTML=v; });
+                document.querySelectorAll('[data-i18n-ph]').forEach(e=>{ const v=t(e.dataset.i18nPh); if(v) e.placeholder=v; });
+            }
+            function setLang(code, save){
+                if(!STRINGS[code]) code='en';
+                LANG=code; applyI18n();
+                if(save!==false) sSet('kd_lang', LANG);   // device-local; language is a per-device choice
+            }
+            function detectLang(){
+                const saved=sGet('kd_lang'); if(saved && STRINGS[saved]) return saved;
+                const nav=(navigator.language||'en').slice(0,2).toLowerCase();
+                return STRINGS[nav] ? nav : 'en';
+            }
+
             let API_KEY = '';
             const live = () => USE_PROXY || !!API_KEY;
             
@@ -643,7 +878,7 @@
                 // On the detail page, keep the tab the user came from highlighted.
                 const navId=(id==='v-detail')?currentTab:id;
                 document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.view===navId));
-                const fab=document.getElementById('openSupport'); if(fab) fab.style.display = (id==='v-detail') ? 'none' : '';
+                const fab=document.getElementById('openSupport'); if(fab) fab.style.display = (id==='v-detail' || !supportPageURL()) ? 'none' : '';
                 window.scrollTo({top:0});
             }
             document.querySelectorAll('#nav button').forEach(b=>{
@@ -670,7 +905,7 @@
                 try{
                     const recs=await tmdb.recommendations(stype, seed.id);
                     if(!recs.length){ sec.style.display='none'; sec.dataset.has=''; return; }
-                    $('#forYouHead').textContent=`Because you saved ${seed.title}`;
+                    $('#forYouHead').textContent=t('forYou.because',{x:seed.title});
                     const rail=$('#forYouRail'); rail.innerHTML=''; recs.slice(0,16).forEach(it=>{ it.media_type=it.media_type||stype; rail.appendChild(buildCard(it)); });
                     sec.dataset.has='1';
                     if($('#searchSec').style.display==='none') sec.style.display='';
@@ -681,7 +916,7 @@
                 const v=qInput.value.trim(); clearBtn.classList.toggle('show',v.length>0);
                 clearTimeout(debounceT);
                 if(!v){ exitSearch(); return; }
-                enterSearch(); $('#searchHead').textContent='Searching…'; $('#searchGrid').innerHTML=CARD_SKELETON;
+                enterSearch(); $('#searchHead').textContent=t('search.searching'); $('#searchGrid').innerHTML=CARD_SKELETON;
                 debounceT=setTimeout(()=>runSearch(v),300);
             });
             qInput.addEventListener('keydown',e=>{
@@ -695,10 +930,10 @@
             qInput.addEventListener('blur',()=>document.body.classList.remove('kb-open'));
             async function runSearch(q){
                 try{ currentResults=(await tmdb.searchMulti(q)).slice(0,24); renderSearchGrid(currentResults,q); }
-                catch(e){ $('#searchHead').textContent='Results'; $('#searchGrid').innerHTML='<div class="r-empty" style="grid-column:1/-1;padding:30px 12px">Couldn\'t reach the catalog. Check your connection and try again.</div>'; }
+                catch(e){ $('#searchHead').textContent=t('search.results'); $('#searchGrid').innerHTML='<div class="r-empty" style="grid-column:1/-1;padding:30px 12px">Couldn\'t reach the catalog. Check your connection and try again.</div>'; }
             }
             function renderSearchGrid(list,q){
-                $('#searchHead').textContent = list.length ? `Results for “${q}”` : 'No results';
+                $('#searchHead').textContent = list.length ? `${t('search.results')} · ${q}` : t('search.results');
                 const g=$('#searchGrid'); g.innerHTML='';
                 if(!list.length){ g.innerHTML=`<div class="r-empty" style="grid-column:1/-1;padding:30px 12px">No match for <b>"${escapeHtml(q)}"</b>.<br/>Check the spelling, or try the original title.</div>`; return; }
                 list.forEach(item=>g.appendChild(buildCard(item)));
@@ -1134,29 +1369,37 @@
             document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',e=>e.target.closest('.modal-bg').classList.remove('show')));
             document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('show'); }));
             
-            $('#openSupport').addEventListener('click',()=>{ openModal('#supportModal'); buildSupport(); });
-            function buildSupport(){
-                // 3rd-party support page set → show one button, hide the UPI ID/QR entirely.
-                if(SUPPORT_URL){
-                    const sl=$('#supportLink'); sl.href=SUPPORT_URL; sl.style.display='';
-                    $('#upiGroup').style.display='none';
-                    return;
-                }
-                $('#supportLink').style.display='none'; $('#upiGroup').style.display='';
-                $('#upiId').textContent=SUPPORT_UPI;
-                const link=`upi://pay?pa=${encodeURIComponent(SUPPORT_UPI)}&pn=${encodeURIComponent(SUPPORT_NAME)}&cu=INR`;
-                $('#upiPay').href=link;
-                const rz=$('#razorpayLink'); if(SUPPORT_RAZORPAY){ rz.href=SUPPORT_RAZORPAY; rz.style.display=''; } else { rz.style.display='none'; }
-                const box=$('#qrcode'); box.innerHTML='';
-                if(typeof QRCode!=='undefined'){ try{ new QRCode(box,{text:link,width:168,height:168,colorDark:'#0D0B1A',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M}); }catch(e){ box.innerHTML='<div class="qr-fallback">Scan unavailable — use the UPI ID below.</div>'; } }
-                else box.innerHTML='<div class="qr-fallback">Scan unavailable — use the UPI ID below.</div>';
+            // Hide the Support button entirely if no hosted page is configured (no UPI fallback exists).
+            (function(){ if(!supportPageURL()){ document.getElementById('openSupport')?.remove(); document.getElementById('supportModal')?.remove(); } })();
+            $('#openSupport')?.addEventListener('click',()=>{ openModal('#supportModal'); buildSupport(); });
+            // Resolve the configured hosted page (Razorpay preferred). Adds https:// if missing.
+            // Returns '' if nothing is configured — in which case NO support UI is shown at all.
+            function supportPageURL(){
+                let p = (SUPPORT_RAZORPAY || SUPPORT_URL || '').trim();
+                if(!p) return '';
+                if(!/^https?:\/\//i.test(p)) p = 'https://' + p;
+                return p;
             }
-            $('#copyUpi').addEventListener('click',async()=>{ try{ await navigator.clipboard.writeText(SUPPORT_UPI); const b=$('#copyUpi'); b.textContent='Copied'; b.classList.add('done'); setTimeout(()=>{b.textContent='Copy';b.classList.remove('done');},1500);}catch(e){} });
+            function buildSupport(){
+                // The hosted page is the ONLY payment surface. No raw UPI, ever.
+                const page = supportPageURL();
+                if(!page){ $('#supportLink').style.display='none'; return; }
+                const sl=$('#supportLink'); sl.href=page; sl.style.display='';
+                const lbl=$('#supportLabel');
+                if(lbl) lbl.textContent = t(SUPPORT_RAZORPAY ? 'support.razorpay' : 'support.bmc');
+            }
             
             $('#openSettings').addEventListener('click',()=>{ buildSettings(); openModal('#settingsModal'); });
             let tmpRegion=REGION, tmpServices=new Set();
             function buildSettings(){
                 tmpRegion=REGION; tmpServices=new Set(SERVICES);
+                const ls=$('#langSel');
+                if(ls && !ls.dataset.built){
+                    ls.innerHTML=LANGS.map(([c,n])=>`<option value="${c}">${n}</option>`).join('');
+                    ls.addEventListener('change',()=>setLang(ls.value));
+                    ls.dataset.built='1';
+                }
+                if(ls) ls.value=LANG;
                 const rg=$('#regionGrid'); rg.innerHTML='';
                 REGIONS.forEach(([code,name,flag])=>{
                     const b=el('button','region-opt'+(code===tmpRegion?' on':'')); b.innerHTML=`<span>${flag}</span> ${name}`;
@@ -1177,7 +1420,7 @@
                 REGION=tmpRegion; SERVICES=new Set(tmpServices);
                 await sSet('kd_region',REGION); await sSet('kd_services',[...SERVICES]);
                 cloudSavePrefs();
-                reflectRegion(); closeModal('#settingsModal'); toast('Preferences saved ✓');
+                reflectRegion(); closeModal('#settingsModal'); toast(t('toast.saved'));
                 if(CURRENT && $('#v-detail').classList.contains('on')) renderDetail(CURRENT);
                 if(regionChanged && browseLoaded) loadBrowse(currentBrowseType);
             });
@@ -1390,7 +1633,7 @@
                     ['kd_watchlist','kd_region','kd_services'].forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
                     reflectRegion();
                     if($('#v-watchlist').classList.contains('on')) renderWatchlist();
-                    updateAccountUI(); closeModal('#authModal'); toast('Account and data deleted');
+                    updateAccountUI(); closeModal('#authModal'); toast(t('toast.deleted'));
                 }catch(e){
                     if(btn){ btn.disabled=false; btn.textContent='Delete account & data'; }
                     toast('Could not delete right now — please try the deletion page');
@@ -1398,6 +1641,7 @@
             }
             
             /* BOOT */
+            LANG = detectLang(); applyI18n();   // localize UI before first paint of dynamic content
             (async function init(){
                 const r=await sGet('kd_region'); if(r) REGION=r;
                 const sv=await sGet('kd_services'); if(sv) SERVICES=new Set(sv);

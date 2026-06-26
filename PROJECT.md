@@ -90,8 +90,10 @@ One file: `<style>` (theme + components), markup (4 views), and `<script>` (all 
 | `PUSH_API` | Push worker URL (empty → notify button hidden) |
 | `VAPID_PUBLIC` | Public push key (safe to ship) |
 | `SUPABASE_URL` / `SUPABASE_ANON_KEY` | Accounts (anon key is RLS-protected, safe to ship) |
-| `SUPPORT_UPI` / `SUPPORT_NAME` | Donations |
-| `SUPPORT_RAZORPAY` | Optional; empty → card button hidden |
+| `SUPPORT_RAZORPAY` | Tip path — razorpay.me link (`https://` auto-added). Only payment surface in the app (see `RAZORPAY-SETUP.md`) |
+| `SUPPORT_URL` | Optional alt page (Buy Me a Coffee / Ko-fi) |
+
+> **No raw UPI / personal name is ever shown.** There is no UPI fallback. If neither link above is set, the Support button is removed from the DOM entirely.
 
 > **Never** ship the Supabase `service_role` key, VAPID private key, or `RUN_SECRET` — those live only as Worker/Supabase secrets.
 
@@ -106,6 +108,14 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - `tmdb.searchMulti(q)`, `tmdb.detail(type,id)` (with `append_to_response=watch/providers,videos`), `tmdb.trending()`, `tmdb.list(path, params)`, `tmdb.recommendations(type,id)`.
 - `buildCard(item)` → poster (2:3) + **rating badge** (gold star + score) + title + **year · genre**. Used by trending, search, browse, watchlist.
 - `GENRES` maps TMDB genre ids → short labels (movie + tv). `genreOf()` / `ratingOf()` helpers.
+
+### 4.3b UI localization (i18n)
+- The interface chrome is localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi, Kannada, Malayalam, Gujarati, Punjabi. (Movie/show data from TMDB stays in its own language — only the app's own text is translated.)
+- `STRINGS = { en:{…}, hi:{…}, … }` keyed by string id; `LANGS` lists `[code, nativeName]` for the picker.
+- `t(key, vars)` resolves the current `LANG` with English fallback and `{x}` interpolation. Static markup carries `data-i18n` (textContent), `data-i18n-html` (innerHTML, for strings with `<span class="em">`/`<b>`), and `data-i18n-ph` (input placeholder). `applyI18n()` swaps them all and sets `<html lang>`.
+- `detectLang()` → saved `kd_lang` → else `navigator.language` 2-letter → else `en`. `setLang(code)` applies + persists. **Language is device-local** (localStorage `kd_lang`), not cloud-synced (no DB column needed).
+- Picker: a `<select id="langSel">` at the top of the Settings sheet, built once in `buildSettings()`. Boot runs `LANG = detectLang(); applyI18n();` before dynamic content paints.
+- Dynamic JS strings routed through `t()`: search "Searching…"/results header, "Because you saved X", and the saved/deleted toasts.
 
 ### 4.4 Search (`v-search`)
 - Live, debounced (300 ms). Typing swaps the **Trending grid** out for a **search-results grid** (`#searchSec` ↔ `#trendingSec`).
@@ -145,8 +155,9 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 
 ### 4.11 Donations
 - `buildSupport()` renders the donate sheet (opened from the floating Support FAB, which shows on all main views). Two modes:
-  - **`SUPPORT_URL` set** (Buy Me a Coffee / Ko-fi / Razorpay page) → one "Support on …" external button; the UPI ID/QR are **hidden entirely** (preferred — doesn't expose a personal UPI ID).
-  - **`SUPPORT_URL` blank** → fallback to UPI ID + QR (`qrcode.min.js`) + "pay via UPI app" + optional Razorpay.
+  - **`SUPPORT_RAZORPAY` set** (razorpay.me) → one "Support securely via Razorpay" button. Razorpay's hosted page accepts UPI/card/netbanking/wallet, so the personal UPI ID is never exposed. **This is the configured default.** `https://` is auto-prepended by `supportPageURL()`. See `RAZORPAY-SETUP.md`.
+  - **else `SUPPORT_URL` set** → that page button (e.g. Buy Me a Coffee).
+  - **else** → the Support button + modal are **removed from the DOM**. **There is no raw-UPI fallback** — a UPI ID or personal name can never appear in the app.
 - Framed as voluntary — **no perks** (keeps it a compliant peer-to-peer payment / external donation link).
 
 ### 4.12 Web push (client)
