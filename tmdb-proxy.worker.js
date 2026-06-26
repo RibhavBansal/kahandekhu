@@ -30,6 +30,15 @@ const ALLOW = [
     '/configuration',
 ];
 
+// UI language code → m2m100 target language name (for free description auto-translation).
+// Only languages we ship in the app. Anything else → no translation (English fallback).
+const M2M = {
+    hi: 'hindi', bn: 'bengali', ta: 'tamil', te: 'telugu', mr: 'marathi',
+    kn: 'kannada', ml: 'malayalam', gu: 'gujarati', pa: 'punjabi',
+};
+// Only translate single-title detail calls, e.g. /movie/12345 or /tv/678.
+const DETAIL_RE = /^\/(movie|tv)\/\d+$/;
+
 // How long to cache each kind of response (seconds).
 // Availability + details change slowly, so cache them hard.
 function ttlFor(path) {
@@ -96,7 +105,38 @@ export default {
             return json({ error: 'Upstream fetch failed' }, 502);
         }
         
-        const bodyText = await resp.text();
+        let bodyText = await resp.text();
+
+        // 3b) FREE description auto-translation (Cloudflare Workers AI, m2m100).
+        //     When the user's language has no TMDB synopsis, translate the English
+        //     one. Fully guarded: if env.AI is unbound or anything fails, we keep the
+        //     original body untouched (the app then uses its own English fallback).
+        //     The translated body is edge-cached below, so each title+language is
+        //     translated at most once per cache window.
+        if (resp.ok && env.AI && DETAIL_RE.test(path)) {
+            const lang = (incoming.searchParams.get('language') || '').slice(0, 2).toLowerCase();
+            const target = M2M[lang];
+            if (target) {
+                try {
+                    const data = JSON.parse(bodyText);
+                    if (data && !String(data.overview || '').trim()) {
+                        const en = await fetchEnglishOverview(env, path);
+                        if (en) {
+                            const r = await env.AI.run('@cf/meta/m2m100-1.2b', {
+                                text: en, source_lang: 'english', target_lang: target,
+                            });
+                            const translated = r && (r.translated_text || (r.result && r.result.translated_text));
+                            if (translated && String(translated).trim()) {
+                                data.overview = String(translated).trim();
+                                data.kd_translated = true;   // marker: synopsis is machine-translated
+                                bodyText = JSON.stringify(data);
+                            }
+                        }
+                    }
+                } catch (e) { /* keep the original body */ }
+            }
+        }
+
         const ttl = ttlFor(path);
         const out = new Response(bodyText, {
             status: resp.status,
@@ -113,6 +153,19 @@ export default {
         return out;
     },
 };
+
+// Fetch just the English synopsis for a title (used as the source text to translate).
+async function fetchEnglishOverview(env, path) {
+    try {
+        const u = new URL(TMDB + path);
+        u.searchParams.set('language', 'en-US');
+        u.searchParams.set('api_key', env.TMDB_API_KEY);
+        const r = await fetch(u.toString(), { headers: { 'Accept': 'application/json' } });
+        if (!r.ok) return '';
+        const d = await r.json();
+        return d && d.overview ? String(d.overview) : '';
+    } catch (e) { return ''; }
+}
 
 function json(obj, status = 200) {
     return new Response(JSON.stringify(obj), {

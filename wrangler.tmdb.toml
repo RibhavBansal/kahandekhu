@@ -1,0 +1,14 @@
+# Wrangler config for the KahanDekhu TMDB proxy Worker.
+# Deploy with:  wrangler deploy -c wrangler.tmdb.toml
+#
+# Secret needed (set once):  wrangler secret put TMDB_API_KEY -c wrangler.tmdb.toml
+
+name = "kahandekhu-tmdb"
+main = "tmdb-proxy.worker.js"
+compatibility_date = "2024-11-01"
+
+# Cloudflare Workers AI — powers the FREE description auto-translation (m2m100).
+# This binding is what makes env.AI exist. Without it, the proxy still works
+# (translation is skipped and the app falls back to the English synopsis).
+[ai]
+binding = "AI"

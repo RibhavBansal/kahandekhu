@@ -153,6 +153,8 @@
                     .fact{font-family:'JetBrains Mono';font-size:12px;color:var(--muted);padding:4px 10px;border:1px solid var(--line);border-radius:7px;background:var(--bg2)}
                     .fact.star{color:var(--gold);border-color:rgba(245,196,81,.3)}
                     .d-overview{color:#c8c2e0;font-size:14.5px;line-height:1.6;max-width:62ch}
+                    .d-mt{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11.5px;font-weight:600;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+                    .d-mt svg{opacity:.8}
                     .d-actions{display:flex;gap:10px;margin-top:auto;padding-top:16px;flex-wrap:wrap}
                     .act{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);transition:.15s}
                     .act:hover{border-color:var(--gold-dim);transform:translateY(-1px)}
@@ -842,6 +844,7 @@
             // Re-fetch whatever's on screen so titles/overviews come back in the new language.
             function reloadContent(){
                 try{ reflectRegion(); }catch(e){}
+                try{ if($('#settingsModal').classList.contains('show')) renderSettingsBody(); }catch(e){}
                 try{ loadTrending(); }catch(e){}
                 try{ loadForYou(); }catch(e){}
                 try{ if($('#genreChips').children.length){ renderGenreChips(); renderLangChips(); } }catch(e){}
@@ -1021,6 +1024,9 @@
             let BROWSE_POOL=[], BROWSE_SHOWN=[], browseGenre=null, browseSort='popularity', browseLang=null;
             const BROWSE_ALL = { en:['All','All langs'],hi:['सभी','सभी भाषाएँ'],bn:['সব','সব ভাষা'],ta:['அனைத்தும்','எல்லா மொழிகளும்'],te:['అన్నీ','అన్ని భాషలు'],mr:['सर्व','सर्व भाषा'],kn:['ಎಲ್ಲಾ','ಎಲ್ಲಾ ಭಾಷೆಗಳು'],ml:['എല്ലാം','എല്ലാ ഭാഷകളും'],gu:['બધું','બધી ભાષાઓ'],pa:['ਸਾਰੇ','ਸਾਰੀਆਂ ਭਾਸ਼ਾਵਾਂ'] };
             function allLabel(i){ return (BROWSE_ALL[LANG]||BROWSE_ALL.en)[i]; }
+            // "Auto-translated" tag shown under machine-translated synopses.
+            const MT_LABEL = { en:'Auto-translated',hi:'स्वतः अनुवादित',bn:'স্বয়ংক্রিয় অনুবাদ',ta:'தானியங்கி மொழிபெயர்ப்பு',te:'స్వయంచాలక అనువాదం',mr:'स्वयं भाषांतरित',kn:'ಸ್ವಯಂ ಅನುವಾದಿತ',ml:'സ്വയം വിവർത്തനം',gu:'સ્વતઃ અનુવાદિત',pa:'ਸਵੈ-ਅਨੁਵਾਦਿਤ' };
+            function mtLabel(){ return MT_LABEL[LANG] || MT_LABEL.en; }
             const GENRE_CHIPS=[['All',null],['Action',[28,10759]],['Comedy',[35]],['Drama',[18]],['Thriller',[53,9648]],['Sci-Fi',[878,10765]],['Romance',[10749]],['Horror',[27]],['Crime',[80]],['Adventure',[12]],['Animation',[16]],['Documentary',[99]],['Family',[10751]]];
             const LANG_CHIPS=[['All langs',null],['Hindi','hi'],['Tamil','ta'],['Telugu','te'],['Malayalam','ml'],['Kannada','kn'],['Bengali','bn'],['Marathi','mr'],['Punjabi','pa'],['English','en']];
             const dateOf=x=>x.release_date||x.first_air_date||'';
@@ -1149,6 +1155,7 @@
             <div class="d-title">${escapeHtml(titleOf(d))}</div>
             <div class="d-facts">${facts.join('')}</div>
             <div class="d-overview">${escapeHtml(d.overview||'No description available.')}</div>
+            ${d.kd_translated?`<div class="d-mt"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg> ${mtLabel()}</div>`:''}
             <div class="d-actions">
             <button class="act ${saved?'saved':''}" id="saveBtn"><svg viewBox="0 0 24 24" fill="${saved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>${saved?'Saved':'Watchlist'}</span></button>
             <button class="act" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
@@ -1451,20 +1458,29 @@
                     ls.dataset.built='1';
                 }
                 if(ls) ls.value=LANG;
-                const rg=$('#regionGrid'); rg.innerHTML='';
-                REGIONS.forEach(([code,name,flag])=>{
-                    const b=el('button','region-opt'+(code===tmpRegion?' on':'')); b.innerHTML=`<span>${flag}</span> ${regNameOf(code)}`;
-                    b.addEventListener('click',()=>{ tmpRegion=code; rg.querySelectorAll('.region-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
-                    rg.appendChild(b);
-                });
-                const sc=$('#servicesChips'); sc.innerHTML='';
-                SERVICE_OPTIONS.forEach(name=>{
-                    const on=tmpServices.has(name);
-                    const b=el('button','chip'+(on?' on':''));
-                    b.innerHTML=`<span class="ck" style="background:${brandColor(name)}">${initials(name)}</span> ${name} <span class="tick">✓</span>`;
-                    b.addEventListener('click',()=>{ if(tmpServices.has(name)) tmpServices.delete(name); else tmpServices.add(name); b.classList.toggle('on'); });
-                    sc.appendChild(b);
-                });
+                renderSettingsBody();
+            }
+            // Renders the region grid + service chips from the pending (tmp) selection.
+            // Split out so a live language change can re-render localized country names
+            // without resetting the user's unsaved choices.
+            function renderSettingsBody(){
+                const ls=$('#langSel'); if(ls) ls.value=LANG;
+                const rg=$('#regionGrid'); if(rg){ rg.innerHTML='';
+                    REGIONS.forEach(([code,name,flag])=>{
+                        const b=el('button','region-opt'+(code===tmpRegion?' on':'')); b.innerHTML=`<span>${flag}</span> ${regNameOf(code)}`;
+                        b.addEventListener('click',()=>{ tmpRegion=code; rg.querySelectorAll('.region-opt').forEach(x=>x.classList.remove('on')); b.classList.add('on'); });
+                        rg.appendChild(b);
+                    });
+                }
+                const sc=$('#servicesChips'); if(sc){ sc.innerHTML='';
+                    SERVICE_OPTIONS.forEach(name=>{
+                        const on=tmpServices.has(name);
+                        const b=el('button','chip'+(on?' on':''));
+                        b.innerHTML=`<span class="ck" style="background:${brandColor(name)}">${initials(name)}</span> ${name} <span class="tick">✓</span>`;
+                        b.addEventListener('click',()=>{ if(tmpServices.has(name)) tmpServices.delete(name); else tmpServices.add(name); b.classList.toggle('on'); });
+                        sc.appendChild(b);
+                    });
+                }
             }
             $('#saveSettings').addEventListener('click',async()=>{
                 const regionChanged=tmpRegion!==REGION;

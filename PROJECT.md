@@ -186,6 +186,7 @@ Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi
 - Hides the TMDB key (server-side secret `TMDB_API_KEY`).
 - **Allowlist:** `/search/multi`, `/search/movie`, `/search/tv`, `/trending/`, `/movie/`, `/tv/` (not an open proxy).
 - Edge-caches: search 10 min, trending 1 h, details 24 h. Adds CORS.
+- **Free description auto-translation (Workers AI, `@cf/meta/m2m100-1.2b`).** On a detail call (`/movie/{id}` or `/tv/{id}`) in a non-English language where TMDB returns an **empty** overview, the proxy fetches the English synopsis and translates it to the target language (`M2M` map: hi/bn/ta/te/mr/kn/ml/gu/pa), setting `overview` + a `kd_translated` marker. Fully guarded — if the `AI` binding is absent or the call fails, the original body is returned untouched (app then uses its own English fallback). The translated body is edge-cached (24 h), so each title+language is translated at most once per window → stays inside the Workers AI **free tier (10k req/day)**. Config: `wrangler.tmdb.toml` adds `[ai] binding = "AI"`. **Titles are never machine-translated** (proper nouns) — only descriptions.
 
 ### 5.2 Push worker (`push.worker.js`) — `kahandekhu-push`
 - **Endpoints:** `POST /subscribe`, `POST /unsubscribe`, `GET /run?secret=` (manual cron), `GET /test?secret=` (delivery test — pushes to all subs regardless of streaming).
