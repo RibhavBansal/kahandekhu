@@ -35,10 +35,11 @@ Your account-ban risk comes from three areas. Here's where each stands:
 ## 1. Generate the Android package (PWABuilder — easiest)
 
 1. Go to **pwabuilder.com**, enter your live URL.
-2. **Package For Stores → Android**.
-3. Download the package — it produces a **signed `.aab`** plus the **SHA-256 signing fingerprint** and a ready-made `assetlinks.json`.
+2. **Package For Stores → Android** → open **Android options** before downloading.
+3. **⚠️ Set the launch/start URL to include the TWA flag:** change it to **`https://YOURSITE/?source=twa`** (PWABuilder: "Start URL" field in Android options; Bubblewrap: `startUrl: "/?source=twa"` in `twa-manifest.json`). **Do NOT change `manifest.json`'s `start_url`** — only the Android package's launch URL. This flag makes the app hide the tip/support button (Play compliance) without affecting web/iOS users.
+4. Download the package — it produces a **signed `.aab`** plus the **SHA-256 signing fingerprint** and a ready-made `assetlinks.json`.
 - Keep the signing key/keystore it gives you **safe and backed up** — losing it means you can never update the app.
-- *(CLI alternative: `npm i -g @bubblewrap/cli` → `bubblewrap init --manifest https://YOURSITE/manifest.json` → `bubblewrap build`.)*
+- *(CLI alternative: `npm i -g @bubblewrap/cli` → `bubblewrap init --manifest https://YOURSITE/manifest.json` → set `startUrl` to `/?source=twa` in `twa-manifest.json` → `bubblewrap build`.)*
 
 ## 2. Verify domain ownership (removes the browser URL bar)
 

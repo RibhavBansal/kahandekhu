@@ -242,7 +242,7 @@ No limit on Play Store installs or app loading (Pages is unlimited). The ceiling
 
 ## 8. Compliance (verified against current Google Play policy)
 
-- **Donations:** allowed as peer-to-peer — 100% to creator, **no perks unlocked**. Never tie a feature to a donation.
+- **Tips/support (Play-safe):** the support UI is **removed inside the Android TWA build**. Detection is bulletproof: the TWA is packaged with launch URL **`/?source=twa`** (deterministic), with a `document.referrer` fallback, persisted in `sessionStorage` — then `#openSupport` + `#supportModal` are removed from the DOM. **Don't change `manifest.json` `start_url`** (that would hide support on installed web/iOS PWAs too). Wording is **"tip/support"** everywhere — never "donate/donation". Web + iOS users still see it; peer-to-peer tips (100% to creator, no perks) stay compliant there.
 - **Account deletion:** required because accounts exist → satisfied via in-app button + public `delete-account.html`.
 - **Data Safety:** declares **email** collected (optional, encrypted, deletable).
 - **Disclaimers:** in-app "not affiliated…" + TMDB/JustWatch attribution on every detail page and footer.

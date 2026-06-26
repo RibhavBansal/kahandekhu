@@ -28,8 +28,9 @@ export default {
 };
 
 const HELP =
-  "👋 <b>KahanDekhu</b> — I tell you where to watch any movie or show in India.\n\n" +
-  "Just send me a title, e.g. <b>Jawan</b>, <b>Scam 1992</b>, or “where to watch Oppenheimer”.";
+  "👋 <b>Namaste!</b> I'm <b>KahanDekhu</b> — I tell you where to watch any movie or show in India, free.\n\n" +
+  "Just send me a title — e.g. <b>Jawan</b>, <b>Panchayat</b>, <b>Animal</b>.\n\n" +
+  "✨ The free app does much more — a watchlist, a reminder the moment a title lands on OTT in India, browse by language (Tamil/Telugu/Hindi & more), and personalised picks. Tap below 👇";
 
 async function handle(chatId, text, env) {
   if (/^\/start\b/.test(text) || /^\/help\b/.test(text) || !cleanQuery(text)) {
@@ -100,13 +101,24 @@ function formatReply(d, env) {
       ? `\n\n❌ Not streaming in India yet.\n🌍 <b>Available in:</b> ${others.join(" · ")}`
       : `\n\n❌ Not on any streaming platform we can find yet.`;
   }
-  return `${head}${body}\n\n📲 Save it to your watchlist & get a reminder when it lands — open KahanDekhu:\n${env.APP_URL || "https://kahandekhu.pages.dev"}`;
+  return `${head}${body}\n\n💡 <b>Get the free KahanDekhu app</b> — save this to a watchlist, get a reminder the moment it streams in India, and browse Tamil/Telugu/Hindi & more. Built for India 👇`;
 }
 
-async function tgSend(chatId, text, env) {
+async function tgSend(chatId, text, env, appButton = true) {
+  const app = env.APP_URL || "https://kahandekhu.pages.dev";
+  const body = {
+    chat_id: chatId,
+    text: text.slice(0, 4000),
+    parse_mode: "HTML",
+    disable_web_page_preview: true,
+  };
+  if (appButton) {
+    // One clean call-to-action button — the funnel into the app.
+    body.reply_markup = { inline_keyboard: [[{ text: "📲 Open the KahanDekhu app", url: app }]] };
+  }
   await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text: text.slice(0, 4000), parse_mode: "HTML", disable_web_page_preview: false }),
+    body: JSON.stringify(body),
   });
 }
