@@ -52,7 +52,8 @@
                     .tbtn.cta{color:#1a1405;background:var(--gold);border-color:var(--gold)}
                     .tbtn.cta:hover{filter:brightness(1.06)}
                     .tbtn svg{width:15px;height:15px;flex:none}
-                    .region-flag{font-size:15px}
+                    .tbtn-label{white-space:nowrap}
+                    .region-flag{font-size:15px;line-height:1}
                     
                     .offlinebar{display:none;text-align:center;font-size:13px;font-weight:600;color:#1a1405;background:var(--magenta);padding:calc(8px + env(safe-area-inset-top)) 8px 8px}
                     .offlinebar.show{display:block}
@@ -354,10 +355,11 @@
                     .fab-support:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(245,196,81,.44)}
                     .fab-support:active{transform:translateY(0) scale(.97)}
                     
-                    /* Small screens: tighten the topbar so Sign in + region never overlap */
-                    @media (max-width:380px){
+                    /* Small screens: tighten the topbar so Sign in + settings never overlap */
+                    @media (max-width:430px){
                         .topbar-actions{gap:6px}
-                        .tbtn{padding:8px 11px;font-size:12.5px}
+                        .tbtn{padding:8px 10px;font-size:12.5px}
+                        .tbtn-label{display:none}        /* icons + flag only — keeps buttons compact, no overlap */
                         .wordmark{font-size:18px}
                         .fab-support{font-size:13px;padding:11px 16px}
                     }
@@ -415,10 +417,11 @@
             <div class="topbar-actions">
                 <button class="tbtn" id="accountBtn" style="display:none" title="Account &amp; sync">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-                    <span id="accountLabel" data-i18n="acct.signin">Sign in</span>
+                    <span id="accountLabel" class="tbtn-label" data-i18n="acct.signin">Sign in</span>
                 </button>
-                <button class="tbtn" id="openSettings" title="Region & your services">
-                    <span class="region-flag" id="regionFlag">🇮🇳</span><span id="regionLabel">India</span>
+                <button class="tbtn" id="openSettings" title="Settings — language, region &amp; your services" aria-label="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span class="region-flag" id="regionFlag">🇮🇳</span><span id="settingsLabel" class="tbtn-label">Settings</span>
                 </button>
             </div>
         </header>
@@ -510,7 +513,7 @@
         
         <div class="modal-bg" id="settingsModal">
             <div class="modal">
-                <div class="modal-head"><h3 data-i18n="settings.title">Region &amp; services</h3><button class="xbtn" data-close>×</button></div>
+                <div class="modal-head"><h3 id="settingsTitle">Settings</h3><button class="xbtn" data-close>×</button></div>
                 <div class="modal-body">
                     <div class="set-section">
                         <h4 data-i18n="settings.language">Language</h4>
@@ -821,6 +824,10 @@
                 document.querySelectorAll('[data-i18n]').forEach(e=>{ const v=t(e.dataset.i18n); if(v) e.textContent=v; });
                 document.querySelectorAll('[data-i18n-html]').forEach(e=>{ const v=t(e.dataset.i18nHtml); if(v) e.innerHTML=v; });
                 document.querySelectorAll('[data-i18n-ph]').forEach(e=>{ const v=t(e.dataset.i18nPh); if(v) e.placeholder=v; });
+                // "Settings" label (topbar + sheet title) — set from a dict defined later in the file.
+                try{ const s=(typeof SETTINGS_LABEL!=='undefined') ? (SETTINGS_LABEL[LANG]||SETTINGS_LABEL.en) : 'Settings';
+                    const a=document.getElementById('settingsLabel'); if(a) a.textContent=s;
+                    const b=document.getElementById('settingsTitle'); if(b) b.textContent=s; }catch(e){}
             }
             function setLang(code, save){
                 if(!STRINGS[code]) code='en';
@@ -1027,6 +1034,8 @@
             // "Auto-translated" tag shown under machine-translated synopses.
             const MT_LABEL = { en:'Auto-translated',hi:'स्वतः अनुवादित',bn:'স্বয়ংক্রিয় অনুবাদ',ta:'தானியங்கி மொழிபெயர்ப்பு',te:'స్వయంచాలక అనువాదం',mr:'स्वयं भाषांतरित',kn:'ಸ್ವಯಂ ಅನುವಾದಿತ',ml:'സ്വയം വിവർത്തനം',gu:'સ્વતઃ અનુવાદિત',pa:'ਸਵੈ-ਅਨੁਵਾਦਿਤ' };
             function mtLabel(){ return MT_LABEL[LANG] || MT_LABEL.en; }
+            // "Settings" — topbar button label + sheet title (so users know language/region/services live here).
+            const SETTINGS_LABEL = { en:'Settings',hi:'सेटिंग्स',bn:'সেটিংস',ta:'அமைப்புகள்',te:'సెట్టింగ్‌లు',mr:'सेटिंग्ज',kn:'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',ml:'ക്രമീകരണങ്ങൾ',gu:'સેટિંગ્સ',pa:'ਸੈਟਿੰਗਾਂ' };
             const GENRE_CHIPS=[['All',null],['Action',[28,10759]],['Comedy',[35]],['Drama',[18]],['Thriller',[53,9648]],['Sci-Fi',[878,10765]],['Romance',[10749]],['Horror',[27]],['Crime',[80]],['Adventure',[12]],['Animation',[16]],['Documentary',[99]],['Family',[10751]]];
             const LANG_CHIPS=[['All langs',null],['Hindi','hi'],['Tamil','ta'],['Telugu','te'],['Malayalam','ml'],['Kannada','kn'],['Bengali','bn'],['Marathi','mr'],['Punjabi','pa'],['English','en']];
             const dateOf=x=>x.release_date||x.first_air_date||'';
@@ -1493,7 +1502,7 @@
             });
             function reflectRegion(){
                 const r=REGIONS.find(x=>x[0]===REGION)||['IN','India','🇮🇳'];
-                $('#regionFlag').textContent=r[2]; $('#regionLabel').textContent=regNameOf(REGION);
+                const rf=$('#regionFlag'); if(rf) rf.textContent=r[2];   // flag = current region at a glance; the gear says "Settings"
             }
             
             let toastT;

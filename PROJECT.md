@@ -101,6 +101,7 @@ One file: `<style>` (theme + components), markup (4 views), and `<script>` (all 
 Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, `v-detail`.
 - `showView(id)` toggles the active view, sets `currentTab` (last real tab), and highlights the matching bottom-nav button. On the detail page, the **originating tab stays highlighted**.
 - `window.__back = () => showView(currentTab)` — back returns to where you came from.
+- **Topbar Settings entry:** `#openSettings` is now a **gear icon + current-region flag + "Settings" label** (was a bare country pill — users couldn't tell language/services lived there). Opens the Settings sheet with labelled **Language / Region / Services** sections. The flag shows the active region at a glance; `reflectRegion()` updates only the flag. On screens ≤430px the `.tbtn-label` text hides (icons + flag only) so the topbar never overlaps. "Settings" label/title come from the `SETTINGS_LABEL` dict (10 langs), applied in `applyI18n()`.
 - The floating Support button hides on the detail view; the bottom nav + Support hide while the search keyboard is open (`body.kb-open`).
 
 ### 4.3 Data layer
