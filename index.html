@@ -55,11 +55,21 @@
                     .tbtn.icon-only{padding:9px}                 /* clean square-ish gear button */
                     .tbtn.icon-only svg{width:17px;height:17px}
                     .tbtn-label{white-space:nowrap}
-                    /* Small circular country badge — just displays the active region */
-                    .region-badge{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);cursor:pointer;transition:.15s;padding:0;overflow:hidden}
-                    .region-badge:hover{border-color:var(--gold-dim);transform:translateY(-1px)}
-                    .region-badge:active{transform:translateY(0) scale(.96)}
+                    /* Small circular country badge — display-only indicator of the active region */
+                    .region-badge{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);padding:0;overflow:hidden;pointer-events:none;user-select:none}
                     .region-flag{font-size:18px;line-height:1}
+                    /* Settings dropdown: hover (desktop) or tap (mobile) reveals the individual settings */
+                    .settings-menu{position:relative;display:inline-flex}
+                    .menu-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:60;min-width:184px;background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:6px;box-shadow:0 18px 44px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-6px) scale(.97);transform-origin:top right;transition:opacity .16s ease,transform .16s cubic-bezier(.2,1,.3,1),visibility .16s}
+                    .settings-menu:hover .menu-pop,.settings-menu:focus-within .menu-pop,.settings-menu.open .menu-pop{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+                    .menu-item{display:flex;align-items:center;gap:11px;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text);padding:10px 12px;border-radius:9px;border:none;background:none;cursor:pointer;transition:.13s}
+                    .menu-item svg{width:17px;height:17px;flex:none;color:var(--muted);transition:.13s}
+                    .menu-item:hover{background:var(--bg2)}
+                    .menu-item:hover svg{color:var(--gold)}
+                    /* Brief highlight on the section you jumped to (no layout shift) */
+                    .set-section{border-radius:12px}
+                    .set-section.flash{animation:setFlash 1.5s ease}
+                    @keyframes setFlash{0%,100%{box-shadow:0 0 0 0 rgba(245,196,81,0)}20%{box-shadow:0 0 0 2px rgba(245,196,81,.45)}}
                     
                     .offlinebar{display:none;text-align:center;font-size:13px;font-weight:600;color:#1a1405;background:var(--magenta);padding:calc(8px + env(safe-area-inset-top)) 8px 8px}
                     .offlinebar.show{display:block}
@@ -425,12 +435,28 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
                     <span id="accountLabel" class="tbtn-label" data-i18n="acct.signin">Sign in</span>
                 </button>
-                <button class="region-badge" id="regionBadge" title="Your region" aria-label="Your region">
+                <span class="region-badge" id="regionBadge" title="Current region" aria-hidden="true">
                     <span class="region-flag" id="regionFlag">🇮🇳</span>
-                </button>
-                <button class="tbtn icon-only" id="openSettings" title="Settings — language, region &amp; your services" aria-label="Settings">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                </button>
+                </span>
+                <div class="settings-menu" id="settingsMenu">
+                    <button class="tbtn icon-only" id="openSettings" title="Settings" aria-label="Settings" aria-haspopup="true" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                    <div class="menu-pop" role="menu">
+                        <button class="menu-item" role="menuitem" data-set="set-language">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+                            <span id="mi-language">Language</span>
+                        </button>
+                        <button class="menu-item" role="menuitem" data-set="set-region">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span id="mi-region">Region</span>
+                        </button>
+                        <button class="menu-item" role="menuitem" data-set="set-services">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+                            <span id="mi-services">Services</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
         
@@ -523,17 +549,17 @@
             <div class="modal">
                 <div class="modal-head"><h3 id="settingsTitle">Settings</h3><button class="xbtn" data-close>×</button></div>
                 <div class="modal-body">
-                    <div class="set-section">
+                    <div class="set-section" id="set-language">
                         <h4 data-i18n="settings.language">Language</h4>
                         <p class="desc" data-i18n="settings.languageDesc">Choose your preferred language for the app.</p>
                         <select id="langSel" class="sort-sel" aria-label="Language" style="width:100%"></select>
                     </div>
-                    <div class="set-section">
+                    <div class="set-section" id="set-region">
                         <h4 data-i18n="settings.region">Your region</h4>
                         <p class="desc" data-i18n="settings.regionDesc">Availability differs by country. We'll show what's streaming where you are.</p>
                         <div class="region-grid" id="regionGrid"></div>
                     </div>
-                    <div class="set-section">
+                    <div class="set-section" id="set-services">
                         <h4 data-i18n="settings.services">Services you subscribe to</h4>
                         <p class="desc" data-i18n="settings.servicesDesc">We'll flag titles that are on your platforms — so you instantly know what you can already watch.</p>
                         <div class="chips" id="servicesChips"></div>
@@ -836,6 +862,9 @@
                 try{ const s=(typeof SETTINGS_LABEL!=='undefined') ? (SETTINGS_LABEL[LANG]||SETTINGS_LABEL.en) : 'Settings';
                     const a=document.getElementById('settingsLabel'); if(a) a.textContent=s;
                     const b=document.getElementById('settingsTitle'); if(b) b.textContent=s; }catch(e){}
+                try{ if(typeof MENU_LABELS!=='undefined'){ const m=MENU_LABELS[LANG]||MENU_LABELS.en;
+                    const ids=['mi-language','mi-region','mi-services'];
+                    ids.forEach((id,i)=>{ const e=document.getElementById(id); if(e) e.textContent=m[i]; }); } }catch(e){}
             }
             function setLang(code, save){
                 if(!STRINGS[code]) code='en';
@@ -1044,6 +1073,8 @@
             function mtLabel(){ return MT_LABEL[LANG] || MT_LABEL.en; }
             // "Settings" — topbar button label + sheet title (so users know language/region/services live here).
             const SETTINGS_LABEL = { en:'Settings',hi:'सेटिंग्स',bn:'সেটিংস',ta:'அமைப்புகள்',te:'సెట్టింగ్‌లు',mr:'सेटिंग्ज',kn:'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',ml:'ക്രമീകരണങ്ങൾ',gu:'સેટિંગ્સ',pa:'ਸੈਟਿੰਗਾਂ' };
+            // Short labels for the settings dropdown menu: [Language, Region, Services].
+            const MENU_LABELS = { en:['Language','Region','Services'],hi:['भाषा','क्षेत्र','सेवाएँ'],bn:['ভাষা','অঞ্চল','পরিষেবা'],ta:['மொழி','பகுதி','சேவைகள்'],te:['భాష','ప్రాంతం','సేవలు'],mr:['भाषा','प्रदेश','सेवा'],kn:['ಭಾಷೆ','ಪ್ರದೇಶ','ಸೇವೆಗಳು'],ml:['ഭാഷ','പ്രദേശം','സേവനങ്ങൾ'],gu:['ભાષા','પ્રદેશ','સેવાઓ'],pa:['ਭਾਸ਼ਾ','ਖੇਤਰ','ਸੇਵਾਵਾਂ'] };
             const GENRE_CHIPS=[['All',null],['Action',[28,10759]],['Comedy',[35]],['Drama',[18]],['Thriller',[53,9648]],['Sci-Fi',[878,10765]],['Romance',[10749]],['Horror',[27]],['Crime',[80]],['Adventure',[12]],['Animation',[16]],['Documentary',[99]],['Family',[10751]]];
             const LANG_CHIPS=[['All langs',null],['Hindi','hi'],['Tamil','ta'],['Telugu','te'],['Malayalam','ml'],['Kannada','kn'],['Bengali','bn'],['Marathi','mr'],['Punjabi','pa'],['English','en']];
             const dateOf=x=>x.release_date||x.first_air_date||'';
@@ -1464,8 +1495,25 @@
                 if(lbl) lbl.textContent = t(SUPPORT_RAZORPAY ? 'support.razorpay' : 'support.bmc');
             }
             
-            $('#openSettings').addEventListener('click',()=>{ buildSettings(); openModal('#settingsModal'); });
-            $('#regionBadge')?.addEventListener('click',()=>{ buildSettings(); openModal('#settingsModal'); });
+            // Settings dropdown: hover (desktop, via CSS) or tap the gear (mobile) reveals the
+            // individual settings; clicking one opens the sheet at that section.
+            const settingsMenuEl = document.getElementById('settingsMenu');
+            const settingsBtn = $('#openSettings');
+            function closeSettingsMenu(){ settingsMenuEl?.classList.remove('open'); settingsBtn?.setAttribute('aria-expanded','false'); }
+            settingsBtn?.addEventListener('click',(e)=>{ e.stopPropagation(); const open=settingsMenuEl.classList.toggle('open'); settingsBtn.setAttribute('aria-expanded', open?'true':'false'); });
+            document.addEventListener('click',(e)=>{ if(settingsMenuEl && !settingsMenuEl.contains(e.target)) closeSettingsMenu(); });
+            document.querySelectorAll('.menu-item').forEach(mi=>{
+                mi.addEventListener('click',(e)=>{ e.stopPropagation(); openSettingsTo(mi.dataset.set); closeSettingsMenu(); try{ document.activeElement && document.activeElement.blur(); }catch(_){} });
+            });
+            function openSettingsTo(sectionId){
+                buildSettings(); openModal('#settingsModal');
+                requestAnimationFrame(()=>{
+                    const sec=document.getElementById(sectionId); if(!sec) return;
+                    try{ sec.scrollIntoView({block:'center',behavior:'smooth'}); }catch(_){ sec.scrollIntoView(); }
+                    sec.classList.remove('flash'); void sec.offsetWidth; sec.classList.add('flash');
+                    setTimeout(()=>sec.classList.remove('flash'),1500);
+                });
+            }
             let tmpRegion=REGION, tmpServices=new Set();
             function buildSettings(){
                 tmpRegion=REGION; tmpServices=new Set(SERVICES);
