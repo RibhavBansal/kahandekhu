@@ -56,14 +56,14 @@ async function handleMessage(to, text, env) {
         return send(to, HELP, env);
     }
     try {
-        const sr = await fetch(`${env.TMDB_PROXY}/search/multi?query=${encodeURIComponent(q)}&include_adult=false&region=IN`);
+        const sr = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(q)}&include_adult=false&region=IN`);
         const sd = await sr.json();
         const hit = (sd.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv")
         .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))[0];
         if (!hit) {
             return send(to, `🔍 I couldn't find *"${q}"*.\nCheck the spelling, or try the original title.`, env);
         }
-        const dr = await fetch(`${env.TMDB_PROXY}/${hit.media_type}/${hit.id}?append_to_response=watch/providers`);
+        const dr = await proxyFetch(env, `/${hit.media_type}/${hit.id}?append_to_response=watch/providers`);
         const d = await dr.json();
         return send(to, formatReply(d, hit.media_type, env), env);
     } catch (e) {
@@ -84,6 +84,15 @@ function dedupe(arr) {
     const seen = new Set(), out = [];
     (arr || []).forEach(p => { if (!seen.has(p.provider_name)) { seen.add(p.provider_name); out.push(p.provider_name); } });
     return out;
+}
+
+// Calls the TMDB proxy via the service binding (env.TMDB) when available — a plain
+// same-account Worker→Worker fetch to its public URL is blocked with error 1042.
+function proxyFetch(env, path) {
+    if (env.TMDB && typeof env.TMDB.fetch === "function") {
+        return env.TMDB.fetch(new Request("https://tmdb-proxy" + path));
+    }
+    return fetch((env.TMDB_PROXY || "https://kahandekhu-tmdb.bansalribhav0987.workers.dev") + path);
 }
 
 function formatReply(d, type, env) {

@@ -21,7 +21,12 @@ compatibility_date = "2024-11-01"
      VAPID_SUBJECT  = "mailto:bansalribhav0987@gmail.com"
      TMDB_PROXY     = "https://kahandekhu-tmdb.bansalribhav0987.workers.dev"
      DEFAULT_APP_URL = "https://kahandekhu.pages.dev"
-     
+
+# Service binding to call the TMDB proxy Worker on the same account (avoids error 1042).
+[[services]]
+binding = "TMDB"
+service = "kahandekhu-tmdb"
+
      # Secrets are NOT stored here. Set them with:
      #   wrangler secret put VAPID_PRIVATE
      #   wrangler secret put RUN_SECRET

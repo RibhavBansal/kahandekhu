@@ -1,7 +1,7 @@
 # KahanDekhu — Project Reference (living document)
 
 > **Maintained by Claude.** This file is updated on every change to the project — features, fixes, deploys, decisions. It is the single source of truth for how everything works.
-> **Last updated:** 21 Jun 2026 — WhatsApp bot + "Ask on WhatsApp" everywhere + **ASO-optimized Play Store listing (English + Hindi) in `STORE-LISTING.md`**.
+> **Last updated:** 21 Jun 2026 — Telegram bot + `SUPPORT_URL` option + verified PWA/TWA is Play-allowed. **Fix:** bots/push now call the TMDB proxy via a Cloudflare **service binding** (`env.TMDB`), not a public fetch — a same-account Worker→Worker fetch is blocked with error 1042. (Redeploy each worker to apply.)
 
 ---
 
@@ -57,9 +57,12 @@ KahanDekhu is an **India-first "where to watch" tracker**. Type a movie or show 
 | `tmdb-proxy.worker.js` | TMDB API proxy (hides key, edge-caches, CORS) | Cloudflare Workers |
 | `push.worker.js` | Web-push backend (subscribe + cron + send) | Cloudflare Workers |
 | `whatsapp.worker.js` | WhatsApp "where to watch" bot (reply-only, free) | Cloudflare Workers |
+| `telegram.worker.js` | Telegram "where to watch" bot (free, unlimited, no verification) | Cloudflare Workers |
 | `wrangler.toml` | Wrangler config for the **push** worker (name `kahandekhu-push`) | local |
 | `wrangler.whatsapp.toml` | Wrangler config for the WhatsApp bot (name `kahandekhu-whatsapp`) | local |
+| `wrangler.telegram.toml` | Wrangler config for the Telegram bot (name `kahandekhu-telegram`) | local |
 | `WHATSAPP-SETUP.md` | WhatsApp bot setup guide (Meta + deploy) | reference |
+| `TELEGRAM-SETUP.md` | Telegram bot setup guide (BotFather + deploy) | reference |
 | `push-schema.sql` | D1 schema for push reminders | Cloudflare D1 |
 | `supabase-schema.sql` | Postgres schema + RLS for accounts | Supabase |
 | `supabase/functions/delete-account/index.ts` | Edge Function that deletes a user | Supabase |
@@ -141,7 +144,10 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - One-time **sign-in coachmark** points at the account button while signed out.
 
 ### 4.11 Donations
-- `buildSupport()` renders the UPI ID, a QR (via local `qrcode.min.js`), copy button, "pay via UPI app" deep link, and Razorpay (hidden if no link). Framed as voluntary — **no perks** (keeps it a compliant peer-to-peer payment).
+- `buildSupport()` renders the donate sheet (opened from the floating Support FAB, which shows on all main views). Two modes:
+  - **`SUPPORT_URL` set** (Buy Me a Coffee / Ko-fi / Razorpay page) → one "Support on …" external button; the UPI ID/QR are **hidden entirely** (preferred — doesn't expose a personal UPI ID).
+  - **`SUPPORT_URL` blank** → fallback to UPI ID + QR (`qrcode.min.js`) + "pay via UPI app" + optional Razorpay.
+- Framed as voluntary — **no perks** (keeps it a compliant peer-to-peer payment / external donation link).
 
 ### 4.12 Web push (client)
 - `pushEnabled()` gates the feature on `PUSH_API` + `VAPID_PUBLIC` + browser support.
@@ -184,6 +190,11 @@ Four `<section class="view">`: `v-search` (default), `v-browse`, `v-watchlist`, 
 - **Vars:** `TMDB_PROXY`, `APP_URL`, `GRAPH_VERSION`. **Secrets:** `WHATSAPP_TOKEN`, `PHONE_NUMBER_ID`, `VERIFY_TOKEN`. Setup in `WHATSAPP-SETUP.md`.
 - Each reply ends with an app-install CTA ("Save it to your watchlist & get a reminder…").
 - **In-app entry points:** an "Ask on WhatsApp" button on the detail page (prefilled with the title) and a footer link — both gated on the client `WHATSAPP_NUMBER` constant (hidden until you set the bot number).
+
+### 5.5 Telegram bot (`telegram.worker.js`) — `kahandekhu-telegram`
+- Same "where to watch in India" reply as the WhatsApp bot, via the TMDB proxy; HTML-formatted, ends with the app-install CTA. **Free, unlimited, no verification** — easiest channel.
+- **Endpoint:** `POST /` (Telegram webhook; verified via `X-Telegram-Bot-Api-Secret-Token`).
+- **Vars:** `TMDB_PROXY`, `APP_URL`. **Secrets:** `BOT_TOKEN` (BotFather), `WEBHOOK_SECRET`. Setup in `TELEGRAM-SETUP.md`.
 
 ---
 

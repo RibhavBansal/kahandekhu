@@ -9,7 +9,12 @@ compatibility_date = "2024-11-01"
      TMDB_PROXY    = "https://kahandekhu-tmdb.bansalribhav0987.workers.dev"
      APP_URL       = "https://kahandekhu.pages.dev"
      GRAPH_VERSION = "v21.0"
-     
+
+# Service binding to call the TMDB proxy Worker on the same account (avoids error 1042).
+[[services]]
+binding = "TMDB"
+service = "kahandekhu-tmdb"
+
      # Secrets (NOT stored here) — set with:
      #   wrangler secret put WHATSAPP_TOKEN   -c wrangler.whatsapp.toml
      #   wrangler secret put PHONE_NUMBER_ID  -c wrangler.whatsapp.toml

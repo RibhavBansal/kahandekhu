@@ -81,7 +81,9 @@ async function checkAndNotify(env) {
     let sent = 0;
     for (const r of results || []) {
         try {
-            const res = await fetch(`${env.TMDB_PROXY}/${r.media_type}/${r.tmdb_id}?append_to_response=watch/providers`);
+            const res = (env.TMDB && env.TMDB.fetch)
+              ? await env.TMDB.fetch(new Request(`https://tmdb-proxy/${r.media_type}/${r.tmdb_id}?append_to_response=watch/providers`))
+              : await fetch(`${env.TMDB_PROXY}/${r.media_type}/${r.tmdb_id}?append_to_response=watch/providers`);
             if (!res.ok) continue;
             const data = await res.json();
             const region = (data['watch/providers'] && data['watch/providers'].results && data['watch/providers'].results[r.region]) || null;

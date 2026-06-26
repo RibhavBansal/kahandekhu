@@ -500,10 +500,13 @@
                 <div class="modal-head"><h3>Support KahanDekhu</h3><button class="xbtn" data-close>×</button></div>
                 <div class="modal-body">
                     <p class="lead">This app is free and always will be. If it saved you some scrolling, a small voluntary tip helps cover development. Nothing's locked behind it.</p>
-                    <div class="qrwrap"><div id="qrcode"></div></div>
-                    <div class="upi-row"><span class="upi-id" id="upiId">kahandekhu@upi</span><button class="copybtn" id="copyUpi">Copy</button></div>
-                    <a class="paybtn primary" id="upiPay" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h16v4H4zM4 10h16v10H4zm3 3v4h4v-4z"/></svg> Pay via any UPI app</a>
-                    <a class="paybtn ghost" id="razorpayLink" href="#" target="_blank" rel="noopener">Cards · Netbanking · Wallets</a>
+                    <a class="paybtn primary" id="supportLink" href="#" target="_blank" rel="noopener" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 19h16v2H4zm2-9h12a3 3 0 0 1 0 6h-1.2A5 5 0 0 1 12 18a5 5 0 0 1-4.8-2H6a3 3 0 0 1 0-6zm12 2h-1v2h1a1 1 0 0 0 0-2zM7 4h2v3H7zm4-1h2v4h-2zm4 1h2v3h-2z"/></svg> Support on Buy Me a Coffee</a>
+                    <div id="upiGroup">
+                      <div class="qrwrap"><div id="qrcode"></div></div>
+                      <div class="upi-row"><span class="upi-id" id="upiId">kahandekhu@upi</span><button class="copybtn" id="copyUpi">Copy</button></div>
+                      <a class="paybtn primary" id="upiPay" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h16v4H4zM4 10h16v10H4zm3 3v4h4v-4z"/></svg> Pay via any UPI app</a>
+                      <a class="paybtn ghost" id="razorpayLink" href="#" target="_blank" rel="noopener">Cards · Netbanking · Wallets</a>
+                    </div>
                     <p class="support-note">A voluntary donation, not a purchase — no goods or services are promised in return.</p>
                 </div>
             </div>
@@ -560,7 +563,10 @@
             const SUPABASE_URL = 'https://seutsrdubftizbasgyim.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNldXRzcmR1YmZ0aXpiYXNneWltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NjczOTYsImV4cCI6MjA5NzU0MzM5Nn0.6GuB8Wv__6N6hB44eD9V_fVqeB6ovEBIQYK-DBuNN4U';
             
-            const SUPPORT_UPI = 'ribhav2003@ybl';
+            // Preferred: a 3rd-party support page (Buy Me a Coffee / Ko-fi / Razorpay page link).
+            // When set, the donate sheet shows ONE button to this page and hides your UPI ID entirely.
+            const SUPPORT_URL = '';   // e.g. 'https://buymeacoffee.com/kahandekhu' or 'https://ko-fi.com/kahandekhu'
+            const SUPPORT_UPI = 'ribhav2003@ybl';   // fallback only — used if SUPPORT_URL is blank
             const SUPPORT_NAME = 'KahanDekhu';
             const SUPPORT_RAZORPAY = '';   // add your razorpay.me link to show the cards/netbanking button
             
@@ -1130,6 +1136,13 @@
             
             $('#openSupport').addEventListener('click',()=>{ openModal('#supportModal'); buildSupport(); });
             function buildSupport(){
+                // 3rd-party support page set → show one button, hide the UPI ID/QR entirely.
+                if(SUPPORT_URL){
+                    const sl=$('#supportLink'); sl.href=SUPPORT_URL; sl.style.display='';
+                    $('#upiGroup').style.display='none';
+                    return;
+                }
+                $('#supportLink').style.display='none'; $('#upiGroup').style.display='';
                 $('#upiId').textContent=SUPPORT_UPI;
                 const link=`upi://pay?pa=${encodeURIComponent(SUPPORT_UPI)}&pn=${encodeURIComponent(SUPPORT_NAME)}&cu=INR`;
                 $('#upiPay').href=link;
