@@ -55,6 +55,7 @@ function corsHeaders() {
         'Access-Control-Allow-Origin': ALLOWED_ORIGIN,
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Expose-Headers': 'X-KD-Translate',
         'Access-Control-Max-Age': '86400',
     };
 }
@@ -111,31 +112,44 @@ export default {
         //     When the user's language has no TMDB synopsis, translate the English
         //     one. Fully guarded: if env.AI is unbound or anything fails, we keep the
         //     original body untouched (the app then uses its own English fallback).
-        //     The translated body is edge-cached below, so each title+language is
-        //     translated at most once per cache window.
-        if (resp.ok && env.AI && DETAIL_RE.test(path)) {
+        //     `xlate` records the outcome — surfaced as the X-KD-Translate header AND
+        //     console.log (see it live with: wrangler tail -c wrangler.tmdb.toml).
+        let xlate = 'na';
+        if (DETAIL_RE.test(path)) {
             const lang = (incoming.searchParams.get('language') || '').slice(0, 2).toLowerCase();
             const target = M2M[lang];
-            if (target) {
+            if (!resp.ok)        xlate = 'upstream-' + resp.status;
+            else if (!env.AI)    xlate = 'NO-AI-BINDING';          // ← binding missing: add it + redeploy
+            else if (!target)    xlate = 'lang-skipped:' + (lang || 'none');
+            else {
                 try {
                     const data = JSON.parse(bodyText);
-                    if (data && !String(data.overview || '').trim()) {
+                    if (String(data.overview || '').trim()) {
+                        xlate = 'has-native-overview';            // TMDB already had a translation
+                    } else {
                         const en = await fetchEnglishOverview(env, path);
-                        if (en) {
+                        if (!en) {
+                            xlate = 'no-english-source';
+                        } else {
                             const r = await env.AI.run('@cf/meta/m2m100-1.2b', {
                                 text: en, source_lang: 'english', target_lang: target,
                             });
                             const translated = r && (r.translated_text || (r.result && r.result.translated_text));
                             if (translated && String(translated).trim()) {
                                 data.overview = String(translated).trim();
-                                data.kd_translated = true;   // marker: synopsis is machine-translated
+                                data.kd_translated = true;        // marker for the app's "Auto-translated" tag
                                 bodyText = JSON.stringify(data);
+                                xlate = 'translated';
+                            } else {
+                                xlate = 'ai-empty:' + JSON.stringify(r || {}).slice(0, 100);
                             }
                         }
                     }
-                } catch (e) { /* keep the original body */ }
+                } catch (e) { xlate = 'error:' + (e && e.message ? e.message : String(e)); }
             }
+            console.log('KD-translate', path, 'lang=' + (incoming.searchParams.get('language') || ''), '→', xlate);
         }
+        const xlateHeader = String(xlate).replace(/[^\x20-\x7E]/g, '?').slice(0, 180);
 
         const ttl = ttlFor(path);
         const out = new Response(bodyText, {
@@ -143,6 +157,7 @@ export default {
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Cache-Control': `public, max-age=${ttl}`,
+                'X-KD-Translate': xlateHeader,
                 ...corsHeaders(),
             },
         });
