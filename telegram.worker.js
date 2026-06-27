@@ -28,11 +28,50 @@ export default {
 };
 
 const HELP =
-  "👋 <b>Namaste!</b> I'm <b>KahanDekhu</b> — I tell you where to watch any movie or show in India, free.\n\n" +
-  "Just send me a title — e.g. <b>Jawan</b>, <b>Panchayat</b>, <b>Animal</b>.\n\n" +
-  "✨ The free app does much more — a watchlist, a reminder the moment a title lands on OTT in India, browse by language (Tamil/Telugu/Hindi & more), and personalised picks. Tap below 👇";
+  "👋 <b>Namaste! I'm KahanDekhu</b> — your where-to-watch buddy for India 🇮🇳\n\n" +
+  "Send me any movie or show and I'll tell you <b>exactly where it's streaming in India</b> — free.\n" +
+  "Try: <b>Jawan</b> · <b>Panchayat</b> · <b>Animal</b>\n\n" +
+  "🎬 I check <b>Netflix, JioHotstar, Prime Video, SonyLIV, ZEE5, Apple TV+ &amp; more</b> — and tell you if it's subscription, free, rent or buy.\n\n" +
+  "⭐ <b>The free app does so much more:</b>\n" +
+  "🔔 Get a reminder the moment a title starts streaming in India\n" +
+  "📥 Save a watchlist that syncs across all your devices\n" +
+  "🗣️ Browse by language — Hindi, Tamil, Telugu, Malayalam, Kannada, Bengali &amp; more\n" +
+  "📺 Add your apps → instantly see what you can already watch\n" +
+  "✨ Personalised picks based on what you save\n" +
+  "🌍 Not in India yet? See which countries have it\n" +
+  "🇮🇳 App in 10 Indian languages · works offline · no login needed\n\n" +
+  "Type a title now, or tap below to open the app 👇\n" +
+  "Send /features to see everything I can do.";
+
+const FEATURES =
+  "✨ <b>Why KahanDekhu</b> — built for India 🇮🇳\n\n" +
+  "🔎 <b>Find where to watch</b> any movie or web series across Netflix, JioHotstar, Prime Video, SonyLIV, ZEE5, Apple TV+, Sun NXT, aha &amp; more — split into <b>subscription, free, rent &amp; buy</b>.\n\n" +
+  "🔔 <b>Streaming reminders</b> — we ping you the moment a title lands on OTT in India.\n" +
+  "📥 <b>Watchlist</b> — save titles, synced across your phone, laptop &amp; tablet.\n" +
+  "🗣️ <b>Regional languages</b> — browse Hindi, Tamil, Telugu, Malayalam, Kannada, Bengali, Marathi &amp; Punjabi.\n" +
+  "📺 <b>My Services</b> — pick the apps you pay for; we flag what you can already watch.\n" +
+  "✨ <b>For You</b> — personalised recommendations from your watchlist.\n" +
+  "🌍 <b>Multi-region</b> — not in India? See which countries stream it (perfect for NRIs).\n" +
+  "🌐 <b>10 Indian languages</b> — the whole app, including descriptions.\n" +
+  "🎲 <b>Discover</b> — trending, in cinemas, top rated &amp; a “Surprise me” pick.\n\n" +
+  "💯 Free · no login needed · installs like an app · works offline.\n\n" +
+  "Tap below to start 👇";
+
+// Rotating one-line teasers appended to each where-to-watch reply — keeps repeat
+// users discovering new reasons to install, without bloating every message.
+const TIPS = [
+  "🔔 Want a ping the moment it hits OTT in India? The free app does that.",
+  "📥 Save this to your watchlist — synced across all your devices, free.",
+  "🗣️ Browse Tamil, Telugu, Hindi &amp; more in the free app.",
+  "📺 Add your apps in the app → instantly see what you can already watch.",
+  "✨ Get personalised picks based on what you save — free.",
+  "🌍 Travelling or abroad? Switch regions to see where it streams worldwide.",
+];
 
 async function handle(chatId, text, env) {
+  if (/^\/(features|about|app)\b/i.test(text)) {
+    return tgSend(chatId, FEATURES, env);
+  }
   if (/^\/start\b/.test(text) || /^\/help\b/.test(text) || !cleanQuery(text)) {
     return tgSend(chatId, HELP, env);
   }
@@ -101,7 +140,8 @@ function formatReply(d, env) {
       ? `\n\n❌ Not streaming in India yet.\n🌍 <b>Available in:</b> ${others.join(" · ")}`
       : `\n\n❌ Not on any streaming platform we can find yet.`;
   }
-  return `${head}${body}\n\n💡 <b>Get the free KahanDekhu app</b> — save this to a watchlist, get a reminder the moment it streams in India, and browse Tamil/Telugu/Hindi & more. Built for India 👇`;
+  const tip = TIPS[Math.floor(Math.random() * TIPS.length)];
+  return `${head}${body}\n\n💡 <b>Get the free KahanDekhu app</b> — built for India 🇮🇳\n${tip}\nSee all features: /features 👇`;
 }
 
 async function tgSend(chatId, text, env, appButton = true) {
@@ -114,7 +154,7 @@ async function tgSend(chatId, text, env, appButton = true) {
   };
   if (appButton) {
     // One clean call-to-action button — the funnel into the app.
-    body.reply_markup = { inline_keyboard: [[{ text: "📲 Open the KahanDekhu app", url: app }]] };
+    body.reply_markup = { inline_keyboard: [[{ text: "📲 Open KahanDekhu — free", url: app }]] };
   }
   await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
     method: "POST",

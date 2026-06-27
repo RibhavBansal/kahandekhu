@@ -211,8 +211,9 @@ Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi
 
 ### 5.5 Telegram bot (`telegram.worker.js`) — `kahandekhu-telegram`
 - Same "where to watch in India" reply as the WhatsApp bot, via the TMDB proxy; HTML-formatted, ends with the app-install CTA. **Free, unlimited, no verification** — easiest channel.
+- **Growth-tuned messaging:** rich `/start` (HELP) feature pitch; a full `/features` (aliases `/about`, `/app`) showcase of every app feature; each where-to-watch reply appends a **rotating one-line teaser** (`TIPS`) so repeat users keep seeing new reasons to install, plus a `/features` pointer. CTA button: "📲 Open KahanDekhu — free". All messages well under Telegram's 4096-char limit.
 - **Endpoint:** `POST /` (Telegram webhook; verified via `X-Telegram-Bot-Api-Secret-Token`).
-- **Vars:** `TMDB_PROXY`, `APP_URL`. **Secrets:** `BOT_TOKEN` (BotFather), `WEBHOOK_SECRET`. Setup in `TELEGRAM-SETUP.md`.
+- **Vars:** `TMDB_PROXY`, `APP_URL`. **Secrets:** `BOT_TOKEN` (BotFather), `WEBHOOK_SECRET`. Setup in `TELEGRAM-SETUP.md`. (Redeploy after message changes; optionally register `/features` in BotFather's command menu.)
 
 ---
 
