@@ -17,10 +17,14 @@ export default {
     }
     let update;
     try { update = await req.json(); } catch { return new Response("ok"); }
-    const msg = update.message || update.edited_message;
     try {
-      if (msg && msg.chat && typeof msg.text === "string") {
-        await handle(msg.chat.id, msg.text.trim(), env);
+      if (update.callback_query) {
+        await handleCallback(update.callback_query, env);   // user tapped a disambiguation option
+      } else {
+        const msg = update.message || update.edited_message;
+        if (msg && msg.chat && typeof msg.text === "string") {
+          await handle(msg.chat.id, msg.text.trim(), env);
+        }
       }
     } catch (e) { /* never fail the webhook — Telegram retries on non-200 */ }
     return new Response("ok", { status: 200 });
@@ -79,15 +83,52 @@ async function handle(chatId, text, env) {
   try {
     const sr = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(q)}&include_adult=false&region=IN`);
     const sd = await sr.json();
-    const hit = (sd.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv")
-      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))[0];
-    if (!hit) return tgSend(chatId, `🔍 I couldn't find <b>${esc(q)}</b>.\nCheck the spelling, or try the original title.`, env);
+    const all = (sd.results || [])
+      .filter(r => r.media_type === "movie" || r.media_type === "tv")
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    if (!all.length) return tgSend(chatId, `🔍 I couldn't find <b>${esc(q)}</b>.\nCheck the spelling, or try the original title.`, env);
+
+    // Disambiguation: if several titles share the exact name (e.g. "Guilty"),
+    // let the user pick instead of guessing the most popular one.
+    const exact = all.filter(r => norm(titleOfRaw(r)) === norm(q));
+    if (exact.length > 1) {
+      const opts = exact.slice(0, 6);
+      const rows = opts.map(r => [{
+        text: `${titleOfRaw(r)}${yearOfRaw(r) ? ` (${yearOfRaw(r)})` : ""} · ${r.media_type === "tv" ? "Series" : "Movie"}`.slice(0, 60),
+        callback_data: `w:${r.media_type}:${r.id}`,
+      }]);
+      return tgSend(chatId, `🔎 There are a few titles called <b>${esc(q)}</b>. Which one do you mean?`, env, false, rows);
+    }
+
+    const hit = exact[0] || all[0];
     const dr = await proxyFetch(env, `/${hit.media_type}/${hit.id}?append_to_response=watch/providers`);
     const d = await dr.json();
     return tgSend(chatId, formatReply(d, env), env);
   } catch (e) {
     console.error("telegram handle error:", e && e.stack || String(e));
     return tgSend(chatId, "⚠️ Something went wrong fetching that. Please try again in a moment.", env);
+  }
+}
+
+// Resolve a title/year off a raw search result (movie uses title/release_date, tv uses name/first_air_date).
+function titleOfRaw(r) { return r.title || r.name || "Untitled"; }
+function yearOfRaw(r) { return (r.release_date || r.first_air_date || "").slice(0, 4); }
+function norm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
+
+// User tapped one of the disambiguation buttons → fetch that exact title & answer.
+async function handleCallback(cbq, env) {
+  await answerCallback(cbq.id, env);   // stop Telegram's loading spinner
+  const m = String(cbq.data || "").match(/^w:(movie|tv):(\d+)$/);
+  const chat = cbq.message && cbq.message.chat;
+  if (!m || !chat) return;
+  try {
+    const dr = await proxyFetch(env, `/${m[1]}/${m[2]}?append_to_response=watch/providers`);
+    const d = await dr.json();
+    // Replace the chooser with the answer (keeps the thread tidy) + app button.
+    await editMessage(chat.id, cbq.message.message_id, formatReply(d, env), env);
+  } catch (e) {
+    console.error("telegram callback error:", e && e.stack || String(e));
+    await tgSend(chat.id, "⚠️ Couldn't load that title. Please try again.", env);
   }
 }
 
@@ -144,21 +185,42 @@ function formatReply(d, env) {
   return `${head}${body}\n\n💡 <b>Get the free KahanDekhu app</b> — built for India 🇮🇳\n${tip}\nSee all features: /features 👇`;
 }
 
-async function tgSend(chatId, text, env, appButton = true) {
+function appButtonRow(env) {
   const app = env.APP_URL || "https://kahandekhu.pages.dev";
+  return [[{ text: "📲 Open KahanDekhu — free", url: app }]];
+}
+function tgApi(method, payload, env) {
+  return fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/${method}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+// appButton=true adds the install CTA; pass `keyboard` (array of button rows) to show a custom
+// keyboard instead (e.g. the disambiguation chooser).
+async function tgSend(chatId, text, env, appButton = true, keyboard = null) {
   const body = {
     chat_id: chatId,
     text: text.slice(0, 4000),
     parse_mode: "HTML",
     disable_web_page_preview: true,
   };
-  if (appButton) {
-    // One clean call-to-action button — the funnel into the app.
-    body.reply_markup = { inline_keyboard: [[{ text: "📲 Open KahanDekhu — free", url: app }]] };
-  }
-  await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  if (keyboard) body.reply_markup = { inline_keyboard: keyboard };
+  else if (appButton) body.reply_markup = { inline_keyboard: appButtonRow(env) };
+  await tgApi("sendMessage", body, env);
+}
+// Acknowledge a button tap so Telegram stops showing the loading spinner.
+function answerCallback(callbackQueryId, env) {
+  return tgApi("answerCallbackQuery", { callback_query_id: callbackQueryId }, env);
+}
+// Replace an existing message's text (used to turn the chooser into the answer).
+function editMessage(chatId, messageId, text, env) {
+  return tgApi("editMessageText", {
+    chat_id: chatId,
+    message_id: messageId,
+    text: text.slice(0, 4000),
+    parse_mode: "HTML",
+    disable_web_page_preview: true,
+    reply_markup: { inline_keyboard: appButtonRow(env) },
+  }, env);
 }
