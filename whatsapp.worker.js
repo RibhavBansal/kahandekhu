@@ -62,17 +62,18 @@ async function handleMessage(to, text, env) {
         return send(to, HELP, env);
     }
     try {
-        const sr = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(q)}&include_adult=false&region=IN`);
-        const sd = await sr.json();
-        const all = (sd.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv")
-        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+        const all = await searchTitles(env, q);
         if (!all.length) {
             return send(to, `🔍 I couldn't find *"${q}"*.\nCheck the spelling, or try the original title.`, env);
         }
-        // Several titles share the exact name (e.g. "Guilty") → let the user pick.
         const exact = all.filter(r => norm(titleOfRaw(r)) === norm(q));
+        // Several titles share the exact name (e.g. "Guilty") → let the user pick.
         if (exact.length > 1) {
-            return sendChooser(to, q, exact.slice(0, 10), env);
+            return sendChooser(to, q, exact.slice(0, 10), env, "exact");
+        }
+        // No exact match (likely a typo / partial name) → show related matches.
+        if (exact.length === 0 && all.length > 1) {
+            return sendChooser(to, q, all.slice(0, 10), env, "fuzzy");
         }
         const hit = exact[0] || all[0];
         const dr = await proxyFetch(env, `/${hit.media_type}/${hit.id}?append_to_response=watch/providers`);
@@ -94,6 +95,23 @@ async function handleSelection(to, id, env) {
     } catch (e) {
         return send(to, "⚠️ Couldn't load that title. Please try again.", env);
     }
+}
+
+// Search movies/TV by popularity, with a prefix-trim fallback that recovers most
+// typos (TMDB isn't fuzzy: "oppenhimer" → 0 results, but "oppenh" → Oppenheimer).
+async function searchTitles(env, q) {
+    const run = async (query) => {
+        const r = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(query)}&include_adult=false&region=IN`);
+        const d = await r.json();
+        return (d.results || []).filter(x => x.media_type === "movie" || x.media_type === "tv")
+            .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    };
+    let all = await run(q);
+    if (!all.length && q.length >= 5) {
+        const prefix = q.slice(0, Math.max(4, Math.round(q.length * 0.6)));
+        if (prefix && prefix !== q) all = await run(prefix);
+    }
+    return all;
 }
 
 function titleOfRaw(r) { return r.title || r.name || "Untitled"; }
@@ -166,21 +184,24 @@ async function send(to, text, env) {
 // Disambiguation chooser as a WhatsApp interactive LIST (up to 10 rows). Still a free
 // service message (sent inside the user-initiated 24h window). Row id = w:<type>:<id>;
 // tapping it comes back as an interactive list_reply → handleSelection().
-async function sendChooser(to, q, opts, env) {
+async function sendChooser(to, q, opts, env, mode = "exact") {
     const v = env.GRAPH_VERSION || "v21.0";
     const rows = opts.map(r => ({
         id: `w:${r.media_type}:${r.id}`.slice(0, 200),
         title: `${titleOfRaw(r)}${yearOfRaw(r) ? ` (${yearOfRaw(r)})` : ""}`.slice(0, 24),   // WA limit: 24 chars
         description: (r.media_type === "tv" ? "Series" : "Movie").slice(0, 72),
     }));
+    const bodyText = mode === "fuzzy"
+        ? `🤔 I couldn't find an exact match for *${q}*. Did you mean one of these?`
+        : `🔎 There are a few titles called *${q}*. Which one do you mean?`;
     const payload = {
         messaging_product: "whatsapp",
         to,
         type: "interactive",
         interactive: {
             type: "list",
-            body: { text: `🔎 There are a few titles called *${q}*. Which one do you mean?`.slice(0, 1024) },
-            action: { button: "Choose a title", sections: [{ title: "Results", rows }] },
+            body: { text: bodyText.slice(0, 1024) },
+            action: { button: "Pick a title", sections: [{ title: "Results", rows }] },
         },
     };
     await fetch(`https://graph.facebook.com/${v}/${env.PHONE_NUMBER_ID}/messages`, {

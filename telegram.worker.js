@@ -82,23 +82,22 @@ async function handle(chatId, text, env) {
   }
   const q = cleanQuery(text);
   try {
-    const sr = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(q)}&include_adult=false&region=IN`);
-    const sd = await sr.json();
-    const all = (sd.results || [])
-      .filter(r => r.media_type === "movie" || r.media_type === "tv")
-      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    const all = await searchTitles(env, q);
     if (!all.length) return tgSend(chatId, `🔍 I couldn't find <b>${esc(q)}</b>.\nCheck the spelling, or try the original title.`, env);
 
-    // Disambiguation: if several titles share the exact name (e.g. "Guilty"),
-    // let the user pick instead of guessing the most popular one.
+    // Build a tappable pick-list of options (one button per row).
+    const buildRows = (list) => list.map(r => [{
+      text: `${titleOfRaw(r)}${yearOfRaw(r) ? ` (${yearOfRaw(r)})` : ""} · ${r.media_type === "tv" ? "Series" : "Movie"}`.slice(0, 60),
+      callback_data: `w:${r.media_type}:${r.id}`,
+    }]);
     const exact = all.filter(r => norm(titleOfRaw(r)) === norm(q));
+    // Several titles share the exact name (e.g. "Guilty") → let the user pick.
     if (exact.length > 1) {
-      const opts = exact.slice(0, 6);
-      const rows = opts.map(r => [{
-        text: `${titleOfRaw(r)}${yearOfRaw(r) ? ` (${yearOfRaw(r)})` : ""} · ${r.media_type === "tv" ? "Series" : "Movie"}`.slice(0, 60),
-        callback_data: `w:${r.media_type}:${r.id}`,
-      }]);
-      return tgSend(chatId, `🔎 There are a few titles called <b>${esc(q)}</b>. Which one do you mean?`, env, false, rows);
+      return tgSend(chatId, `🔎 There are a few titles called <b>${esc(q)}</b>. Which one do you mean?`, env, false, buildRows(exact.slice(0, 10)));
+    }
+    // No exact match (likely a typo / partial name) → show related matches instead of guessing.
+    if (exact.length === 0 && all.length > 1) {
+      return tgSend(chatId, `🤔 I couldn't find an exact match for <b>${esc(q)}</b>. Did you mean one of these?`, env, false, buildRows(all.slice(0, 10)));
     }
 
     const hit = exact[0] || all[0];
@@ -112,6 +111,25 @@ async function handle(chatId, text, env) {
 }
 
 // Resolve a title/year off a raw search result (movie uses title/release_date, tv uses name/first_air_date).
+// Search movies/TV, sorted by popularity. If a query returns nothing (common for
+// mid-word typos — TMDB isn't fuzzy), retry with a shorter prefix of the query,
+// which recovers most misspellings (e.g. "oppenhimer" → "oppenh" → Oppenheimer).
+async function searchTitles(env, q) {
+  const run = async (query) => {
+    const r = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(query)}&include_adult=false&region=IN`);
+    const d = await r.json();
+    return (d.results || [])
+      .filter(x => x.media_type === "movie" || x.media_type === "tv")
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+  };
+  let all = await run(q);
+  if (!all.length && q.length >= 5) {
+    const prefix = q.slice(0, Math.max(4, Math.round(q.length * 0.6)));
+    if (prefix && prefix !== q) all = await run(prefix);
+  }
+  return all;
+}
+
 function titleOfRaw(r) { return r.title || r.name || "Untitled"; }
 function yearOfRaw(r) { return (r.release_date || r.first_air_date || "").slice(0, 4); }
 function norm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
