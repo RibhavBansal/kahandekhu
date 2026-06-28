@@ -913,6 +913,7 @@
             function reloadContent(){
                 try{ reflectRegion(); }catch(e){}
                 try{ if($('#settingsModal').classList.contains('show')) renderSettingsBody(); }catch(e){}
+                try{ if($('#v-watchlist').classList.contains('on')) renderWatchlist(); }catch(e){}
                 try{ loadTrending(); }catch(e){}
                 try{ loadForYou(); }catch(e){}
                 try{ if($('#genreChips').children.length){ renderGenreChips(); renderLangChips(); } }catch(e){}
@@ -1195,7 +1196,7 @@
                 const idx=WATCHLIST.findIndex(w=>w.id===data.id && w.media_type===type);
                 const removed = idx>=0;
                 if(removed){ WATCHLIST.splice(idx,1); toast('Removed from watchlist'); }
-                else{ WATCHLIST.unshift({ id:data.id, media_type:type, title:titleOf(data), poster_path:data.poster_path||null, release_date:data.release_date, first_air_date:data.first_air_date, genre_ids:data.genre_ids||(data.genres&&data.genres.map(g=>g.id))||[], vote_average:data.vote_average }); toast('Added to watchlist ✓'); }
+                else{ WATCHLIST.unshift({ id:data.id, media_type:type, title:titleOf(data), _lang:LANG, poster_path:data.poster_path||null, release_date:data.release_date, first_air_date:data.first_air_date, genre_ids:data.genre_ids||(data.genres&&data.genres.map(g=>g.id))||[], vote_average:data.vote_average }); toast('Added to watchlist ✓'); }
                 sSet('kd_watchlist',WATCHLIST);
                 cloudSaveWatchItem(data, type, removed);
                 return inWatchlist(data.id,type);
@@ -1209,6 +1210,25 @@
                 host.innerHTML='<div class="grid"></div>';
                 const grid=host.querySelector('.grid');
                 WATCHLIST.forEach(i=>grid.appendChild(buildCard(i)));
+                refreshWatchlistTitles();
+            }
+            // Watchlist titles are stored as a snapshot in the save-time language. When the UI
+            // language differs, re-fetch each title in the current language (cached per item via
+            // `_lang`, so it only fetches when the language actually changed), then re-render.
+            async function refreshWatchlistTitles(){
+                if(!live()) return;
+                const stale = WATCHLIST.filter(i => i._lang !== LANG && (i.media_type==='movie'||i.media_type==='tv'));
+                if(!stale.length) return;
+                let changed=false;
+                await Promise.all(stale.map(async i=>{
+                    try{
+                        const d = await apiGet(`/${i.media_type}/${i.id}`, {});
+                        const nt = d && (d.title || d.name);
+                        if(nt && nt!==i.title){ i.title=nt; changed=true; }
+                        i._lang = LANG;   // mark checked (avoids re-fetching every render)
+                    }catch(e){}
+                }));
+                if(changed){ sSet('kd_watchlist', WATCHLIST); if($('#v-watchlist').classList.contains('on')) renderWatchlist(); }
             }
             window.__go=showView;
             
