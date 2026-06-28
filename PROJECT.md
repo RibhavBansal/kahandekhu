@@ -176,8 +176,13 @@ Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi
 - Handles `push` (shows the notification) and `notificationclick` (focuses/opens the app).
 - Safe-area insets applied to topbar, bottom nav, toast, modals (notch + home indicator).
 
+### 4.13b Add-to-home-screen / install banner (`#a2hs`)
+- A bottom banner (above the nav) prompting non-installed users to install. **Two modes:** Android/desktop Chrome → captures `beforeinstallprompt` and shows a one-tap **Install** button (`deferredPrompt.prompt()`); iOS Safari → guided **3-step boxes** (icon over text, chevron-linked: Share → Add to Home Screen → Add), since iOS has no native prompt.
+- **Shown only when relevant:** hidden if standalone/installed, inside the TWA (`is-twa`), or dismissed `< 7 days` ago (`kd_a2hs_dismissed` timestamp). `appinstalled` suppresses it long-term. Appears ~4s after load; hidden while the keyboard is open.
+- Title/subtitle/Install button localized via the `A2HS` dict (10 langs); the iOS button names (Share / Add to Home Screen / Add) stay English to match the actual device UI.
+
 ### 4.14 localStorage keys
-`kd_region`, `kd_services`, `kd_watchlist`, `kd_notify`.
+`kd_region`, `kd_services`, `kd_watchlist`, `kd_notify`, `kd_lang`, `kd_a2hs_dismissed`.
 
 ---
 
@@ -207,10 +212,12 @@ Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi
 - **Free by design:** reply-only, always inside the 24-hour user window (service messages are free; no paid templates).
 - **Vars:** `TMDB_PROXY`, `APP_URL`, `GRAPH_VERSION`. **Secrets:** `WHATSAPP_TOKEN`, `PHONE_NUMBER_ID`, `VERIFY_TOKEN`. Setup in `WHATSAPP-SETUP.md`.
 - Each reply ends with an app-install CTA ("Save it to your watchlist & get a reminder…").
+- **Disambiguation:** same exact-name logic as Telegram → sends a WhatsApp **interactive list** (`sendChooser`, up to 10 rows, row id `w:<type>:<id>`). Tapping a row returns an `interactive.list_reply` → `handleSelection()` fetches that title and answers. Still a **free service message** (inside the 24h window).
 - **In-app entry points:** an "Ask on WhatsApp" button on the detail page (prefilled with the title) and a footer link — both gated on the client `WHATSAPP_NUMBER` constant (hidden until you set the bot number).
 
 ### 5.5 Telegram bot (`telegram.worker.js`) — `kahandekhu-telegram`
 - Same "where to watch in India" reply as the WhatsApp bot, via the TMDB proxy; HTML-formatted, ends with the app-install CTA. **Free, unlimited, no verification** — easiest channel.
+- **Poster images:** replies are sent via `sendPhoto` (poster from TMDB `w500`) + caption + app button (`sendReply`); falls back to text when there's no poster or the caption exceeds the 1024-char photo-caption limit. Telegram fetches the image from TMDB's CDN — no cost. Callback answers send a fresh poster and delete the chooser.
 - **Growth-tuned messaging:** rich `/start` (HELP) feature pitch; a full `/features` (aliases `/about`, `/app`) showcase of every app feature; each where-to-watch reply appends a **rotating one-line teaser** (`TIPS`) so repeat users keep seeing new reasons to install, plus a `/features` pointer. CTA button: "📲 Open KahanDekhu — free". All messages well under Telegram's 4096-char limit.
 - **Disambiguation:** when several titles share the exact name (normalized, e.g. "Guilty", "The Guilty"), the bot replies with an **inline-button chooser** (up to 6, labelled `Title (year) · Movie/Series`, `callback_data = w:<type>:<id>`) instead of guessing. Tapping a button fires a `callback_query` → `handleCallback()` fetches that exact title and **edits the chooser into the answer** (+ app button). Single clear match → answers directly as before.
 - **Endpoint:** `POST /` (Telegram webhook; handles both `message` and `callback_query`; verified via `X-Telegram-Bot-Api-Secret-Token`).

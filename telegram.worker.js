@@ -7,6 +7,7 @@
 // Secrets:          BOT_TOKEN (from @BotFather), WEBHOOK_SECRET (any random string)
 
 const REGIONS = [["IN","India","🇮🇳"],["US","USA","🇺🇸"],["GB","UK","🇬🇧"],["AE","UAE","🇦🇪"],["CA","Canada","🇨🇦"],["AU","Australia","🇦🇺"],["SG","Singapore","🇸🇬"]];
+const IMG = "https://image.tmdb.org/t/p";   // TMDB poster CDN (free)
 
 export default {
   async fetch(req, env) {
@@ -103,7 +104,7 @@ async function handle(chatId, text, env) {
     const hit = exact[0] || all[0];
     const dr = await proxyFetch(env, `/${hit.media_type}/${hit.id}?append_to_response=watch/providers`);
     const d = await dr.json();
-    return tgSend(chatId, formatReply(d, env), env);
+    return sendReply(chatId, d, env);
   } catch (e) {
     console.error("telegram handle error:", e && e.stack || String(e));
     return tgSend(chatId, "⚠️ Something went wrong fetching that. Please try again in a moment.", env);
@@ -124,8 +125,9 @@ async function handleCallback(cbq, env) {
   try {
     const dr = await proxyFetch(env, `/${m[1]}/${m[2]}?append_to_response=watch/providers`);
     const d = await dr.json();
-    // Replace the chooser with the answer (keeps the thread tidy) + app button.
-    await editMessage(chat.id, cbq.message.message_id, formatReply(d, env), env);
+    await sendReply(chat.id, d, env);   // poster + answer
+    // Remove the now-answered chooser to keep the thread tidy.
+    try { await tgApi("deleteMessage", { chat_id: chat.id, message_id: cbq.message.message_id }, env); } catch (_) {}
   } catch (e) {
     console.error("telegram callback error:", e && e.stack || String(e));
     await tgSend(chat.id, "⚠️ Couldn't load that title. Please try again.", env);
@@ -213,14 +215,20 @@ async function tgSend(chatId, text, env, appButton = true, keyboard = null) {
 function answerCallback(callbackQueryId, env) {
   return tgApi("answerCallbackQuery", { callback_query_id: callbackQueryId }, env);
 }
-// Replace an existing message's text (used to turn the chooser into the answer).
-function editMessage(chatId, messageId, text, env) {
-  return tgApi("editMessageText", {
-    chat_id: chatId,
-    message_id: messageId,
-    text: text.slice(0, 4000),
-    parse_mode: "HTML",
-    disable_web_page_preview: true,
-    reply_markup: { inline_keyboard: appButtonRow(env) },
-  }, env);
+// Send the where-to-watch answer as a poster image + caption (falls back to text when
+// there's no poster, or the caption exceeds Telegram's 1024-char photo-caption limit).
+async function sendReply(chatId, d, env) {
+  const caption = formatReply(d, env);
+  const poster = d.poster_path ? `${IMG}/w500${d.poster_path}` : null;
+  if (poster && caption.length <= 1024) {
+    await tgApi("sendPhoto", {
+      chat_id: chatId,
+      photo: poster,
+      caption,
+      parse_mode: "HTML",
+      reply_markup: { inline_keyboard: appButtonRow(env) },
+    }, env);
+  } else {
+    await tgSend(chatId, caption, env);
+  }
 }

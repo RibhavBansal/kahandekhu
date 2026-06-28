@@ -35,8 +35,14 @@ export default {
             try {
                 const value = body?.entry?.[0]?.changes?.[0]?.value;
                 const msg = value?.messages?.[0];
-                if (msg && msg.type === "text" && msg.from) {
-                    await handleMessage(msg.from, (msg.text?.body || "").trim(), env);
+                if (msg && msg.from) {
+                    if (msg.type === "text") {
+                        await handleMessage(msg.from, (msg.text?.body || "").trim(), env);
+                    } else if (msg.type === "interactive") {
+                        // User tapped a disambiguation list option.
+                        const id = msg.interactive?.list_reply?.id || msg.interactive?.button_reply?.id;
+                        if (id) await handleSelection(msg.from, id, env);
+                    }
                 }
             } catch (e) { /* never fail the webhook — Meta retries on non-200 */ }
             return new Response("ok", { status: 200 });
@@ -58,11 +64,17 @@ async function handleMessage(to, text, env) {
     try {
         const sr = await proxyFetch(env, `/search/multi?query=${encodeURIComponent(q)}&include_adult=false&region=IN`);
         const sd = await sr.json();
-        const hit = (sd.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv")
-        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))[0];
-        if (!hit) {
+        const all = (sd.results || []).filter(r => r.media_type === "movie" || r.media_type === "tv")
+        .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+        if (!all.length) {
             return send(to, `🔍 I couldn't find *"${q}"*.\nCheck the spelling, or try the original title.`, env);
         }
+        // Several titles share the exact name (e.g. "Guilty") → let the user pick.
+        const exact = all.filter(r => norm(titleOfRaw(r)) === norm(q));
+        if (exact.length > 1) {
+            return sendChooser(to, q, exact.slice(0, 10), env);
+        }
+        const hit = exact[0] || all[0];
         const dr = await proxyFetch(env, `/${hit.media_type}/${hit.id}?append_to_response=watch/providers`);
         const d = await dr.json();
         return send(to, formatReply(d, hit.media_type, env), env);
@@ -70,6 +82,23 @@ async function handleMessage(to, text, env) {
         return send(to, "⚠️ Something went wrong fetching that. Please try again in a moment.", env);
     }
 }
+
+// User picked an option from the disambiguation list.
+async function handleSelection(to, id, env) {
+    const m = String(id || "").match(/^w:(movie|tv):(\d+)$/);
+    if (!m) return;
+    try {
+        const dr = await proxyFetch(env, `/${m[1]}/${m[2]}?append_to_response=watch/providers`);
+        const d = await dr.json();
+        return send(to, formatReply(d, m[1], env), env);
+    } catch (e) {
+        return send(to, "⚠️ Couldn't load that title. Please try again.", env);
+    }
+}
+
+function titleOfRaw(r) { return r.title || r.name || "Untitled"; }
+function yearOfRaw(r) { return (r.release_date || r.first_air_date || "").slice(0, 4); }
+function norm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
 
 function cleanQuery(text) {
     return String(text || "")
@@ -131,5 +160,32 @@ async function send(to, text, env) {
         method: "POST",
         headers: { "Authorization": `Bearer ${env.WHATSAPP_TOKEN}`, "Content-Type": "application/json" },
         body: JSON.stringify({ messaging_product: "whatsapp", to, type: "text", text: { body: text.slice(0, 4000), preview_url: true } }),
+    });
+}
+
+// Disambiguation chooser as a WhatsApp interactive LIST (up to 10 rows). Still a free
+// service message (sent inside the user-initiated 24h window). Row id = w:<type>:<id>;
+// tapping it comes back as an interactive list_reply → handleSelection().
+async function sendChooser(to, q, opts, env) {
+    const v = env.GRAPH_VERSION || "v21.0";
+    const rows = opts.map(r => ({
+        id: `w:${r.media_type}:${r.id}`.slice(0, 200),
+        title: `${titleOfRaw(r)}${yearOfRaw(r) ? ` (${yearOfRaw(r)})` : ""}`.slice(0, 24),   // WA limit: 24 chars
+        description: (r.media_type === "tv" ? "Series" : "Movie").slice(0, 72),
+    }));
+    const payload = {
+        messaging_product: "whatsapp",
+        to,
+        type: "interactive",
+        interactive: {
+            type: "list",
+            body: { text: `🔎 There are a few titles called *${q}*. Which one do you mean?`.slice(0, 1024) },
+            action: { button: "Choose a title", sections: [{ title: "Results", rows }] },
+        },
+    };
+    await fetch(`https://graph.facebook.com/${v}/${env.PHONE_NUMBER_ID}/messages`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${env.WHATSAPP_TOKEN}`, "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
     });
 }

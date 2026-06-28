@@ -400,7 +400,30 @@
                     .surprise:active{transform:scale(.97)}
                     
                     /* Hide the fixed bottom nav + FAB while the keyboard is open (prevents drift on scroll) */
-                    body.kb-open .nav, body.kb-open .fab-support{display:none}
+                    body.kb-open .nav, body.kb-open .fab-support, body.kb-open .a2hs{display:none}
+
+                    /* Add-to-Home-Screen / Install banner (web only; hidden in the TWA & when installed) */
+                    .a2hs{position:fixed;left:10px;right:10px;bottom:calc(var(--nav-h) + 12px + env(safe-area-inset-bottom));z-index:78;max-width:560px;margin:0 auto;background:linear-gradient(180deg,#1A1636,var(--surface));border:1px solid #322B57;border-radius:17px;padding:14px;box-shadow:0 -10px 40px rgba(0,0,0,.5),0 0 0 1px rgba(245,196,81,.05);opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .3s ease,transform .3s cubic-bezier(.2,1,.3,1)}
+                    .a2hs.show{opacity:1;transform:none;pointer-events:auto}
+                    .a2hs-x{position:absolute;top:9px;right:9px;width:24px;height:24px;border-radius:50%;border:none;background:var(--bg);color:var(--muted);font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center}
+                    .a2hs-x:hover{color:var(--text)}
+                    .a2hs-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+                    .a2hs-ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--bg);border:1px solid #322B57;flex:none}
+                    .a2hs-ic .bulb{width:15px;height:15px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+                    .a2hs-txt{min-width:0;flex:1;padding-right:18px}
+                    .a2hs-tt{margin:0;font-family:'Bricolage Grotesque';font-weight:700;font-size:14.5px;color:var(--text);line-height:1.25}
+                    .a2hs-sub{margin:2px 0 0;font-size:12px;color:var(--muted);line-height:1.3}
+                    .a2hs-install{flex:none;background:var(--gold);color:#1a1405;border:none;border-radius:999px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;transition:.15s;margin-right:24px}
+                    .a2hs-install:hover{filter:brightness(1.05)}
+                    .a2hs-steps{display:flex;align-items:stretch;gap:7px}
+                    .a2hs-step{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:12px 6px 10px;text-align:center}
+                    .a2hs-step .s-ic{display:inline-flex;color:var(--gold)}
+                    .a2hs-step .s-ic svg{width:22px;height:22px}
+                    .a2hs-step .s-lbl{margin-top:7px;font-size:11.5px;line-height:1.32;color:#D7D2EC}
+                    .a2hs-step .s-lbl b{font-weight:600;color:var(--text)}
+                    .a2hs-arrow{align-self:center;flex:none;display:inline-flex;color:var(--muted-2,#6B6880)}
+                    .a2hs-arrow svg{width:15px;height:15px}
+                    @media (max-width:340px){ .a2hs-step .s-lbl{font-size:10.5px} .a2hs-arrow{display:none} }
                     
                     /* Multi-region availability — "streaming in other regions" */
                     .elsewhere{margin:18px 0 2px}
@@ -569,6 +592,7 @@
             </div>
         </div>
         
+        <div class="a2hs" id="a2hs" role="dialog" aria-label="Install app"></div>
         <div class="toast" id="toast"></div>
         <div class="coach" id="signinHint" role="status" aria-live="polite">
             <span class="coach-arrow"></span>
@@ -1075,6 +1099,21 @@
             const SETTINGS_LABEL = { en:'Settings',hi:'सेटिंग्स',bn:'সেটিংস',ta:'அமைப்புகள்',te:'సెట్టింగ్‌లు',mr:'सेटिंग्ज',kn:'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',ml:'ക്രമീകരണങ്ങൾ',gu:'સેટિંગ્સ',pa:'ਸੈਟਿੰਗਾਂ' };
             // Short labels for the settings dropdown menu: [Language, Region, Services].
             const MENU_LABELS = { en:['Language','Region','Services'],hi:['भाषा','क्षेत्र','सेवाएँ'],bn:['ভাষা','অঞ্চল','পরিষেবা'],ta:['மொழி','பகுதி','சேவைகள்'],te:['భాష','ప్రాంతం','సేవలు'],mr:['भाषा','प्रदेश','सेवा'],kn:['ಭಾಷೆ','ಪ್ರದೇಶ','ಸೇವೆಗಳು'],ml:['ഭാഷ','പ്രദേശം','സേവനങ്ങൾ'],gu:['ભાષા','પ્રદેશ','સેવાઓ'],pa:['ਭਾਸ਼ਾ','ਖੇਤਰ','ਸੇਵਾਵਾਂ'] };
+            // Add-to-home-screen / install banner copy. (iOS button names — Share, Add to Home
+            // Screen, Add — stay in English to match what the device actually shows.)
+            const A2HS = {
+                en:{title:"Add KahanDekhu to your Home Screen",sub:"Free · works offline · opens like an app",installTitle:"Install KahanDekhu",install:"Install"},
+                hi:{title:"KahanDekhu को होम स्क्रीन पर जोड़ें",sub:"मुफ़्त · ऑफ़लाइन चलता है · ऐप जैसा खुलता है",installTitle:"KahanDekhu इंस्टॉल करें",install:"इंस्टॉल करें"},
+                bn:{title:"KahanDekhu হোম স্ক্রিনে যোগ করুন",sub:"ফ্রি · অফলাইনেও চলে · অ্যাপের মতো খোলে",installTitle:"KahanDekhu ইনস্টল করুন",install:"ইনস্টল করুন"},
+                ta:{title:"KahanDekhu-ஐ முகப்புத் திரையில் சேர்க்கவும்",sub:"இலவசம் · ஆஃப்லைனிலும் இயங்கும் · ஆப் போல் திறக்கும்",installTitle:"KahanDekhu-ஐ நிறுவவும்",install:"நிறுவு"},
+                te:{title:"KahanDekhu‌ను హోమ్ స్క్రీన్‌కు జోడించండి",sub:"ఉచితం · ఆఫ్‌లైన్‌లో పనిచేస్తుంది · యాప్ లాగా తెరుచుకుంటుంది",installTitle:"KahanDekhu‌ను ఇన్‌స్టాల్ చేయండి",install:"ఇన్‌స్టాల్ చేయండి"},
+                mr:{title:"KahanDekhu होम स्क्रीनवर जोडा",sub:"मोफत · ऑफलाइन चालते · अ‍ॅपसारखे उघडते",installTitle:"KahanDekhu इंस्टॉल करा",install:"इंस्टॉल करा"},
+                kn:{title:"KahanDekhu ಅನ್ನು ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಸೇರಿಸಿ",sub:"ಉಚಿತ · ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ · ಆ್ಯಪ್‌ನಂತೆ ತೆರೆಯುತ್ತದೆ",installTitle:"KahanDekhu ಸ್ಥಾಪಿಸಿ",install:"ಸ್ಥಾಪಿಸಿ"},
+                ml:{title:"KahanDekhu ഹോം സ്ക്രീനിൽ ചേർക്കൂ",sub:"സൗജന്യം · ഓഫ്‌ലൈനിലും പ്രവർത്തിക്കും · ആപ്പ് പോലെ തുറക്കും",installTitle:"KahanDekhu ഇൻസ്റ്റാൾ ചെയ്യൂ",install:"ഇൻസ്റ്റാൾ ചെയ്യൂ"},
+                gu:{title:"KahanDekhu ને હોમ સ્ક્રીન પર ઉમેરો",sub:"મફત · ઓફલાઇન ચાલે છે · એપ જેવું ખૂલે છે",installTitle:"KahanDekhu ઇન્સ્ટૉલ કરો",install:"ઇન્સ્ટૉલ કરો"},
+                pa:{title:"KahanDekhu ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ 'ਤੇ ਸ਼ਾਮਲ ਕਰੋ",sub:"ਮੁਫ਼ਤ · ਆਫ਼ਲਾਈਨ ਚੱਲਦਾ ਹੈ · ਐਪ ਵਾਂਗ ਖੁੱਲ੍ਹਦਾ ਹੈ",installTitle:"KahanDekhu ਇੰਸਟਾਲ ਕਰੋ",install:"ਇੰਸਟਾਲ ਕਰੋ"},
+            };
+            function a2t(k){ return (A2HS[LANG] && A2HS[LANG][k]) || A2HS.en[k] || ""; }
             const GENRE_CHIPS=[['All',null],['Action',[28,10759]],['Comedy',[35]],['Drama',[18]],['Thriller',[53,9648]],['Sci-Fi',[878,10765]],['Romance',[10749]],['Horror',[27]],['Crime',[80]],['Adventure',[12]],['Animation',[16]],['Documentary',[99]],['Family',[10751]]];
             const LANG_CHIPS=[['All langs',null],['Hindi','hi'],['Tamil','ta'],['Telugu','te'],['Malayalam','ml'],['Kannada','kn'],['Bengali','bn'],['Marathi','mr'],['Punjabi','pa'],['English','en']];
             const dateOf=x=>x.release_date||x.first_air_date||'';
@@ -1806,6 +1845,66 @@
             setTimeout(showSigninHint, 1400);
             window.addEventListener('resize',()=>{ const c=$('#signinHint'); if(c&&c.classList.contains('show')) positionHint(); });
             
+            /* ============================================================
+               ADD-TO-HOME-SCREEN / INSTALL banner
+               - Android/desktop Chrome: one-tap install via beforeinstallprompt.
+               - iOS Safari: guided "Share → Add to Home Screen → Add" steps (iOS can't auto-install).
+               - Hidden if already installed (standalone), inside the TWA, or dismissed < 7 days ago.
+               ============================================================ */
+            (function(){
+                const A2_KEY='kd_a2hs_dismissed', WEEK=7*24*60*60*1000;
+                let deferredPrompt=null;
+                const SVG_SHARE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
+                const SVG_ADD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/></svg>';
+                const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.4 2.4 4.6-5"/></svg>';
+                const SVG_CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>';
+                const X='<button class="a2hs-x" id="a2hsX" aria-label="Dismiss">&times;</button>';
+                const HEAD=(t)=>`<div class="a2hs-head"><span class="a2hs-ic"><span class="bulb"></span></span><div class="a2hs-txt"><p class="a2hs-tt">${t}</p><p class="a2hs-sub">${a2t('sub')}</p></div></div>`;
+
+                function eligible(){
+                    try{
+                        if(document.body.classList.contains('is-twa')) return false;
+                        if(window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true) return false;
+                        const d=sGet(A2_KEY); if(d && (Date.now()-d) < WEEK) return false;
+                    }catch(e){ return false; }
+                    return true;
+                }
+                function show(mode){
+                    const el=$('#a2hs'); if(!el) return;
+                    if(mode==='android'){
+                        el.innerHTML = X + `<div class="a2hs-head"><span class="a2hs-ic"><span class="bulb"></span></span><div class="a2hs-txt"><p class="a2hs-tt">${a2t('installTitle')}</p><p class="a2hs-sub">${a2t('sub')}</p></div><button class="a2hs-install" id="a2hsInstall">${a2t('install')}</button></div>`;
+                    } else {
+                        const step=(svg,lbl)=>`<div class="a2hs-step"><span class="s-ic">${svg}</span><div class="s-lbl">${lbl}</div></div>`;
+                        const arr=`<span class="a2hs-arrow">${SVG_CHEV}</span>`;
+                        el.innerHTML = X + HEAD(a2t('title')) +
+                            `<div class="a2hs-steps">${step(SVG_SHARE,'Tap <b>Share</b>')}${arr}${step(SVG_ADD,'Add to <b>Home Screen</b>')}${arr}${step(SVG_CHECK,'Tap <b>Add</b>')}</div>`;
+                    }
+                    $('#a2hsX')?.addEventListener('click',dismiss);
+                    $('#a2hsInstall')?.addEventListener('click',doInstall);
+                    requestAnimationFrame(()=>el.classList.add('show'));
+                }
+                function hide(){ const el=$('#a2hs'); if(!el) return; el.classList.remove('show'); setTimeout(()=>{ if(!el.classList.contains('show')) el.innerHTML=''; },320); }
+                function dismiss(){ try{ sSet(A2_KEY, Date.now()); }catch(e){} hide(); }
+                async function doInstall(){
+                    if(!deferredPrompt) return;
+                    try{ deferredPrompt.prompt(); await deferredPrompt.userChoice; }catch(e){}
+                    deferredPrompt=null; hide();
+                }
+                // Android / desktop Chrome: capture the native prompt, then offer one-tap install.
+                window.addEventListener('beforeinstallprompt',(e)=>{
+                    e.preventDefault(); deferredPrompt=e;
+                    if(eligible()) setTimeout(()=>{ if(eligible() && deferredPrompt) show('android'); }, 4000);
+                });
+                window.addEventListener('appinstalled',()=>{ deferredPrompt=null; try{ sSet(A2_KEY, Date.now()+3650*24*60*60*1000); }catch(e){} hide(); });
+                // iOS Safari: no native prompt → show the guided steps.
+                (function(){
+                    const ua=navigator.userAgent||'';
+                    const isIOS=/iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
+                    const isSafari=/safari/i.test(ua) && !/crios|fxios|edgios|chrome|android/i.test(ua);
+                    if(isIOS && isSafari && eligible()) setTimeout(()=>{ if(eligible()) show('ios'); }, 4500);
+                })();
+            })();
+
             /* PWA: register the service worker (enables install + offline shell) */
             if('serviceWorker' in navigator){
                 window.addEventListener('load',()=>{ navigator.serviceWorker.register('service-worker.js').catch(()=>{}); });
