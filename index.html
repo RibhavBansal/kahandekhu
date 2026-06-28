@@ -1852,8 +1852,15 @@
                - Hidden if already installed (standalone), inside the TWA, or dismissed < 7 days ago.
                ============================================================ */
             (function(){
-                const A2_KEY='kd_a2hs_dismissed', WEEK=7*24*60*60*1000;
+                const A2_KEY='kd_a2hs_dismissed', SHOWN_KEY='kd_a2hs_shown', WEEK=7*24*60*60*1000;
+                // Frequency policy (tweak freely):
+                const FIRST_LAUNCH=2;   // skip the very first visit, first offer on the 2nd open
+                const EVERY=4;          // then re-check only every 4th launch (2, 6, 10, …)
+                const MAX_SHOWS=4;      // lifetime cap — never nag more than this
                 let deferredPrompt=null;
+                // Count this launch once per page load.
+                const launch=((sGet('kd_launch')||0)+1); try{ sSet('kd_launch', launch); }catch(e){}
+                const dueThisLaunch = launch===FIRST_LAUNCH || (launch>FIRST_LAUNCH && (launch-FIRST_LAUNCH)%EVERY===0);
                 const SVG_SHARE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15V4"/><path d="m8 8 4-4 4 4"/><path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
                 const SVG_ADD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/></svg>';
                 const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.4 2.4 4.6-5"/></svg>';
@@ -1865,12 +1872,15 @@
                     try{
                         if(document.body.classList.contains('is-twa')) return false;
                         if(window.matchMedia('(display-mode: standalone)').matches || navigator.standalone===true) return false;
-                        const d=sGet(A2_KEY); if(d && (Date.now()-d) < WEEK) return false;
+                        if(!dueThisLaunch) return false;                                  // only check every 4th launch
+                        if((sGet(SHOWN_KEY)||0) >= MAX_SHOWS) return false;               // lifetime cap reached
+                        const d=sGet(A2_KEY); if(d && (Date.now()-d) < WEEK) return false; // dismissed recently
                     }catch(e){ return false; }
                     return true;
                 }
                 function show(mode){
                     const el=$('#a2hs'); if(!el) return;
+                    try{ sSet(SHOWN_KEY,(sGet(SHOWN_KEY)||0)+1); }catch(e){}   // count toward the lifetime cap
                     if(mode==='android'){
                         el.innerHTML = X + `<div class="a2hs-head"><span class="a2hs-ic"><span class="bulb"></span></span><div class="a2hs-txt"><p class="a2hs-tt">${a2t('installTitle')}</p><p class="a2hs-sub">${a2t('sub')}</p></div><button class="a2hs-install" id="a2hsInstall">${a2t('install')}</button></div>`;
                     } else {

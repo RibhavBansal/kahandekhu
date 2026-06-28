@@ -178,11 +178,12 @@ Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi
 
 ### 4.13b Add-to-home-screen / install banner (`#a2hs`)
 - A bottom banner (above the nav) prompting non-installed users to install. **Two modes:** Android/desktop Chrome → captures `beforeinstallprompt` and shows a one-tap **Install** button (`deferredPrompt.prompt()`); iOS Safari → guided **3-step boxes** (icon over text, chevron-linked: Share → Add to Home Screen → Add), since iOS has no native prompt.
-- **Shown only when relevant:** hidden if standalone/installed, inside the TWA (`is-twa`), or dismissed `< 7 days` ago (`kd_a2hs_dismissed` timestamp). `appinstalled` suppresses it long-term. Appears ~4s after load; hidden while the keyboard is open.
+- **Frequency policy (counter-based, not every visit):** a per-load `kd_launch` counter gates it — first offer on the **2nd** launch, then re-checked **every 4th** launch (`FIRST_LAUNCH=2`, `EVERY=4`), with a **lifetime cap of 4 shows** (`kd_a2hs_shown`). Each actual display increments the cap.
+- **Also hidden when:** standalone/installed, inside the TWA (`is-twa`), or dismissed `< 7 days` ago (`kd_a2hs_dismissed` timestamp). `appinstalled` suppresses it long-term. Appears ~4s after load; hidden while the keyboard is open.
 - Title/subtitle/Install button localized via the `A2HS` dict (10 langs); the iOS button names (Share / Add to Home Screen / Add) stay English to match the actual device UI.
 
 ### 4.14 localStorage keys
-`kd_region`, `kd_services`, `kd_watchlist`, `kd_notify`, `kd_lang`, `kd_a2hs_dismissed`.
+`kd_region`, `kd_services`, `kd_watchlist`, `kd_notify`, `kd_lang`, `kd_a2hs_dismissed`, `kd_a2hs_shown`, `kd_launch`.
 
 ---
 
