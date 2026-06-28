@@ -648,7 +648,7 @@
                     'acct.signin':'Sign in','nav.search':'Search','nav.browse':'Browse','nav.watchlist':'Watchlist',
                     'hero.eyebrow':'Where to watch · India','hero.title':'Find <span class="em">where</span> to watch<br/>anything in India.',
                     'hero.sub':"Type a movie or show. See every legal platform it's on — subscription, rent, or buy.",
-                    'search.ph':'Drishyam, Scam 1992, Panchayat…','search.go':'Search','search.results':'Results','search.searching':'Searching…',
+                    'search.ph':'Drishyam, Scam 1992, Panchayat…','search.go':'Search','search.results':'Results','search.searching':'Searching…','search.closest':'No exact match for “{q}” — showing closest results.',
                     'forYou':'For you','forYou.because':'Because you saved {x}','trending':'Trending in India','trending.today':'Today',
                     'browse.title':'Browse','browse.sub':'Filter by type, genre and rating — then see where to watch.',
                     'browse.movies':'Movies','browse.shows':'Shows','sort.popular':'Most popular','sort.rating':'Top rated','sort.newest':'Newest','surprise':'🎲 Surprise me',
@@ -1048,13 +1048,25 @@
             qInput.addEventListener('focus',()=>document.body.classList.add('kb-open'));
             qInput.addEventListener('blur',()=>document.body.classList.remove('kb-open'));
             async function runSearch(q){
-                try{ currentResults=(await tmdb.searchMulti(q)).slice(0,24); renderSearchGrid(currentResults,q); }
+                try{
+                    let res = await tmdb.searchMulti(q);
+                    let usedPrefix = false;
+                    // Typo recovery: TMDB isn't fuzzy, so on no results retry with a prefix
+                    // of the query (first ~60%) — recovers most misspellings.
+                    if(!res.length && q.length>=5){
+                        const prefix = q.slice(0, Math.max(4, Math.round(q.length*0.6)));
+                        if(prefix && prefix!==q){ const r2 = await tmdb.searchMulti(prefix); if(r2.length){ res=r2; usedPrefix=true; } }
+                    }
+                    currentResults = res.slice(0,24);
+                    renderSearchGrid(currentResults, q, usedPrefix);
+                }
                 catch(e){ $('#searchHead').textContent=t('search.results'); $('#searchGrid').innerHTML='<div class="r-empty" style="grid-column:1/-1;padding:30px 12px">Couldn\'t reach the catalog. Check your connection and try again.</div>'; }
             }
-            function renderSearchGrid(list,q){
+            function renderSearchGrid(list,q,usedPrefix){
                 $('#searchHead').textContent = list.length ? `${t('search.results')} · ${q}` : t('search.results');
                 const g=$('#searchGrid'); g.innerHTML='';
                 if(!list.length){ g.innerHTML=`<div class="r-empty" style="grid-column:1/-1;padding:30px 12px">No match for <b>"${escapeHtml(q)}"</b>.<br/>Check the spelling, or try the original title.</div>`; return; }
+                if(usedPrefix){ const n=el('div'); n.style.cssText='grid-column:1/-1;font-size:13px;color:var(--muted);padding:2px 2px 6px'; n.innerHTML=t('search.closest',{q:escapeHtml(q)}); g.appendChild(n); }
                 list.forEach(item=>g.appendChild(buildCard(item)));
             }
             

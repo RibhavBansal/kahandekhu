@@ -125,6 +125,7 @@ Localized into **10 languages**: English, Hindi, Bengali, Tamil, Telugu, Marathi
 
 ### 4.4 Search (`v-search`)
 - Live, debounced (300 ms). Typing swaps the **Trending grid** out for a **search-results grid** (`#searchSec` ↔ `#trendingSec`).
+- **Typo recovery:** `runSearch()` mirrors the bots — if a query returns nothing, it retries with a **prefix** (first ~60% of the query) to recover mid-word misspellings (`oppenhimer`→`oppenh`→Oppenheimer). When the fallback is used, a localized "showing closest results" note (`search.closest`) appears above the grid.
 - Enter opens the top result; Esc/✕ clears and restores trending.
 - Search button is a gold arrow (icon always visible, text on wider screens).
 
