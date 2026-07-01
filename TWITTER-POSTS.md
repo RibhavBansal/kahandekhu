@@ -193,6 +193,33 @@ Find where to watch anything in India 👉 kahandekhu.in
 #PrivacyFirst #BuildInPublic
 ```
 
+## 13. UI 2.0 redesign — 📎 before/after screenshots (old vs new home)
+```
+Shipped a full redesign of KahanDekhu ✨
+
+• Top 10 in India — ranked, daily
+• Cinematic home with live movie backdrops
+• New: in cinemas now + all-time greats
+• Faster, cleaner, still free & no login
+
+Before → After 👇
+kahandekhu.in
+#BuildInPublic #UI
+```
+
+## 14. Daily Top 10 (repeatable content loop) — 📎 screenshot of the Top 10 rail
+```
+🇮🇳 Top 10 in India today, and where to stream every one of them 👇
+
+(screenshot)
+
+Which one are you watching tonight?
+
+Full list + platforms → kahandekhu.in
+#OTT #WhatToWatch
+```
+> **Run this daily/every few days** — screenshot the Top 10 rail each morning. It's fresh content forever, invites replies ("#3 is overrated"), and every post shows the product. This is the highest-leverage post format in this file.
+
 ---
 
 ## Bonus: reply-thread starter (post as the FIRST reply under your launch)
@@ -213,3 +240,9 @@ Feedback welcome 🙏
 - Repost your launch once more ~24h later with a different GIF (catches a new timezone/audience).
 - DM the GIFs to a few movie/OTT meme pages and ask for a share.
 - Cross-post the same content to r/india, r/bollywood, r/InternationalCinema, and relevant WhatsApp groups.
+
+## ⚠️ UI 2.0 (Jul 2026) — refresh your visuals
+The app got a full redesign (Top 10 ranked rail, spotlight home, floating nav). The old GIFs/images in `twitter-assets/` show the previous UI — **re-record them before running the post bank**, or at minimum:
+1. `1_search_to_result.gif` (hero + search → detail) — re-record first, it's used in the launch posts.
+2. A clean screenshot of the **Top 10 in India** rail — powers post 14's daily loop.
+3. Before/after home-screen pair — powers post 13.

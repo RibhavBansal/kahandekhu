@@ -1,7 +1,8 @@
 # KahanDekhu — Project Reference (living document)
 
 > **Maintained by Claude.** This file is updated on every change to the project — features, fixes, deploys, decisions. It is the single source of truth for how everything works.
-> **Last updated:** 21 Jun 2026 — Telegram bot + `SUPPORT_URL` option + verified PWA/TWA is Play-allowed. **Fix:** bots/push now call the TMDB proxy via a Cloudflare **service binding** (`env.TMDB`), not a public fetch — a same-account Worker→Worker fetch is blocked with error 1042. (Redeploy each worker to apply.)
+> **Last updated:** 2 Jul 2026 — **UI Redesign 2.0** (premium cinema layer): deeper near-black palette + gold-gradient primary actions; rotating trending-backdrop spotlight behind the home hero (`.hero-fx`, motion-safe); Trending → Netflix-style **Top 10 ranked rail** (`buildRankCard`) + overflow grid; two new home rails — "New & noteworthy" (`/movie/now_playing`) and "Critically acclaimed" (`/movie/top_rated`) via `loadHomeRails()` (region-aware, refreshed on region change); floating glass bottom nav; richer poster cards (gradient foot, gold ring on hover); taller cinematic detail backdrop; provider tiles now open the JustWatch page; scroll-reveal via IntersectionObserver; new i18n keys `home.*` (en+hi, others fall back to en). SW cache bumped to `kahandekhu-v5`. `public/` mirrored.
+> Previous (21 Jun 2026): Telegram bot + `SUPPORT_URL` option + verified PWA/TWA is Play-allowed. **Fix:** bots/push now call the TMDB proxy via a Cloudflare **service binding** (`env.TMDB`), not a public fetch — a same-account Worker→Worker fetch is blocked with error 1042. (Redeploy each worker to apply.)
 
 ---
 

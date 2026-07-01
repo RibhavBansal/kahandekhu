@@ -4,7 +4,7 @@
  - API calls (your TMDB Worker) are always network — never cached here
  (the Worker already does its own edge caching).
  */
-const CACHE = 'kahandekhu-v4';
+const CACHE = 'kahandekhu-v5';
 const SHELL = [
     './',
     './index.html',
