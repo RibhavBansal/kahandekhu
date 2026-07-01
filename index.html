@@ -251,6 +251,9 @@
                     .set-section{margin-bottom:22px}
                     .set-section h4{font-size:13px;font-weight:700;margin-bottom:4px}
                     .set-section .desc{font-size:12.5px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+                    .set-contact{text-align:center;margin-top:14px;font-size:12.5px;color:var(--muted)}
+                    .set-contact a{color:var(--gold);text-decoration:none}
+                    .set-contact a:hover{text-decoration:underline}
                     .region-grid{display:flex;flex-wrap:wrap;gap:8px}
                     .region-opt{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);transition:.15s}
                     .region-opt .region-flag,.region-opt span:first-child{flex:none}
@@ -541,7 +544,7 @@
             <footer class="foot">
                 <p>Built for India · Metadata by <b>TMDB</b> · Availability by <b>JustWatch</b></p>
                 <p class="legal">KahanDekhu is an independent app, not affiliated with, endorsed by, or sponsored by any streaming service shown, nor by TMDB or JustWatch. Streaming-service names and logos are trademarks of their respective owners. This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-                <p class="legal"><a href="privacy.html" data-i18n="foot.privacy">Privacy policy</a> · <a href="delete-account.html" data-i18n="foot.delete">Delete your account &amp; data</a></p>
+                <p class="legal"><a href="privacy.html" data-i18n="foot.privacy">Privacy policy</a> · <a href="delete-account.html" data-i18n="foot.delete">Delete your account &amp; data</a> · <a href="mailto:hello@kahandekhu.in" data-i18n="foot.contact">Contact</a></p>
                 <p class="legal" id="waFoot" style="display:none"></p>
             </footer>
         </main>
@@ -588,6 +591,7 @@
                         <div class="chips" id="servicesChips"></div>
                     </div>
                     <button class="set-save" id="saveSettings" data-i18n="settings.save">Save</button>
+                    <p class="set-contact"><a href="mailto:hello@kahandekhu.in" data-i18n="settings.contact">Questions or feedback? Get in touch</a></p>
                 </div>
             </div>
         </div>
@@ -660,8 +664,8 @@
                     'settings.title':'Region & services','settings.language':'Language','settings.languageDesc':'Choose your preferred language for the app.',
                     'settings.region':'Your region','settings.regionDesc':"Availability differs by country. We'll show what's streaming where you are.",
                     'settings.services':'Services you subscribe to','settings.servicesDesc':"We'll flag titles that are on your platforms — so you instantly know what you can already watch.",
-                    'settings.save':'Save','toast.saved':'Preferences saved ✓','toast.deleted':'Account and data deleted',
-                    'foot.privacy':'Privacy policy','foot.delete':'Delete your account & data',
+                    'settings.save':'Save','settings.contact':'Questions or feedback? Get in touch','toast.saved':'Preferences saved ✓','toast.deleted':'Account and data deleted',
+                    'foot.privacy':'Privacy policy','foot.delete':'Delete your account & data','foot.contact':'Contact',
                     'coach.tipLabel':'Tip','coach.text':'Use it free — no sign-in needed. <b>Sign in</b> to keep your watchlist across all your devices.',
                 },
                 hi:{
