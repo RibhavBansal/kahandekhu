@@ -13,7 +13,7 @@ KahanDekhu is an **India-first "where to watch" tracker**. Type a movie or show 
 - Wrapped as an **Android app (TWA)** for the Play Store.
 - Free, donation-supported, with optional accounts for cross-device sync.
 
-**Live URL:** https://kahandekhu.pages.dev
+**Live URL:** https://kahandekhu.in
 
 ---
 

@@ -104,7 +104,7 @@ Open `index.html` and fill these near the top of the `<script>`:
     const TELEGRAM_BOT     = '';                         // → your bot username e.g. 'KahanDekhuBot'
     const SUPABASE_URL     = '';                         // → from Supabase project settings
     const SUPABASE_ANON_KEY = '';                        // → anon/public key (safe to be public)
-    const APP_URL          = 'https://kahandekhu.pages.dev'; // → your real deployed URL
+    const APP_URL          = 'https://kahandekhu.in'; // → your real deployed URL
 ```
 
 Also fill in `privacy.html`:
@@ -114,7 +114,7 @@ Also fill in `privacy.html`:
 ### Step 2 — Deploy the web app (Cloudflare Pages)
 1. Go to dash.cloudflare.com → **Workers & Pages → Create → Pages → Upload assets**
 2. Upload all files in this folder (everything except the `.md` files and `.sql` files)
-3. Deploy → note your URL (e.g. `kahandekhu.pages.dev`)
+3. Deploy → note your URL (e.g. `kahandekhu.in`)
 4. Update `APP_URL` in `index.html` to your real URL, then redeploy
 5. Custom domain (optional): buy via Cloudflare Registrar → Pages → Custom domains → add it
 

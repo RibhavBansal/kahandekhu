@@ -7,7 +7,7 @@ compatibility_date = "2024-11-01"
 
 [vars]
 TMDB_PROXY = "https://kahandekhu-tmdb.bansalribhav0987.workers.dev"
-APP_URL    = "https://kahandekhu.pages.dev"
+APP_URL    = "https://kahandekhu.in"
 
 # Service binding: lets this Worker call the TMDB proxy Worker on the same account
 # (a plain fetch() to its public URL is blocked with Cloudflare error 1042).

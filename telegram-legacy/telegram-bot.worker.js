@@ -21,7 +21,7 @@
 const TMDB = 'https://api.themoviedb.org/3';
 const REGION = 'IN';
 const REGION_NAME = 'India';
-const APP_URL = 'https://kahandekhu.pages.dev';
+const APP_URL = 'https://kahandekhu.in';
 
 export default {
     async fetch(request, env, ctx) {

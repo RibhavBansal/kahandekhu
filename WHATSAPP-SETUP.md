@@ -85,7 +85,7 @@ You should get back a "where to watch in India" reply within a second.
 **"This business account didn't comply with our Advertising Policies or other standards."**
 Meta's automated systems often flag *brand-new* business portfolios with this — usually a **false positive**, not anything you did. Fix:
 1. Go to **business.facebook.com/accountquality** → select the portfolio → **Request review**. (Re-review is typically 24–48h.)
-2. Improve approval odds: ensure the **personal Facebook account** that owns it is established (real name, photo, confirmed email/phone); complete the portfolio info (name + website `kahandekhu.pages.dev`); don't spin up multiple portfolios quickly.
+2. Improve approval odds: ensure the **personal Facebook account** that owns it is established (real name, photo, confirmed email/phone); complete the portfolio info (name + website `kahandekhu.in`); don't spin up multiple portfolios quickly.
 3. If it stays blocked, use a **BSP** (Twilio / Gupshup / Wati) which handles onboarding for you, **or skip WhatsApp for now** — it's a bonus channel; the app, accounts, push, and Play Store launch don't depend on it.
 
 **"Account Restricted — This account's messaging capabilities have been restricted… You can request a review."**

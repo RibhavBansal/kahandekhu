@@ -21,8 +21,8 @@ Your account-ban risk comes from three areas. Here's where each stands:
 ## 0. Prerequisites (must be live before packaging)
 
 1. **App deployed** to HTTPS (Cloudflare Pages) — the `public/` folder, including the new `delete-account.html`.
-2. **Privacy policy** hosted: `https://YOURSITE/privacy.html` (already updated to disclose email + accounts).
-3. **Deletion page** hosted: `https://YOURSITE/delete-account.html`.
+2. **Privacy policy** hosted: `https://kahandekhu.in/privacy.html` (already updated to disclose email + accounts).
+3. **Deletion page** hosted: `https://kahandekhu.in/delete-account.html`.
 4. **Account-deletion Edge Function deployed** so the in-app delete button works:
 - In Supabase: **Edge Functions → Deploy a new function** named `delete-account`, paste the contents of `supabase/functions/delete-account/index.ts`.
 - Or via CLI: `supabase functions deploy delete-account`.
@@ -36,15 +36,15 @@ Your account-ban risk comes from three areas. Here's where each stands:
 
 1. Go to **pwabuilder.com**, enter your live URL.
 2. **Package For Stores → Android** → open **Android options** before downloading.
-3. **⚠️ Set the launch/start URL to include the TWA flag:** change it to **`https://YOURSITE/?source=twa`** (PWABuilder: "Start URL" field in Android options; Bubblewrap: `startUrl: "/?source=twa"` in `twa-manifest.json`). **Do NOT change `manifest.json`'s `start_url`** — only the Android package's launch URL. This flag makes the app hide the tip/support button (Play compliance) without affecting web/iOS users.
+3. **⚠️ Set the launch/start URL to include the TWA flag:** change it to **`https://kahandekhu.in/?source=twa`** (PWABuilder: "Start URL" field in Android options; Bubblewrap: `startUrl: "/?source=twa"` in `twa-manifest.json`). **Do NOT change `manifest.json`'s `start_url`** — only the Android package's launch URL. This flag makes the app hide the tip/support button (Play compliance) without affecting web/iOS users.
 4. Download the package — it produces a **signed `.aab`** plus the **SHA-256 signing fingerprint** and a ready-made `assetlinks.json`.
 - Keep the signing key/keystore it gives you **safe and backed up** — losing it means you can never update the app.
-- *(CLI alternative: `npm i -g @bubblewrap/cli` → `bubblewrap init --manifest https://YOURSITE/manifest.json` → set `startUrl` to `/?source=twa` in `twa-manifest.json` → `bubblewrap build`.)*
+- *(CLI alternative: `npm i -g @bubblewrap/cli` → `bubblewrap init --manifest https://kahandekhu.in/manifest.json` → set `startUrl` to `/?source=twa` in `twa-manifest.json` → `bubblewrap build`.)*
 
 ## 2. Verify domain ownership (removes the browser URL bar)
 
 Host the generated **`assetlinks.json`** at exactly:
-`https://YOURSITE/.well-known/assetlinks.json`
+`https://kahandekhu.in/.well-known/assetlinks.json`
 
 On Cloudflare Pages, put it in a `.well-known` folder inside `public/`. Without this the app shows a Chrome address bar (looks unfinished).
 
@@ -94,14 +94,14 @@ certified by TMDB).
     - (Watchlist/region/preferences are app content, stored locally or in the user's own account — not a "personal data type" you must list. Don't over-declare.)
     - **Is all collected data encrypted in transit?** → **Yes**
     - **Do you provide a way for users to request that their data be deleted?** → **Yes**
-    - **Account deletion URL:** `https://YOURSITE/delete-account.html`
+    - **Account deletion URL:** `https://kahandekhu.in/delete-account.html`
     - **Data shared with third parties?** → **No**
     
     ### Account deletion questions (in App content)
     
     - **Does your app let users create an account?** → **Yes**
     - **In-app deletion available?** → **Yes** (the "Delete account & data" button)
-    - **Web deletion URL:** `https://YOURSITE/delete-account.html`
+    - **Web deletion URL:** `https://kahandekhu.in/delete-account.html`
     
     ### Other declarations
     

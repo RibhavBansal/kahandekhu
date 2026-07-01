@@ -7,7 +7,7 @@ compatibility_date = "2024-11-01"
 
  [vars]
      TMDB_PROXY    = "https://kahandekhu-tmdb.bansalribhav0987.workers.dev"
-     APP_URL       = "https://kahandekhu.pages.dev"
+     APP_URL       = "https://kahandekhu.in"
      GRAPH_VERSION = "v21.0"
 
 # Service binding to call the TMDB proxy Worker on the same account (avoids error 1042).

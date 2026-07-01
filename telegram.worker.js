@@ -206,7 +206,7 @@ function formatReply(d, env) {
 }
 
 function appButtonRow(env) {
-  const app = env.APP_URL || "https://kahandekhu.pages.dev";
+  const app = env.APP_URL || "https://kahandekhu.in";
   return [[{ text: "📲 Open KahanDekhu — free", url: app }]];
 }
 function tgApi(method, payload, env) {
