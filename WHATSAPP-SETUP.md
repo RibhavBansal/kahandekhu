@@ -16,7 +16,7 @@ A "where to watch" bot: users WhatsApp a title (or "where to watch X") and get a
 WhatsApp requires a **business portfolio** first (Meta's container for your assets — formerly "Business Manager"). It's **free**, and you do **not** need a registered company — create it with your own details.
 
 1. Click **Create a business portfolio**.
-2. Fill in: **Portfolio name** = `KahanDekhu`, **Your name**, **Business email** = `bansalribhav0987@gmail.com`.
+2. Fill in: **Portfolio name** = `KahanDekhu`, **Your name**, **Business email** = `hello@kahandekhu.in`.
 3. Submit → return to the onboarding page and continue with step 1 below.
 
 > **Business verification** (ID/legal docs) is a *separate, later* step. You do NOT need it to build or test (test number + up to 5 recipients). It's only required to message the general public at scale.

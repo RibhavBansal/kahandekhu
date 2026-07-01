@@ -18,7 +18,7 @@ compatibility_date = "2024-11-01"
      # Public, non-secret config.
  [vars]
      VAPID_PUBLIC   = "BEyo9E1f3uPLscC8_b8kFGcg3I1UE-CmYbmaQe9OOqXTswii6o5gtXxmtXDSLbcxc3sUaaCZNLDY_mE3_M9rexs"
-     VAPID_SUBJECT  = "mailto:bansalribhav0987@gmail.com"
+     VAPID_SUBJECT  = "mailto:hello@kahandekhu.in"
      TMDB_PROXY     = "https://kahandekhu-tmdb.bansalribhav0987.workers.dev"
      DEFAULT_APP_URL = "https://kahandekhu.in"
 
